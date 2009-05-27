@@ -48,7 +48,7 @@ def cache_clearing(method):
 
 class PrettyTable:
 
-    def __init__(self, fields=None, caching=True, padding_width=1, left_padding=None, right_padding=None):
+    def __init__(self, fields=None, caching=True, padding_width=1, left_padding_width=1, right_padding_width=1):
 
         """Return a new PrettyTable instance
 
@@ -59,7 +59,7 @@ class PrettyTable:
         padding width - number of spaces between column lines and content"""
 
         # Data
-        self.fields = []
+        self._fields = []
         if fields:
             self.set_field_names(fields)
         else:
@@ -71,14 +71,23 @@ class PrettyTable:
         self.html_cache = {}
 
         # Options
+        self.start = 0
+        self.end = None
+        self.fields = None
+        self.header = True
+        self.border = True
+        self.sortby = None
+        self.reversesort = False
+        self.attributes = {}
         self.hrules = FRAME
         self.caching = caching
         self.padding_width = padding_width
-        self.left_padding = left_padding
-        self.right_padding = right_padding
+        self.left_padding_width = left_padding_width
+        self.right_padding_width = right_padding_width
         self.vertical_char = "|"
         self.horizontal_char = "-"
         self.junction_char = "+"
+        self._options = "start end fields header border sortby reversesort attributes hrules caching padding_width left_padding_width right_padding_width vertical_char horizontal_char junction_char".split()
 
     def __getslice__(self, i, j):
 
@@ -97,6 +106,15 @@ class PrettyTable:
 
         return self.get_string()
 
+    def _get_options(self, kwargs):
+        options = {}
+        for option in self._options:
+            if option in kwargs:
+                options[option] = kwargs[option]
+            else:
+                options[option] = getattr(self, option)
+        return options
+
     ##############################
     # ATTRIBUTE SETTERS          #
     ##############################
@@ -113,7 +131,7 @@ class PrettyTable:
         # We *may* need to change the widths if this isn't the first time
         # setting the field names.  This could certainly be done more
         # efficiently.
-        if self.fields:
+        if self._fields:
             self.widths = [len(field) for field in fields]
             for row in self.rows:
                 for i in range(0,len(row)):
@@ -121,7 +139,7 @@ class PrettyTable:
                         self.widths[i] = len(unicode(row[i]))
         else:
             self.widths = [len(field) for field in fields]
-        self.fields = fields
+        self._fields = fields
         self.aligns = len(fields)*["c"]
 
     @cache_clearing
@@ -134,11 +152,11 @@ class PrettyTable:
         fieldname - name of the field whose alignment is to be changed
         align - desired alignment - "l" for left, "c" for centre and "r" for right"""
 
-        if fieldname not in self.fields:
+        if fieldname not in self._fields:
             raise Exception("No field %s exists!" % fieldname)
         if align not in ["l","c","r"]:
             raise Exception("Alignment %s is invalid, use l, c or r!" % align)
-        self.aligns[self.fields.index(fieldname)] = align
+        self.aligns[self._fields.index(fieldname)] = align
 
     @cache_clearing
     def set_padding_width(self, padding_width):
@@ -219,8 +237,8 @@ class PrettyTable:
         row - row of data, should be a list with as many elements as the table
         has fields"""
 
-        if len(row) != len(self.fields):
-            raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self.fields)))
+        if len(row) != len(self._fields):
+            raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._fields)))
         self.rows.append(row)
         for i in range(0,len(row)):
             if len(unicode(row[i])) > self.widths[i]:
@@ -241,7 +259,7 @@ class PrettyTable:
         if len(self.rows) in (0, len(column)):
             if align not in ["l","c","r"]:
                 raise Exception("Alignment %s is invalid, use l, c or r!" % align)
-            self.fields.append(fieldname)
+            self._fields.append(fieldname)
             self.widths.append(len(fieldname))
             self.aligns.append(align)
             for i in range(0, len(column)):
@@ -257,35 +275,23 @@ class PrettyTable:
     # MISC PRIVATE METHODS       #
     ##############################
 
-    def _get_sorted_rows(self, start, end, sortby, reversesort):
+    def _get_sorted_rows(self, options):
         # Sort rows using the "Decorate, Sort, Undecorate" (DSU) paradigm
-        rows = copy.deepcopy(self.rows[start:end])
-        sortindex = self.fields.index(sortby)
+        rows = copy.deepcopy(self.rows[options["start"]:options["end"]])
+        sortindex = self._fields.index(options["sortby"])
         # Decorate
         rows = [[row[sortindex]]+row for row in rows]
         # Sort
-        rows.sort(reverse=reversesort)
+        rows.sort(reverse=options["reversesort"])
         # Undecorate
         rows = [row[1:] for row in rows]
         return rows
-
-    def _get_paddings(self):
-
-        if self.left_padding is not None:
-            lpad = self.left_padding
-        else:
-            lpad = self.padding_width
-        if self.right_padding is not None:
-            rpad = self.right_padding
-        else:
-            rpad = self.padding_width
-        return lpad, rpad
 
     ##############################
     # ASCII PRINT/STRING METHODS #
     ##############################
 
-    def printt(self, start=0, end=None, fields=None, header=True, border=True, hrules=FRAME, sortby=None, reversesort=False):
+    def printt(self, **kwargs):
 
         """Print table in current state to stdout.
 
@@ -299,9 +305,9 @@ class PrettyTable:
         border - should be True or False to print or not print borders
         hrules - controls printing of horizontal rules after each row.  Allowed values: FRAME, ALL, NONE"""
 
-        print self.get_string(start, end, fields, header, border, hrules, sortby, reversesort)
+        print self.get_string(**kwargs)
 
-    def get_string(self, start=0, end=None, fields=None, header=True, border=True, hrules=FRAME, sortby=None, reversesort=False):
+    def get_string(self, **kwargs):
 
         """Return string representation of table in current state.
 
@@ -315,41 +321,42 @@ class PrettyTable:
         border - should be True or False to print or not print borders
         hrules - controls printing of horizontal rules after each row.  Allowed values: FRAME, ALL, NONE"""
 
+        options = self._get_options(kwargs)
+
         if self.caching:
-            key = cPickle.dumps((start, end, fields, header, border, hrules, sortby, reversesort))
+            key = cPickle.dumps(options)
             if key in self.cache:
                 return self.cache[key]
 
-        hrule = hrules or self.hrules
         bits = []
-        if not self.fields:
+        if not self._fields:
             return ""
-        if not header:
+        if not options["header"]:
             # Recalculate widths - avoids tables with long field names but narrow data looking odd
             old_widths = self.widths[:]
-            self.widths = [0]*len(self.fields)
+            self.widths = [0]*len(self._fields)
             for row in self.rows:
                 for i in range(0,len(row)):
                     if len(unicode(row[i])) > self.widths[i]:
                         self.widths[i] = len(unicode(row[i]))
-        if header:
-            bits.append(self._stringify_header(fields, border, hrules))
-        elif border and hrules != NONE:
-            bits.append(self._stringify_hrule(fields, border))
-        if sortby:
-            rows = self._get_sorted_rows(start, end, sortby, reversesort)
+        if options["header"]:
+            bits.append(self._stringify_header(options))
+        elif options["border"] and options["hrules"] != NONE:
+            bits.append(self._stringify_hrule(options))
+        if options["sortby"]:
+            rows = self._get_sorted_rows(options)
         else:
-            rows = self.rows[start:end]
+            rows = self.rows[options["start"]:options["end"]]
         for row in rows:
-            bits.append(self._stringify_row(row, fields, border, hrule))
-        if border and not hrule:
-            bits.append(self._stringify_hrule(fields, border))
+            bits.append(self._stringify_row(row, options))
+        if options["border"] and not options["hrules"]:
+            bits.append(self._stringify_hrule(options))
         string = "\n".join(bits)
 
         if self.caching:
             self.cache[key] = string
 
-        if not header:
+        if not options["header"]:
             # Restore previous widths
             self.widths = old_widths
             for row in self.rows:
@@ -359,67 +366,69 @@ class PrettyTable:
 
         return string
 
-    def _stringify_hrule(self, fields=None, border=True):
+    def _stringify_hrule(self, options):
 
-        if not border:
+        if not options["border"]:
             return ""
-        lpad, rpad = self._get_paddings()
-        padding_width = lpad+rpad
-        bits = [self.junction_char]
-        for field, width in zip(self.fields, self.widths):
-            if fields and field not in fields:
+        padding_width = options["left_padding_width"]+options["right_padding_width"]
+        bits = [options["junction_char"]]
+        for field, width in zip(self._fields, self.widths):
+            if options["fields"] and field not in options["fields"]:
                 continue
-            bits.append((width+padding_width)*self.horizontal_char)
-            bits.append(self.junction_char)
+            bits.append((width+padding_width)*options["horizontal_char"])
+            bits.append(options["junction_char"])
         return "".join(bits)
 
-    def _stringify_header(self, fields=None, border=True, hrules=FRAME):
+    def _stringify_header(self, options):
 
-        lpad, rpad = self._get_paddings()
         bits = []
-        if border:
-            if hrules != NONE:
-                bits.append(self._stringify_hrule(fields, border))
+        if options["border"]:
+            if options["hrules"] != NONE:
+                bits.append(self._stringify_hrule(options))
                 bits.append("\n")
-            bits.append(self.vertical_char)
-        for field, width in zip(self.fields, self.widths):
-            if fields and field not in fields:
-                continue
-            bits.append(" " * lpad + field.center(width) + " " * rpad)
-            if border:
-                bits.append(self.vertical_char)
-        if border and hrules != NONE:
-            bits.append("\n")
-            bits.append(self._stringify_hrule(fields, border))
-        return "".join(bits)
-
-    def _stringify_row(self, row, fields=None, border=True, hrule=False):
-
-        lpad, rpad = self._get_paddings()
-        bits = []
-        if border:
-            bits.append(self.vertical_char)
-        for field, value, width, align in zip(self.fields, row, self.widths, self.aligns):
-            if fields and field not in fields:
+            bits.append(options["vertical_char"])
+        for field, width, align in zip(self._fields, self.widths, self.aligns):
+            if options["fields"] and field not in options["fields"]:
                 continue
             if align == "l":
-                bits.append(" " * lpad + unicode(value).ljust(width) + " " * rpad)
+                bits.append(" " * options["left_padding_width"] + unicode(field).ljust(width) + " " * options["right_padding_width"])
             elif align == "r":
-                bits.append(" " * lpad + unicode(value).rjust(width) + " " * rpad)
+                bits.append(" " * options["left_padding_width"] + unicode(field).rjust(width) + " " * options["right_padding_width"])
             else:
-                bits.append(" " * lpad + unicode(value).center(width) + " " * rpad)
-            if border:
-                bits.append(self.vertical_char)
-        if border and hrule == ALL:
+                bits.append(" " * options["left_padding_width"] + unicode(field).center(width) + " " * options["right_padding_width"])
+            if options["border"]:
+                bits.append(options["vertical_char"])
+        if options["border"] and options["hrules"] != NONE:
             bits.append("\n")
-            bits.append(self._stringify_hrule(fields, border))
+            bits.append(self._stringify_hrule(options))
+        return "".join(bits)
+
+    def _stringify_row(self, row, options):
+
+        bits = []
+        if options["border"]:
+            bits.append(self.vertical_char)
+        for field, value, width, align in zip(self._fields, row, self.widths, self.aligns):
+            if options["fields"] and field not in options["fields"]:
+                continue
+            if align == "l":
+                bits.append(" " * options["left_padding_width"] + unicode(value).ljust(width) + " " * options["right_padding_width"])
+            elif align == "r":
+                bits.append(" " * options["left_padding_width"] + unicode(value).rjust(width) + " " * options["right_padding_width"])
+            else:
+                bits.append(" " * options["left_padding_width"] + unicode(value).center(width) + " " * options["right_padding_width"])
+            if options["border"]:
+                bits.append(self.vertical_char)
+        if options["border"] and options["hrules"]== ALL:
+            bits.append("\n")
+            bits.append(self._stringify_hrule(options))
         return "".join(bits)
 
     ##############################
     # HTML PRINT/STRING METHODS  #
     ##############################
 
-    def print_html(self, start=0, end=None, fields=None, sortby=None, reversesort=False, format=True, header=True, border=True, hrules=FRAME, attributes=None):
+    def print_html(self, **kwargs):
 
         """Print HTML formatted version of table in current state to stdout.
 
@@ -435,9 +444,9 @@ class PrettyTable:
         hrules - include horizontal rule after each row
         attributes - dictionary of name/value pairs to include as HTML attributes in the <table> tag"""
 
-        print self.get_html_string(start, end, fields, sortby, reversesort, format, header, border, hrules, attributes)
+        print self.get_html_string(**kwargs)
 
-    def get_html_string(self, start=0, end=None, fields=None, sortby=None, reversesort=False, format=True, header=True, border=True, hrules=FRAME, attributes=None):
+    def get_html_string(self, **kwargs):
 
         """Return string representation of HTML formatted version of table in current state.
 
@@ -454,50 +463,51 @@ class PrettyTable:
         hrules - include horizontal rule after each row
         attributes - dictionary of name/value pairs to include as HTML attributes in the <table> tag"""
 
+        options = self._get_options(kwargs)
+
         if self.caching:
-            key = cPickle.dumps((start, end, fields, format, header, border, hrules, sortby, reversesort, attributes))
+            key = cPickle.dumps(options)
             if key in self.html_cache:
                 return self.html_cache[key]
 
         if format:
-            tmp_html_func=self._get_formatted_html_string
+            string = self._get_formatted_html_string(options)
         else:
-            tmp_html_func=self._get_simple_html_string
-        string = tmp_html_func(start, end, fields, sortby, reversesort, header, border, hrules, attributes)
+            string = self._get_simple_html_string(options)
 
         if self.caching:
             self.html_cache[key] = string
 
         return string
 
-    def _get_simple_html_string(self, start, end, fields, sortby, reversesort, header, border, hrules, attributes):
+    def _get_simple_html_string(self, options):
 
         bits = []
         # Slow but works
         table_tag = '<table'
-        if border:
+        if options["border"]:
             table_tag += ' border="1"'
-        if attributes:
-            for attr_name in attributes:
-                table_tag += ' %s="%s"' % (attr_name, attributes[attr_name])
+        if options["attributes"]:
+            for attr_name in options["attributes"]:
+                table_tag += ' %s="%s"' % (attr_name, options["attributes"][attr_name])
         table_tag += '>'
         bits.append(table_tag)
         # Headers
         bits.append("    <tr>")
-        for field in self.fields:
-            if fields and field not in fields:
+        for field in self._fields:
+            if options["fields"] and field not in options["fields"]:
                 continue
             bits.append("        <th>%s</th>" % cgi.escape(unicode(field)))
         bits.append("    </tr>")
         # Data
-        if sortby:
-            rows = self._get_sorted_rows(stard, end, sortby, reversesort)
+        if options["sortby"]:
+            rows = self._get_sorted_rows(options)
         else:
             rows = self.rows
         for row in self.rows:
             bits.append("    <tr>")
-            for field, datum in zip(self.fields, row):
-                if fields and field not in fields:
+            for field, datum in zip(self._fields, row):
+                if options["fields"] and field not in options["fields"]:
                     continue
                 bits.append("        <td>%s</td>" % cgi.escape(unicode(datum)))
         bits.append("    </tr>")
@@ -506,45 +516,44 @@ class PrettyTable:
 
         return string
 
-    def _get_formatted_html_string(self, start, end, fields, sortby, reversesort, header, border, hrules, attributes):
+    def _get_formatted_html_string(self, options):
 
         bits = []
         # Slow but works
         table_tag = '<table'
-        if border:
+        if options["border"]:
             table_tag += ' border="1"'
-        if hrules == NONE:
+        if options["hrules"] == NONE:
             table_tag += ' frame="vsides" rules="cols"'
-        if attributes:
-            for attr_name in attributes:
-                table_tag += ' %s="%s"' % (attr_name, attributes[attr_name])
+        if options["attributes"]:
+            for attr_name in options["attributes"]:
+                table_tag += ' %s="%s"' % (attr_name, options["attributes"][attr_name])
         table_tag += '>'
         bits.append(table_tag)
         # Headers
-        lpad, rpad = self._get_paddings()
-        if header:
+        if options["header"]:
             bits.append("    <tr>")
-            for field in self.fields:
-                if fields and field not in fields:
+            for field in self._fields:
+                if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, cgi.escape(unicode(field))))
+                bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (options["left_padding_width"], options["right_padding_width"], cgi.escape(unicode(field))))
             bits.append("    </tr>")
         # Data
-        if sortby:
-            rows = self._get_sorted_rows(start, end, sortby, reversesort)
+        if options["sortby"]:
+            rows = self._get_sorted_rows(options)
         else:
             rows = self.rows
         for row in self.rows:
             bits.append("    <tr>")
-            for field, align, datum in zip(self.fields, self.aligns, row):
-                if fields and field not in fields:
+            for field, align, datum in zip(self._fields, self.aligns, row):
+                if options["fields"] and field not in options["fields"]:
                     continue
                 if align == "l":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum))))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (options["left_padding_width"], options["right_padding_width"], cgi.escape(unicode(datum))))
                 elif align == "r":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum))))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (options["left_padding_width"], options["right_padding_width"], cgi.escape(unicode(datum))))
                 else:
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum))))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (options["left_padding_width"], options["right_padding_width"], cgi.escape(unicode(datum))))
         bits.append("    </tr>")
         bits.append("</table>")
         string = "\n".join(bits)
@@ -564,66 +573,5 @@ def main():
     x.add_row(["Perth", 5386, 1554769, 869.4])
     print x
 
-    if len(sys.argv) > 1 and sys.argv[1] == "test":
-
-    # This "test suite" is hideous and provides poor, arbitrary coverage.
-    # I'll replace it with some proper unit tests Sometime Soon (TM).
-    # Promise.
-        print "Testing field subset selection:"
-        x.printt(fields=["City name","Population"])
-        print "Testing row subset selection:"
-        x.printt(start=2, end=5)
-        print "Testing hrules settings:"
-        print "FRAME:"
-        x.printt(hrules=FRAME)
-        print "ALL:"
-        x.printt(hrules=ALL)
-        print "NONE:"
-        x.printt(hrules=NONE)
-        print "Testing lack of headers:"
-        x.printt(header=False)
-        x.printt(header=False, border=False)
-        print "Testing lack of borders:"
-        x.printt(border=False)
-        print "Testing sorting:"
-        x.printt(sortby="City name")
-        x.printt(sortby="Annual Rainfall")
-        x.printt(sortby="Annual Rainfall", reversesort=True)
-        print "Testing padding parameter:"
-        x.set_padding_width(0)
-        x.printt()
-        x.set_padding_width(5)
-        x.printt()
-        x.set_left_padding(5)
-        x.set_right_padding(0)
-        x.printt()
-        x.set_right_padding(20)
-        x.printt()
-        x.set_left_padding(None)
-        x.set_right_padding(None)
-        x.set_padding_width(2)
-        print "Testing changing characters"
-        x.set_border_chars("*","*","*")
-        x.printt()
-        x.set_border_chars("!","~","o")
-        x.printt()
-        x.set_border_chars("|","-","+")
-        print "Testing everything at once:"
-        x.printt(start=2, end=5, fields=["City name","Population"], border=False, hrules=True)
-        print "Rebuilding by columns:"
-        x = PrettyTable()
-        x.add_column("City name", ["Adelaide", "Brisbane", "Darwin", "Hobart", "Sydney", "Melbourne", "Perth"])
-        x.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5385])
-        x.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769])
-        x.add_column("Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4])
-        x.printt()
-        print "Testing HTML:"
-        x.print_html()
-        x.print_html(border=False)
-        x.print_html(border=True)
-        x.print_html(format=False)
-        x.print_html(attributes={"name": "table", "id": "table"})
-
 if __name__ == "__main__":
     main()
-
