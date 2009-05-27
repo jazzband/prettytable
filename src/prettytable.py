@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #
-# PrettyTable TRUNK
 # Copyright (c) 2009, Luke Maurits <luke@maurits.id.au>
 # All rights reserved.
 # With contributions from:
@@ -28,6 +27,8 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+
+__VERSION__ = "TRUNK"
 
 import cgi
 import copy

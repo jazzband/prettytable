@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 from setuptools import setup
+from prettytable import __VERSION__ as version
 
 setup(
     name='prettytable',
-    version='TRUNK',
+    version=version,
     description='A simple Python library for easily displaying tabular data in a visually appealing ASCII table format',
     author='Luke Maurits',
     author_email='luke@maurits.id.au',
