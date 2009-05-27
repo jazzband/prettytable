@@ -33,11 +33,19 @@ __VERSION__ = "TRUNK"
 import cgi
 import copy
 import cPickle
+import random
 import sys
 
+# hrule styles
 FRAME = 0
 ALL   = 1
 NONE  = 2
+
+# Table styles
+DEFAULT = 10
+MSWORD_FRIENDLY = 11
+PLAIN_COLUMNS = 12
+RANDOM = 20
 
 def cache_clearing(method):
     def wrapper(self, *args, **kwargs):
@@ -222,6 +230,64 @@ class PrettyTable:
         self.vertical_char = vertical
         self.horizontal_char = horizontal
         self.junction_char = junction
+
+    ##############################
+    # PRESET STYLE LOGIC         #
+    ##############################
+
+    def set_style(self, style):
+        if style == DEFAULT:
+            self._set_default_style()
+        elif style == MSWORD_FRIENDLY:
+            self._set_msword_style()
+        elif style == PLAIN_COLUMNS:
+            self._set_columns_style()
+        elif style == RANDOM:
+            self._set_random_style()
+        else:
+            raise Exception("Invalid pre-set style!")
+
+    def _set_default_style(self):
+
+        self.header = True
+        self.border = True
+        self.hrules = FRAME
+        self.padding_width = 1
+        self.left_padding_width = 1
+        self.right_padding_width = 1
+        self.vertical_char = "|"
+        self.horizontal_char = "-"
+        self.junction_char = "+"
+
+    def _set_msword_style(self):
+
+        self.header = True
+        self.border = True
+        self.hrules = NONE
+        self.padding_width = 1
+        self.left_padding_width = 1
+        self.right_padding_width = 1
+        self.vertical_char = "|"
+
+    def _set_columns_style(self):
+
+        self.header = True
+        self.border = False
+        self.padding_width = 1
+        self.left_padding_width = 0
+        self.right_padding_width = 8
+
+    def _set_random_style(self):
+
+        self.header = random.choice((True, False))
+        self.border = random.choice((True, False))
+        self.hrules = random.choice((ALL, FRAME, NONE))
+        self.padding_width = random.randint(0,5)
+        self.left_padding_width = random.randint(0,5)
+        self.right_padding_width = random.randint(0,5)
+        self.vertical_char = random.choice("~!@#$%^&*()_+|-=\{}[];':\",./;<>?")
+        self.horizontal_char = random.choice("~!@#$%^&*()_+|-=\{}[];':\",./;<>?")
+        self.junction_char = random.choice("~!@#$%^&*()_+|-=\{}[];':\",./;<>?")
 
     ##############################
     # DATA INPUT METHODS         #
