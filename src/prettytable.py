@@ -38,6 +38,13 @@ FRAME = 0
 ALL   = 1
 NONE  = 2
 
+def cache_clearing(method):
+    def wrapper(self, *args, **kwargs):
+	method(self, *args, **kwargs)
+	self.cache = {}
+	self.html_cache = {}
+    return wrapper
+
 class PrettyTable:
 
     def __init__(self, fields=None, caching=True, padding_width=1, left_padding=None, right_padding=None):
@@ -93,6 +100,7 @@ class PrettyTable:
     # ATTRIBUTE SETTERS          #
     ##############################
 
+    @cache_clearing
     def set_field_names(self, fields):
 
         """Set the names of the fields
@@ -114,9 +122,8 @@ class PrettyTable:
             self.widths = [len(field) for field in fields]
         self.fields = fields
         self.aligns = len(fields)*["c"]
-        self.cache = {}
-        self.html_cache = {}
 
+    @cache_clearing
     def set_field_align(self, fieldname, align):
 
         """Set the alignment of a field by its fieldname
@@ -131,9 +138,8 @@ class PrettyTable:
         if align not in ["l","c","r"]:
             raise Exception("Alignment %s is invalid, use l, c or r!" % align)
         self.aligns[self.fields.index(fieldname)] = align
-        self.cache = {}
-        self.html_cache = {}
 
+    @cache_clearing
     def set_padding_width(self, padding_width):
 
         """Set the number of empty spaces between a column's edge and its content
@@ -148,9 +154,8 @@ class PrettyTable:
             raise Exception("Invalid value for padding_width: %s!" % unicode(padding_width))
 
         self.padding_width = padding_width
-        self.cache = {}
-        self.html_cache = {}
 
+    @cache_clearing
     def set_left_padding(self, left_padding):
 
         """Set the number of empty spaces between a column's left edge and its content
@@ -165,9 +170,8 @@ class PrettyTable:
             raise Exception("Invalid value for left_padding: %s!" % unicode(left_padding))
 
         self.left_padding = left_padding
-        self.cache = {}
-        self.html_cache = {}
 
+    @cache_clearing
     def set_right_padding(self, right_padding):
 
         """Set the number of empty spaces between a column's right edge and its content
@@ -182,9 +186,8 @@ class PrettyTable:
             raise Exception("Invalid value for right_padding: %s!" % unicode(right_padding))
 
         self.right_padding = right_padding
-        self.cache = {}
-        self.html_cache = {}
 
+    @cache_clearing
     def set_border_chars(self, vertical="|", horizontal="-", junction="+"):
 
         """Set the characters to use when drawing the table border
@@ -200,12 +203,12 @@ class PrettyTable:
         self.vertical_char = vertical
         self.horizontal_char = horizontal
         self.junction_char = junction
-        self.cache = {}
 
     ##############################
     # DATA INPUT METHODS         #
     ##############################
 
+    @cache_clearing
     def add_row(self, row):
 
         """Add a row to the table
@@ -221,8 +224,8 @@ class PrettyTable:
         for i in range(0,len(row)):
             if len(unicode(row[i])) > self.widths[i]:
                 self.widths[i] = len(unicode(row[i]))
-        self.html_cache = {}
 
+    @cache_clearing
     def add_column(self, fieldname, column, align="c"):
 
         """Add a column to the table.
