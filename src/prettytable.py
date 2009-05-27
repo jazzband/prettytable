@@ -49,9 +49,9 @@ RANDOM = 20
 
 def cache_clearing(method):
     def wrapper(self, *args, **kwargs):
-	method(self, *args, **kwargs)
-	self.cache = {}
-	self.html_cache = {}
+        method(self, *args, **kwargs)
+        self.cache = {}
+        self.html_cache = {}
     return wrapper
 
 class PrettyTable:
