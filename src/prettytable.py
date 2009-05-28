@@ -64,7 +64,20 @@ class PrettyTable(object):
 
         fields - list or tuple of field names
         caching - boolean value to turn string caching on/off
-        padding width - number of spaces between column lines and content"""
+        start - index of first data row to include in output
+        end - index of last data row to include in output PLUS ONE (list slice style)
+        fields - names of fields (columns) to include
+	header - print a header showing field names (True or False)
+	border - print a border around the table (True or False)
+        hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
+	padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
+	left_padding_width - number of spaces on left hand side of column data
+	right_padding_width - number of spaces on right hand side of column data
+	vertical_char - single character string used to draw vertical lines
+	horizontal_char - single character string used to draw horizontal lines
+	junction_char - single character string used to draw line junctions
+        sortby - name of field to sort rows by
+        reversesort - True or False to sort in descending or ascending order"""
 
         # Data
         self._field_names = []
@@ -78,7 +91,9 @@ class PrettyTable(object):
         self.html_cache = {}
 
         # Options
-        self._options = "start end fields header border sortby reversesort attributes hrules caching padding_width left_padding_width right_padding_width vertical_char horizontal_char junction_char".split()
+        self._options = "start end fields header border sortby reversesort attributes hrules caching".split()
+	self._options.extend("padding_width left_padding_width right_padding_width".split())
+	self._options.extend("vertical_char horizontal_char junction_char".split())
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
@@ -193,106 +208,132 @@ class PrettyTable(object):
     # ATTRIBUTE MANAGEMENT       #
     ##############################
 
-    # Start property
     def _get_start(self):
+        """Start index of the range of rows to print
+
+        Arguments:
+
+        start - index of first data row to include in output"""
         return self._start
     def _set_start(self, val):
         self._validate_option("start", val)
         self._start = val
     start = property(_get_start, _set_start)
 
-    # End property
     def _get_end(self):
+        """End index of the range of rows to print
+
+        Arguments:
+
+        end - index of last data row to include in output PLUS ONE (list slice style)"""
         return self._end
     def _set_end(self, val):
         self._validate_option("end", val)
         self._end = val
     end = property(_get_end, _set_end)
 
-    # Header property
     def _get_header(self):
+        """Controls printing of table header with field names
+
+        Arguments:
+
+	header - print a header showing field names (True or False)"""
         return self._header
     def _set_header(self, val):
     	self._validate_option("header", val)
         self._header = val
     header = property(_get_header, _set_header)
 
-    # Border property
     def _get_border(self):
+        """Controls printing of border around table
+
+        Arguments:
+
+	border - print a border around the table (True or False)"""
         return self._border
     def _set_border(self, val):
     	self._validate_option("border", val)
         self._border = val
     border = property(_get_border, _set_border)
 
-    # Hrules property
     def _get_hrules(self):
+        """Controls printing of horizontal rules after rows
+
+        Arguments:
+
+        hrules - horizontal rules style.  Allowed values: FRAME, ALL, NONE"""
         return self._hrules
     def _set_hrules(self, val):
     	self._validate_option("hrules", val)
         self._hrules = val
     hrules = property(_get_hrules, _set_hrules)
 
-    # Padding width property
     def _get_padding_width(self):
         """The number of empty spaces between a column's edge and its content
 
         Arguments:
 
         padding_width - number of spaces, must be a positive integer"""
-
         return self._padding_width
     def _set_padding_width(self, val):
         self._validate_option("padding_width", val)
         self._padding_width = val
     padding_width = property(_get_padding_width, _set_padding_width)
 
-    # Left padding width property
     def _get_left_padding_width(self):
         """The number of empty spaces between a column's left edge and its content
 
         Arguments:
 
         left_padding - number of spaces, must be a positive integer"""
-
         return self._left_padding_width
     def _set_left_padding_width(self, val):
         self._validate_option("left_padding_width", val)
         self._left_padding_width = val
     left_padding_width = property(_get_left_padding_width, _set_left_padding_width)
 
-    # Right padding width property
     def _get_right_padding_width(self):
         """The number of empty spaces between a column's right edge and its content
 
         Arguments:
 
         right_padding - number of spaces, must be a positive integer"""
-
         return self._right_padding_width
     def _set_right_padding_width(self, val):
         self._validate_option("right_padding_width", val)
         self._right_padding_width = val
     right_padding_width = property(_get_right_padding_width, _set_right_padding_width)
 
-    # Vertical char property
     def _get_vertical_char(self):
+        """The charcter used when printing table borders to draw vertical lines
+
+        Arguments:
+
+	vertical_char - single character string used to draw vertical lines"""
         return self._vertical_char
     def _set_vertical_char(self, val):
         self._validate_option("vertical_char", val)
         self._vertical_char = val
     vertical_char = property(_get_vertical_char, _set_vertical_char)
 
-    # Horizontal char property
     def _get_horizontal_char(self):
+        """The charcter used when printing table borders to draw horizontal lines
+
+        Arguments:
+
+	horizontal_char - single character string used to draw horizontal lines"""
         return self._horizontal_char
     def _set_horizontal_char(self, val):
         self._validate_option("horizontal_char", val)
         self._horizontal_char = val
     horizontal_char = property(_get_horizontal_char, _set_horizontal_char)
 
-    # Junction char property
     def _get_junction_char(self):
+        """The charcter used when printing table borders to draw line junctions
+
+        Arguments:
+
+	junction_char - single character string used to draw line junctions"""
         return self._junction_char
     def _set_junction_char(self, val):
         self._validate_option("vertical_char", val)
@@ -505,10 +546,17 @@ class PrettyTable(object):
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
+	header - print a header showing field names (True or False)
+	border - print a border around the table (True or False)
+        hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
+	padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
+	left_padding_width - number of spaces on left hand side of column data
+	right_padding_width - number of spaces on right hand side of column data
+	vertical_char - single character string used to draw vertical lines
+	horizontal_char - single character string used to draw horizontal lines
+	junction_char - single character string used to draw line junctions
         sortby - name of field to sort rows by
-        reversesort - True or False to sort in descending or ascending order
-        border - should be True or False to print or not print borders
-        hrules - controls printing of horizontal rules after each row.  Allowed values: FRAME, ALL, NONE"""
+        reversesort - True or False to sort in descending or ascending order"""
 
         print self.get_string(**kwargs)
 
@@ -521,10 +569,17 @@ class PrettyTable(object):
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
+	header - print a header showing field names (True or False)
+	border - print a border around the table (True or False)
+        hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
+	padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
+	left_padding_width - number of spaces on left hand side of column data
+	right_padding_width - number of spaces on right hand side of column data
+	vertical_char - single character string used to draw vertical lines
+	horizontal_char - single character string used to draw horizontal lines
+	junction_char - single character string used to draw line junctions
         sortby - name of field to sort rows by
-        reversesort - True or False to sort in descending or ascending order
-        border - should be True or False to print or not print borders
-        hrules - controls printing of horizontal rules after each row.  Allowed values: FRAME, ALL, NONE"""
+        reversesort - True or False to sort in descending or ascending order"""
 
         options = self._get_options(kwargs)
 
