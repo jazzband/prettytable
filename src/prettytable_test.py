@@ -142,6 +142,14 @@ class HrulesAllBasicTests(BasicTests):
         BasicTests.setUp(self)
         self.x.hrules = ALL
 
+class PresetBasicTests(BasicTests):
+
+    """Run the basic tests after using set_style"""
+
+    def setUp(self):
+        BasicTests.setUp(self)
+        self.x.set_style(MSWORD_FRIENDLY)
+
 if __name__ == "__main__":
 
     unittest.main()
