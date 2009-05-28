@@ -67,7 +67,7 @@ class PrettyTable:
         padding width - number of spaces between column lines and content"""
 
         # Data
-        self._fields = []
+        self._field_names = []
         if fields:
             self.set_field_names(fields)
         else:
@@ -79,24 +79,24 @@ class PrettyTable:
         self.html_cache = {}
 
         # Options
-        self.start = 0
-        self.end = None
-        self.fields = None
-        self.header = True
-        self.border = True
-        self.sortby = None
-        self.reversesort = False
-        self.attributes = {}
-        self.hrules = FRAME
-        self.caching = caching
-        self.padding_width = padding_width
-        self.left_padding_width = left_padding_width
-        self.right_padding_width = right_padding_width
-        self.vertical_char = "|"
-        self.horizontal_char = "-"
-        self.junction_char = "+"
+        self._start = 0
+        self._end = None
+        self._fields = None
+        self._header = True
+        self._border = True
+        self._sortby = None
+        self._reversesort = False
+        self._attributes = {}
+        self._hrules = FRAME
+        self._caching = caching
+        self._padding_width = padding_width
+        self._left_padding_width = left_padding_width
+        self._right_padding_width = right_padding_width
+        self._vertical_char = "|"
+        self._horizontal_char = "-"
+        self._junction_char = "+"
         self._options = "start end fields header border sortby reversesort attributes hrules caching padding_width left_padding_width right_padding_width vertical_char horizontal_char junction_char".split()
-
+    
     def __getslice__(self, i, j):
 
         """Return a new PrettyTable whose data rows are a slice of this one's
@@ -114,13 +114,174 @@ class PrettyTable:
 
         return self.get_string()
 
+    ##############################
+    # ATTRIBUTE VALIDATORS       #
+    ##############################
+
+    # The method _validate_option is all that should be used elsewhere in the code base to validate options.
+    # It will call the appropriate validation method for that option.  The individual validation methods should
+    # never need to be called directly (although nothing bad will happen if they *are*).
+    # Validation happens in TWO places.
+    # Firstly, in the property setters defined in the ATTRIBUTE MANAGMENT section.
+    # Secondly, in the _get_options method, where keyword arguments are mixed with persistent settings
+
+    def _validate_option(self, option, val):
+        if option in ("start", "end", "padding_width", "left_padding_width", "right_padding_width"):
+            self._validate_nonnegative_int(option, val)
+        elif option in ("sortby"):
+            self._validate_field_name(option, val)
+        elif option in ("hrules"):
+            self._validate_hrules(option, val)
+        elif option in ("fields"):
+            self._validate_all_field_names(option, val)
+        elif option in ("header", "border", "caching", "reversesort"):
+            self._validate_true_or_false(option, val)
+        elif option in ("vertical_char", "horizontal_char", "junction_char"):
+            self._validate_single_char(option, val)
+        else:
+            raise Exception("Unrecognised option: %s!" % option)
+
+    def _validate_nonnegative_int(self, name, val):
+    	try:
+            assert int(val) >= 0
+        except AssertionError:
+            raise Exception("Invalid value for %s: %s!" % (name, unicode(val)))
+
+    def _validate_true_or_false(self, name, val):
+    	try:
+            assert val in (True, False)
+        except AssertionError:
+            raise Exception("Invalid value for %s!  Must be True or False." % name)
+
+    def _validate_hrules(self, name, val):
+    	try:
+            assert val in (ALL, FRAME, NONE)
+        except AssertionError:
+            raise Exception("Invalid value for %s!  Must be ALL, FRAME or NONE." % name)
+
+    def _validate_field_name(self, name, val):
+    	try:
+            assert val in self._field_names
+        except AssertionError:
+            raise Exception("Invalid field name: %s!" % val)
+
+    def _validate_all_field_names(self, name, val):
+    	try:
+            for x in val:
+                self._validate_field_name(name, x)
+        except AssertionError:
+            raise Exception("fields must be a sequence of field names!")
+
+    def _validate_single_char(self, name, val):
+    	try:
+            assert len(unicode(val)) == 1
+        except AssertionError:
+            raise Exception("Invalid value for %s!  Must be a string of length 1." % name)
+
+    ##############################
+    # ATTRIBUTE MANAGEMENT       #
+    ##############################
+
+    # Start property
+    def _get_start(self):
+        return self._start
+    def _set_start(self, val):
+        self._validate_option("start", val)
+        self._start = val
+    start = property(_get_start, _set_start)
+
+    # End property
+    def _get_end(self):
+        return self._end
+    def _set_end(self, val):
+        self._validate_option("end", val)
+        self._end = val
+    end = property(_get_end, _set_end)
+
+    # Header property
+    def _get_header(self):
+        return self._header
+    def _set_header(self, val):
+    	self._validate_option("header", val)
+        self._header = val
+    header = property(_get_header, _set_header)
+
+    # Border property
+    def _get_border(self):
+        return self._border
+    def _set_border(self, val):
+    	self._validate_option("border", val)
+        self._border = val
+    border = property(_get_border, _set_border)
+
+    # Hrules property
+    def _get_hrules(self):
+        return self._hrules
+    def _set_hrules(self, val):
+    	self._validate_option("hrules", val)
+        self._hrules = val
+    hrules = property(_get_hrules, _set_hrules)
+
+    # Padding width property
+    def _get_padding_width(self):
+        return self._padding_width
+    def _set_padding_width(self, val):
+        self._validate_option("padding_width", val)
+        self._padding_width = val
+    padding_width = property(_get_padding_width, _set_padding_width)
+
+    # Left padding width property
+    def _get_left_padding_width(self):
+        return self._left_padding_width
+    def _set_left_padding_width(self, val):
+        self._validate_option("left_padding_width", val)
+        self._left_padding_width = val
+    left_padding_width = property(_get_left_padding_width, _set_left_padding_width)
+
+    # Right padding width property
+    def _get_right_padding_width(self):
+        return self._right_padding_width
+    def _set_right_padding_width(self, val):
+        self._validate_option("right_padding_width", val)
+        self._right_padding_width = val
+    right_padding_width = property(_get_right_padding_width, _set_right_padding_width)
+
+    # Vertical char property
+    def _get_vertical_char(self):
+        return self._vertical_char
+    def _set_vertical_char(self, val):
+        self._validate_option("vertical_char", val)
+        self._vertical_char = val
+    vertical_char = property(_get_vertical_char, _set_vertical_char)
+
+    # Horizontal char property
+    def _get_horizontal_char(self):
+        return self._horizontal_char
+    def _set_horizontal_char(self, val):
+        self._validate_option("horizontal_char", val)
+        self._horizontal_char = val
+    horizontal_char = property(_get_horizontal_char, _set_horizontal_char)
+
+    # Junction char property
+    def _get_junction_char(self):
+        return self._junction_char
+    def _set_junction_char(self, val):
+        self._validate_option("vertical_char", val)
+        self._junction_char = val
+    junction_char = property(_get_junction_char, _set_junction_char)
+
+    ##############################
+    # OPTION MIXER               #
+    ##############################
+
     def _get_options(self, kwargs):
         options = {}
         for option in self._options:
             if option in kwargs:
+                self._validate_option(option, kwargs[option])
                 options[option] = kwargs[option]
             else:
-                options[option] = getattr(self, option)
+                options[option] = getattr(self, "_"+option)
         return options
 
     ##############################
@@ -139,7 +300,7 @@ class PrettyTable:
         # We *may* need to change the widths if this isn't the first time
         # setting the field names.  This could certainly be done more
         # efficiently.
-        if self._fields:
+        if self._field_names:
             self.widths = [len(field) for field in fields]
             for row in self.rows:
                 for i in range(0,len(row)):
@@ -147,7 +308,7 @@ class PrettyTable:
                         self.widths[i] = len(unicode(row[i]))
         else:
             self.widths = [len(field) for field in fields]
-        self._fields = fields
+        self._field_names = fields
         self.aligns = len(fields)*["c"]
 
     @cache_clearing
@@ -160,11 +321,11 @@ class PrettyTable:
         fieldname - name of the field whose alignment is to be changed
         align - desired alignment - "l" for left, "c" for centre and "r" for right"""
 
-        if fieldname not in self._fields:
+        if fieldname not in self._field_names:
             raise Exception("No field %s exists!" % fieldname)
         if align not in ["l","c","r"]:
             raise Exception("Alignment %s is invalid, use l, c or r!" % align)
-        self.aligns[self._fields.index(fieldname)] = align
+        self.aligns[self._field_names.index(fieldname)] = align
 
     @cache_clearing
     def set_padding_width(self, padding_width):
@@ -279,10 +440,10 @@ class PrettyTable:
 
     def _set_random_style(self):
 
+        # Just for fun!
         self.header = random.choice((True, False))
         self.border = random.choice((True, False))
         self.hrules = random.choice((ALL, FRAME, NONE))
-        self.padding_width = random.randint(0,5)
         self.left_padding_width = random.randint(0,5)
         self.right_padding_width = random.randint(0,5)
         self.vertical_char = random.choice("~!@#$%^&*()_+|-=\{}[];':\",./;<>?")
@@ -303,8 +464,8 @@ class PrettyTable:
         row - row of data, should be a list with as many elements as the table
         has fields"""
 
-        if len(row) != len(self._fields):
-            raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._fields)))
+        if len(row) != len(self._field_names):
+            raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._field_names)))
         self.rows.append(row)
         for i in range(0,len(row)):
             if len(unicode(row[i])) > self.widths[i]:
@@ -325,7 +486,7 @@ class PrettyTable:
         if len(self.rows) in (0, len(column)):
             if align not in ["l","c","r"]:
                 raise Exception("Alignment %s is invalid, use l, c or r!" % align)
-            self._fields.append(fieldname)
+            self._field_names.append(fieldname)
             self.widths.append(len(fieldname))
             self.aligns.append(align)
             for i in range(0, len(column)):
@@ -344,7 +505,7 @@ class PrettyTable:
     def _get_sorted_rows(self, options):
         # Sort rows using the "Decorate, Sort, Undecorate" (DSU) paradigm
         rows = copy.deepcopy(self.rows[options["start"]:options["end"]])
-        sortindex = self._fields.index(options["sortby"])
+        sortindex = self._field_names.index(options["sortby"])
         # Decorate
         rows = [[row[sortindex]]+row for row in rows]
         # Sort
@@ -389,18 +550,18 @@ class PrettyTable:
 
         options = self._get_options(kwargs)
 
-        if self.caching:
+        if self._caching:
             key = cPickle.dumps(options)
             if key in self.cache:
                 return self.cache[key]
 
         bits = []
-        if not self._fields:
+        if not self._field_names:
             return ""
         if not options["header"]:
             # Recalculate widths - avoids tables with long field names but narrow data looking odd
             old_widths = self.widths[:]
-            self.widths = [0]*len(self._fields)
+            self.widths = [0]*len(self._field_names)
             for row in self.rows:
                 for i in range(0,len(row)):
                     if len(unicode(row[i])) > self.widths[i]:
@@ -419,7 +580,7 @@ class PrettyTable:
             bits.append(self._stringify_hrule(options))
         string = "\n".join(bits)
 
-        if self.caching:
+        if self._caching:
             self.cache[key] = string
 
         if not options["header"]:
@@ -438,7 +599,7 @@ class PrettyTable:
             return ""
         padding_width = options["left_padding_width"]+options["right_padding_width"]
         bits = [options["junction_char"]]
-        for field, width in zip(self._fields, self.widths):
+        for field, width in zip(self._field_names, self.widths):
             if options["fields"] and field not in options["fields"]:
                 continue
             bits.append((width+padding_width)*options["horizontal_char"])
@@ -453,7 +614,7 @@ class PrettyTable:
                 bits.append(self._stringify_hrule(options))
                 bits.append("\n")
             bits.append(options["vertical_char"])
-        for field, width, align in zip(self._fields, self.widths, self.aligns):
+        for field, width, align in zip(self._field_names, self.widths, self.aligns):
             if options["fields"] and field not in options["fields"]:
                 continue
             if align == "l":
@@ -474,7 +635,7 @@ class PrettyTable:
         bits = []
         if options["border"]:
             bits.append(self.vertical_char)
-        for field, value, width, align in zip(self._fields, row, self.widths, self.aligns):
+        for field, value, width, align in zip(self._field_names, row, self.widths, self.aligns):
             if options["fields"] and field not in options["fields"]:
                 continue
             if align == "l":
@@ -531,7 +692,7 @@ class PrettyTable:
 
         options = self._get_options(kwargs)
 
-        if self.caching:
+        if self._caching:
             key = cPickle.dumps(options)
             if key in self.html_cache:
                 return self.html_cache[key]
@@ -541,7 +702,7 @@ class PrettyTable:
         else:
             string = self._get_simple_html_string(options)
 
-        if self.caching:
+        if self._caching:
             self.html_cache[key] = string
 
         return string
@@ -560,7 +721,7 @@ class PrettyTable:
         bits.append(table_tag)
         # Headers
         bits.append("    <tr>")
-        for field in self._fields:
+        for field in self._field_names:
             if options["fields"] and field not in options["fields"]:
                 continue
             bits.append("        <th>%s</th>" % cgi.escape(unicode(field)))
@@ -572,7 +733,7 @@ class PrettyTable:
             rows = self.rows
         for row in self.rows:
             bits.append("    <tr>")
-            for field, datum in zip(self._fields, row):
+            for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 bits.append("        <td>%s</td>" % cgi.escape(unicode(datum)))
@@ -599,7 +760,7 @@ class PrettyTable:
         # Headers
         if options["header"]:
             bits.append("    <tr>")
-            for field in self._fields:
+            for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (options["left_padding_width"], options["right_padding_width"], cgi.escape(unicode(field))))
@@ -611,7 +772,7 @@ class PrettyTable:
             rows = self.rows
         for row in self.rows:
             bits.append("    <tr>")
-            for field, align, datum in zip(self._fields, self.aligns, row):
+            for field, align, datum in zip(self._field_names, self.aligns, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if align == "l":

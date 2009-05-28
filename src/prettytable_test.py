@@ -48,9 +48,9 @@ class BuildEquivelanceTest(unittest.TestCase):
 
         self.assertEqual(self.row.get_string(), self.mix.get_string())
 
-class BasicTests(unittest.TestCase):
+class CityDataTest(unittest.TestCase):
 
-    """Run some basic tests on the Australian capital city data example table"""
+    """Just build the Australian capital city data example table."""
 
     def setUp(self):
 
@@ -62,6 +62,35 @@ class BasicTests(unittest.TestCase):
         self.x.add_row(["Sydney", 2058, 4336374, 1214.8])
         self.x.add_row(["Melbourne", 1566, 3806092, 646.9])
         self.x.add_row(["Perth", 5386, 1554769, 869.4])
+
+class OptionOverrideTests(CityDataTest):
+
+    """Make sure all options are properly overwritten by printt."""
+
+    def testBorder(self):
+        default = self.x.get_string()
+        override = self.x.get_string(border=False)
+        self.assert_(default != override)
+
+    def testHeader(self):
+        default = self.x.get_string()
+        override = self.x.get_string(header=False)
+        self.assert_(default != override)
+
+    def testHrulesAll(self):
+        default = self.x.get_string()
+        override = self.x.get_string(hrules=ALL)
+        self.assert_(default != override)
+
+    def testHrulesNone(self):
+
+        default = self.x.get_string()
+        override = self.x.get_string(hrules=NONE)
+        self.assert_(default != override)
+
+class BasicTests(CityDataTest):
+
+    """Some very basic tests."""
 
     def testNoBlankLines(self):
 
