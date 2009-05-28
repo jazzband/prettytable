@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from setuptools import setup
-from prettytable import __VERSION__ as version
+from prettytable import __version__ as version
 
 setup(
     name='prettytable',
