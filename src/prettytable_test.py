@@ -40,13 +40,21 @@ class BuildEquivelanceTest(unittest.TestCase):
         self.mix.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769])
         self.mix.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4])
 
-    def testRowColEquivalence(self):
+    def testRowColEquivalenceASCII(self):
 
         self.assertEqual(self.row.get_string(), self.col.get_string())
 
-    def testRowMixEquivalence(self):
+    def testRowMixEquivalenceASCII(self):
 
         self.assertEqual(self.row.get_string(), self.mix.get_string())
+
+    def testRowColEquivalenceHTML(self):
+
+        self.assertEqual(self.row.get_html_string(), self.col.get_html_string())
+
+    def testRowMixEquivalenceHTML(self):
+
+        self.assertEqual(self.row.get_html_string(), self.mix.get_html_string())
 
 class CityDataTest(unittest.TestCase):
 

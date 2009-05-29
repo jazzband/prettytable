@@ -67,15 +67,15 @@ class PrettyTable(object):
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
-	header - print a header showing field names (True or False)
-	border - print a border around the table (True or False)
+        header - print a header showing field names (True or False)
+        border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
-	padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
-	left_padding_width - number of spaces on left hand side of column data
-	right_padding_width - number of spaces on right hand side of column data
-	vertical_char - single character string used to draw vertical lines
-	horizontal_char - single character string used to draw horizontal lines
-	junction_char - single character string used to draw line junctions
+        padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
+        left_padding_width - number of spaces on left hand side of column data
+        right_padding_width - number of spaces on right hand side of column data
+        vertical_char - single character string used to draw vertical lines
+        horizontal_char - single character string used to draw horizontal lines
+        junction_char - single character string used to draw line junctions
         sortby - name of field to sort rows by
         reversesort - True or False to sort in descending or ascending order"""
 
@@ -91,9 +91,9 @@ class PrettyTable(object):
         self.html_cache = {}
 
         # Options
-        self._options = "start end fields header border sortby reversesort attributes hrules caching".split()
-	self._options.extend("padding_width left_padding_width right_padding_width".split())
-	self._options.extend("vertical_char horizontal_char junction_char".split())
+        self._options = "start end fields header border sortby reversesort attributes format hrules caching".split()
+        self._options.extend("padding_width left_padding_width right_padding_width".split())
+        self._options.extend("vertical_char horizontal_char junction_char".split())
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
@@ -121,6 +121,7 @@ class PrettyTable(object):
         self._horizontal_char = kwargs["horizontal_char"] or "-"
         self._junction_char = kwargs["junction_char"] or "+"
         
+        self._format = kwargs["format"] or False
         self._attributes = kwargs["attributes"] or {}
     
     def __getslice__(self, i, j):
@@ -152,7 +153,7 @@ class PrettyTable(object):
     # Secondly, in the _get_options method, where keyword arguments are mixed with persistent settings
 
     def _validate_option(self, option, val):
-        if option in ("start", "end", "padding_width", "left_padding_width", "right_padding_width"):
+        if option in ("start", "end", "padding_width", "left_padding_width", "right_padding_width", "format"):
             self._validate_nonnegative_int(option, val)
         elif option in ("sortby"):
             self._validate_field_name(option, val)
@@ -164,45 +165,53 @@ class PrettyTable(object):
             self._validate_true_or_false(option, val)
         elif option in ("vertical_char", "horizontal_char", "junction_char"):
             self._validate_single_char(option, val)
+        elif option in ("attributes"):
+            self._validate_attributes(option, val)
         else:
             raise Exception("Unrecognised option: %s!" % option)
 
     def _validate_nonnegative_int(self, name, val):
-    	try:
+        try:
             assert int(val) >= 0
         except AssertionError:
             raise Exception("Invalid value for %s: %s!" % (name, unicode(val)))
 
     def _validate_true_or_false(self, name, val):
-    	try:
+        try:
             assert val in (True, False)
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be True or False." % name)
 
     def _validate_hrules(self, name, val):
-    	try:
+        try:
             assert val in (ALL, FRAME, NONE)
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be ALL, FRAME or NONE." % name)
 
     def _validate_field_name(self, name, val):
-    	try:
+        try:
             assert val in self._field_names
         except AssertionError:
             raise Exception("Invalid field name: %s!" % val)
 
     def _validate_all_field_names(self, name, val):
-    	try:
+        try:
             for x in val:
                 self._validate_field_name(name, x)
         except AssertionError:
             raise Exception("fields must be a sequence of field names!")
 
     def _validate_single_char(self, name, val):
-    	try:
+        try:
             assert len(unicode(val)) == 1
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be a string of length 1." % name)
+
+    def _validate_attributes(self, name, val):
+        try:
+            assert isinstance(val, dict)
+        except AssertionError:
+            raise Exception("attributes must be a dictionary of name/value pairs!")
 
     ##############################
     # ATTRIBUTE MANAGEMENT       #
@@ -232,15 +241,39 @@ class PrettyTable(object):
         self._end = val
     end = property(_get_end, _set_end)
 
+    def _get_sortby(self):
+        """Name of field by which to sort rows
+
+        Arguments:
+
+        sortby - field name to sort by"""
+        return self._sortby
+    def _set_sortby(self, val):
+        self._validate_option("sortby", val)
+        self._sortby = val
+    sortby = property(_get_sortby, _set_sortby)
+
+    def _get_reversesort(self):
+        """Controls direction of sorting (ascending vs descending)
+
+        Arguments:
+
+        reveresort - set to True to sort by descending order, or False to sort by ascending order"""
+        return self._reversesort
+    def _set_reversesort(self, val):
+        self._validate_option("reversesort", val)
+        self._reversesort = val
+    reversesort = property(_get_reversesort, _set_reversesort)
+
     def _get_header(self):
         """Controls printing of table header with field names
 
         Arguments:
 
-	header - print a header showing field names (True or False)"""
+        header - print a header showing field names (True or False)"""
         return self._header
     def _set_header(self, val):
-    	self._validate_option("header", val)
+        self._validate_option("header", val)
         self._header = val
     header = property(_get_header, _set_header)
 
@@ -249,10 +282,10 @@ class PrettyTable(object):
 
         Arguments:
 
-	border - print a border around the table (True or False)"""
+        border - print a border around the table (True or False)"""
         return self._border
     def _set_border(self, val):
-    	self._validate_option("border", val)
+        self._validate_option("border", val)
         self._border = val
     border = property(_get_border, _set_border)
 
@@ -264,7 +297,7 @@ class PrettyTable(object):
         hrules - horizontal rules style.  Allowed values: FRAME, ALL, NONE"""
         return self._hrules
     def _set_hrules(self, val):
-    	self._validate_option("hrules", val)
+        self._validate_option("hrules", val)
         self._hrules = val
     hrules = property(_get_hrules, _set_hrules)
 
@@ -309,7 +342,7 @@ class PrettyTable(object):
 
         Arguments:
 
-	vertical_char - single character string used to draw vertical lines"""
+        vertical_char - single character string used to draw vertical lines"""
         return self._vertical_char
     def _set_vertical_char(self, val):
         self._validate_option("vertical_char", val)
@@ -321,7 +354,7 @@ class PrettyTable(object):
 
         Arguments:
 
-	horizontal_char - single character string used to draw horizontal lines"""
+        horizontal_char - single character string used to draw horizontal lines"""
         return self._horizontal_char
     def _set_horizontal_char(self, val):
         self._validate_option("horizontal_char", val)
@@ -333,12 +366,36 @@ class PrettyTable(object):
 
         Arguments:
 
-	junction_char - single character string used to draw line junctions"""
+        junction_char - single character string used to draw line junctions"""
         return self._junction_char
     def _set_junction_char(self, val):
         self._validate_option("vertical_char", val)
         self._junction_char = val
     junction_char = property(_get_junction_char, _set_junction_char)
+
+    def _get_format(self):
+        """Controls whether or not HTML tables are formatted to match styling options
+
+        Arguments:
+
+        format - True or False"""
+        return self._format
+    def _set_format(self, val):
+        self._validate_option("format", val)
+        self._format = val
+    format = property(_get_format, _set_format)
+
+    def _get_attributes(self):
+        """A dictionary of HTML attribute name/value pairs to be included in the <table> tag when printing HTML
+
+        Arguments:
+
+        attributes - dictionary of attributes"""
+        return self._attributes
+    def _set_attributes(self, val):
+        self.validate_option("attributes", val)
+        self._attributes = val
+    attributes = property(_get_attributes, _set_attributes)
 
     ##############################
     # OPTION MIXER               #
@@ -546,15 +603,15 @@ class PrettyTable(object):
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
-	header - print a header showing field names (True or False)
-	border - print a border around the table (True or False)
+        header - print a header showing field names (True or False)
+        border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
-	padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
-	left_padding_width - number of spaces on left hand side of column data
-	right_padding_width - number of spaces on right hand side of column data
-	vertical_char - single character string used to draw vertical lines
-	horizontal_char - single character string used to draw horizontal lines
-	junction_char - single character string used to draw line junctions
+        padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
+        left_padding_width - number of spaces on left hand side of column data
+        right_padding_width - number of spaces on right hand side of column data
+        vertical_char - single character string used to draw vertical lines
+        horizontal_char - single character string used to draw horizontal lines
+        junction_char - single character string used to draw line junctions
         sortby - name of field to sort rows by
         reversesort - True or False to sort in descending or ascending order"""
 
@@ -569,15 +626,15 @@ class PrettyTable(object):
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
-	header - print a header showing field names (True or False)
-	border - print a border around the table (True or False)
+        header - print a header showing field names (True or False)
+        border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
-	padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
-	left_padding_width - number of spaces on left hand side of column data
-	right_padding_width - number of spaces on right hand side of column data
-	vertical_char - single character string used to draw vertical lines
-	horizontal_char - single character string used to draw horizontal lines
-	junction_char - single character string used to draw line junctions
+        padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
+        left_padding_width - number of spaces on left hand side of column data
+        right_padding_width - number of spaces on right hand side of column data
+        vertical_char - single character string used to draw vertical lines
+        horizontal_char - single character string used to draw horizontal lines
+        junction_char - single character string used to draw line junctions
         sortby - name of field to sort rows by
         reversesort - True or False to sort in descending or ascending order"""
 
@@ -732,7 +789,7 @@ class PrettyTable(object):
             if key in self.html_cache:
                 return self.html_cache[key]
 
-        if format:
+        if options["format"]:
             string = self._get_formatted_html_string(options)
         else:
             string = self._get_simple_html_string(options)
@@ -781,6 +838,7 @@ class PrettyTable(object):
     def _get_formatted_html_string(self, options):
 
         bits = []
+        lpad, rpad = self._get_padding_widths(options)
         # Slow but works
         table_tag = '<table'
         if options["border"]:
