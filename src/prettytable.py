@@ -123,7 +123,16 @@ class PrettyTable(object):
         
         self._format = kwargs["format"] or False
         self._attributes = kwargs["attributes"] or {}
-    
+   
+    def __getattr__(self, name):
+
+        if name == "rowcount":
+            return len(self._rows)
+        elif name == "colcount":
+            return len(self._field_names)
+        else:
+            raise AttributeError, name
+ 
     def __getslice__(self, i, j):
 
         """Return a new PrettyTable whose data rows are a slice of this one's
@@ -542,6 +551,7 @@ class PrettyTable(object):
 
         if row_index > len(self._rows)-1:
             raise Exception("Cant delete row at index %d, table only has %d rows!" % (row_index, len(self._rows)))
+        del self._rows[row_index]
         self._recompute_widths()
 
     @cache_clearing
@@ -570,6 +580,23 @@ class PrettyTable(object):
                     self._widths[-1] = len(unicode(column[i]))
         else:
             raise Exception("Column length %d does not match number of rows %d!" % (len(column), len(self._rows)))
+
+    @cache_clearing
+    def clear_rows(self):
+
+        """Delete all rows from the table but keep the current field names"""
+
+        self._rows = []
+        self._widths = [len(unicode(field_name)) for field_name in self._field_names]
+
+    @cache_clearing
+    def clear(self):
+
+        """Delete all rows and field names from the table, maintaining nothing but styling options"""
+
+        self._rows = []
+        self._field_names = []
+        self._widths = []
 
     ##############################
     # MISC PRIVATE METHODS       #
