@@ -84,8 +84,8 @@ class PrettyTable(object):
         if field_names:
             self.set_field_names(field_names)
         else:
-            self.widths = []
-            self.aligns = []
+            self._widths = []
+            self._aligns = []
         self._rows = []
         self._cache = {}
         self.html_cache = {}
@@ -429,15 +429,11 @@ class PrettyTable(object):
         # setting the field names.  This could certainly be done more
         # efficiently.
         if self._field_names:
-            self.widths = [len(field) for field in fields]
-            for row in self._rows:
-                for i in range(0,len(row)):
-                    if len(unicode(row[i])) > self.widths[i]:
-                        self.widths[i] = len(unicode(row[i]))
+            self._recompute_widths()
         else:
-            self.widths = [len(field) for field in fields]
+            self._widths = [len(field) for field in fields]
         self._field_names = fields
-        self.aligns = len(fields)*["c"]
+        self._aligns = len(fields)*["c"]
 
     @cache_clearing
     def set_field_align(self, fieldname, align):
@@ -453,7 +449,7 @@ class PrettyTable(object):
             raise Exception("No field %s exists!" % fieldname)
         if align not in ["l","c","r"]:
             raise Exception("Alignment %s is invalid, use l, c or r!" % align)
-        self.aligns[self._field_names.index(fieldname)] = align
+        self._aligns[self._field_names.index(fieldname)] = align
 
     ##############################
     # PRESET STYLE LOGIC         #
@@ -532,8 +528,21 @@ class PrettyTable(object):
             raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._field_names)))
         self._rows.append(row)
         for i in range(0,len(row)):
-            if len(unicode(row[i])) > self.widths[i]:
-                self.widths[i] = len(unicode(row[i]))
+            if len(unicode(row[i])) > self._widths[i]:
+                self._widths[i] = len(unicode(row[i]))
+
+    @cache_clearing
+    def del_row(self, row_index):
+
+        """Delete a row to the table
+
+        Arguments:
+
+        row_index - The index of the row you want to delete.  Indexing starts at 0."""
+
+        if row_index > len(self._rows)-1:
+            raise Exception("Cant delete row at index %d, table only has %d rows!" % (row_index, len(self._rows)))
+        self._recompute_widths()
 
     @cache_clearing
     def add_column(self, fieldname, column, align="c"):
@@ -551,20 +560,27 @@ class PrettyTable(object):
             if align not in ["l","c","r"]:
                 raise Exception("Alignment %s is invalid, use l, c or r!" % align)
             self._field_names.append(fieldname)
-            self.widths.append(len(fieldname))
-            self.aligns.append(align)
+            self._widths.append(len(fieldname))
+            self._aligns.append(align)
             for i in range(0, len(column)):
                 if len(self._rows) < i+1:
                     self._rows.append([])
                 self._rows[i].append(column[i])
-                if len(unicode(column[i])) > self.widths[-1]:
-                    self.widths[-1] = len(unicode(column[i]))
+                if len(unicode(column[i])) > self._widths[-1]:
+                    self._widths[-1] = len(unicode(column[i]))
         else:
             raise Exception("Column length %d does not match number of rows %d!" % (len(column), len(self._rows)))
 
     ##############################
     # MISC PRIVATE METHODS       #
     ##############################
+
+    def _recompute_widths(self):
+        self._widths = [len(field) for field in fields]
+        for row in self._rows:
+            for i in range(0,len(row)):
+                if len(unicode(row[i])) > self._widths[i]:
+                    self._widths[i] = len(unicode(row[i]))
 
     def _get_padding_widths(self, options):
 
@@ -650,12 +666,12 @@ class PrettyTable(object):
             return ""
         if not options["header"]:
             # Recalculate widths - avoids tables with long field names but narrow data looking odd
-            old_widths = self.widths[:]
-            self.widths = [0]*len(self._field_names)
+            old_widths = self._widths[:]
+            self._widths = [0]*len(self._field_names)
             for row in self._rows:
                 for i in range(0,len(row)):
-                    if len(unicode(row[i])) > self.widths[i]:
-                        self.widths[i] = len(unicode(row[i]))
+                    if len(unicode(row[i])) > self._widths[i]:
+                        self._widths[i] = len(unicode(row[i]))
         if options["header"]:
             bits.append(self._stringify_header(options))
         elif options["border"] and options["hrules"] != NONE:
@@ -675,11 +691,11 @@ class PrettyTable(object):
 
         if not options["header"]:
             # Restore previous widths
-            self.widths = old_widths
+            self._widths = old_widths
             for row in self._rows:
                 for i in range(0,len(row)):
-                    if len(unicode(row[i])) > self.widths[i]:
-                        self.widths[i] = len(unicode(row[i]))
+                    if len(unicode(row[i])) > self._widths[i]:
+                        self._widths[i] = len(unicode(row[i]))
 
         return string
 
@@ -689,7 +705,7 @@ class PrettyTable(object):
             return ""
         lpad, rpad = self._get_padding_widths(options)
         bits = [options["junction_char"]]
-        for field, width in zip(self._field_names, self.widths):
+        for field, width in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
             bits.append((width+lpad+rpad)*options["horizontal_char"])
@@ -705,7 +721,7 @@ class PrettyTable(object):
                 bits.append(self._stringify_hrule(options))
                 bits.append("\n")
             bits.append(options["vertical_char"])
-        for field, width, align in zip(self._field_names, self.widths, self.aligns):
+        for field, width, align in zip(self._field_names, self._widths, self._aligns):
             if options["fields"] and field not in options["fields"]:
                 continue
             if align == "l":
@@ -727,7 +743,7 @@ class PrettyTable(object):
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
             bits.append(self.vertical_char)
-        for field, value, width, align in zip(self._field_names, row, self.widths, self.aligns):
+        for field, value, width, align in zip(self._field_names, row, self._widths, self._aligns):
             if options["fields"] and field not in options["fields"]:
                 continue
             if align == "l":
@@ -865,7 +881,7 @@ class PrettyTable(object):
             rows = self._rows
         for row in self._rows:
             bits.append("    <tr>")
-            for field, align, datum in zip(self._field_names, self.aligns, row):
+            for field, align, datum in zip(self._field_names, self._aligns, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if align == "l":
