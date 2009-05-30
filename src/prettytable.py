@@ -599,6 +599,13 @@ class PrettyTable(object):
         self._widths = []
 
     ##############################
+    # MISC PUBLIC METHODS        #
+    ##############################
+
+    def copy(self):
+        return copy.deepcopy(self)
+
+    ##############################
     # MISC PRIVATE METHODS       #
     ##############################
 
