@@ -11,7 +11,7 @@ class BuildEquivelanceTest(unittest.TestCase):
 
         # Row by row...
         self.row = PrettyTable()
-        self.row.set_field_names(["City name", "Area", "Population", "Annual Rainfall"])
+        self.row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
         self.row.add_row(["Adelaide",1295, 1158259, 600.5])
         self.row.add_row(["Brisbane",5905, 1857594, 1146.4])
         self.row.add_row(["Darwin", 112, 120900, 1714.7])
@@ -29,7 +29,7 @@ class BuildEquivelanceTest(unittest.TestCase):
 
         # A mix of both!
         self.mix = PrettyTable()
-        self.mix.set_field_names(["City name", "Area"])
+        self.mix.field_names = ["City name", "Area"]
         self.mix.add_row(["Adelaide",1295])
         self.mix.add_row(["Brisbane",5905])
         self.mix.add_row(["Darwin", 112])

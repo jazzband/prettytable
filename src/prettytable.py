@@ -62,7 +62,8 @@ class PrettyTable(object):
 
         Arguments:
 
-        fields - list or tuple of field names
+        field_names - list or tuple of field names
+        fields - list or tuple of field names to include in displays
         caching - boolean value to turn string caching on/off
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
@@ -81,11 +82,11 @@ class PrettyTable(object):
 
         # Data
         self._field_names = []
+        self._align = {}
         if field_names:
-            self.set_field_names(field_names)
+            self.field_names = field_names
         else:
             self._widths = []
-            self._aligns = []
         self._rows = []
         self._cache = {}
         self.html_cache = {}
@@ -179,6 +180,12 @@ class PrettyTable(object):
         else:
             raise Exception("Unrecognised option: %s!" % option)
 
+    def _validate_align(self, val):
+        try:
+            assert val in ["l","c","r"]
+        except AssertionError:
+            raise Exception("Alignment %s is invalid, use l, c or r!" % val)
+
     def _validate_nonnegative_int(self, name, val):
         try:
             assert int(val) >= 0
@@ -225,6 +232,35 @@ class PrettyTable(object):
     ##############################
     # ATTRIBUTE MANAGEMENT       #
     ##############################
+
+    def _get_field_names(self):
+        return self._field_names
+        """The names of the fields
+
+        Arguments:
+
+        fields - list or tuple of field names"""
+    @cache_clearing
+    def _set_field_names(self, val):
+        # We *may* need to change the widths if this isn't the first time
+        # setting the field names.  This could certainly be done more
+        # efficiently.
+        if self._field_names:
+            self._recompute_widths()
+        else:
+            self._widths = [len(field) for field in val]
+        self._field_names = val
+        self.align = "c"
+    field_names = property(_get_field_names, _set_field_names)
+
+    def _get_align(self):
+        return self._align
+    @cache_clearing
+    def _set_align(self, val):
+        self._validate_align(val)
+        for field in self._field_names:
+            self._align[field] = val
+    align = property(_get_align, _set_align)
 
     def _get_start(self):
         """Start index of the range of rows to print
@@ -422,45 +458,6 @@ class PrettyTable(object):
         return options
 
     ##############################
-    # ATTRIBUTE SETTERS          #
-    ##############################
-
-    @cache_clearing
-    def set_field_names(self, fields):
-
-        """Set the names of the fields
-
-        Arguments:
-
-        fields - list or tuple of field names"""
-
-        # We *may* need to change the widths if this isn't the first time
-        # setting the field names.  This could certainly be done more
-        # efficiently.
-        if self._field_names:
-            self._recompute_widths()
-        else:
-            self._widths = [len(field) for field in fields]
-        self._field_names = fields
-        self._aligns = len(fields)*["c"]
-
-    @cache_clearing
-    def set_field_align(self, fieldname, align):
-
-        """Set the alignment of a field by its fieldname
-
-        Arguments:
-
-        fieldname - name of the field whose alignment is to be changed
-        align - desired alignment - "l" for left, "c" for centre and "r" for right"""
-
-        if fieldname not in self._field_names:
-            raise Exception("No field %s exists!" % fieldname)
-        if align not in ["l","c","r"]:
-            raise Exception("Alignment %s is invalid, use l, c or r!" % align)
-        self._aligns[self._field_names.index(fieldname)] = align
-
-    ##############################
     # PRESET STYLE LOGIC         #
     ##############################
 
@@ -567,11 +564,10 @@ class PrettyTable(object):
         align - desired alignment for this column - "l" for left, "c" for centre and "r" for right"""
 
         if len(self._rows) in (0, len(column)):
-            if align not in ["l","c","r"]:
-                raise Exception("Alignment %s is invalid, use l, c or r!" % align)
+            self._validate_align(align)
             self._field_names.append(fieldname)
             self._widths.append(len(fieldname))
-            self._aligns.append(align)
+            self._align[fieldname] = align
             for i in range(0, len(column)):
                 if len(self._rows) < i+1:
                     self._rows.append([])
@@ -610,7 +606,7 @@ class PrettyTable(object):
     ##############################
 
     def _recompute_widths(self):
-        self._widths = [len(field) for field in fields]
+        self._widths = [len(field) for field in self._field_names]
         for row in self._rows:
             for i in range(0,len(row)):
                 if len(unicode(row[i])) > self._widths[i]:
@@ -755,12 +751,12 @@ class PrettyTable(object):
                 bits.append(self._stringify_hrule(options))
                 bits.append("\n")
             bits.append(options["vertical_char"])
-        for field, width, align in zip(self._field_names, self._widths, self._aligns):
+        for field, width, in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
-            if align == "l":
+            if self._align[field] == "l":
                 bits.append(" " * lpad + unicode(field).ljust(width) + " " * rpad)
-            elif align == "r":
+            elif self._align[field] == "r":
                 bits.append(" " * lpad + unicode(field).rjust(width) + " " * rpad)
             else:
                 bits.append(" " * lpad + unicode(field).center(width) + " " * rpad)
@@ -777,12 +773,12 @@ class PrettyTable(object):
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
             bits.append(self.vertical_char)
-        for field, value, width, align in zip(self._field_names, row, self._widths, self._aligns):
+        for field, value, width, in zip(self._field_names, row, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
-            if align == "l":
+            if self._align[field] == "l":
                 bits.append(" " * lpad + unicode(value).ljust(width) + " " * rpad)
-            elif align == "r":
+            elif self._align[field] == "r":
                 bits.append(" " * lpad + unicode(value).rjust(width) + " " * rpad)
             else:
                 bits.append(" " * lpad + unicode(value).center(width) + " " * rpad)
@@ -915,12 +911,12 @@ class PrettyTable(object):
             rows = self._rows
         for row in self._rows:
             bits.append("    <tr>")
-            for field, align, datum in zip(self._field_names, self._aligns, row):
+            for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                if align == "l":
+                if self._align[field] == "l":
                     bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum))))
-                elif align == "r":
+                elif self._align[field] == "r":
                     bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum))))
                 else:
                     bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum))))
@@ -933,7 +929,7 @@ class PrettyTable(object):
 def main():
 
     x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
-    x.set_field_align("City name", "l") # Left align city names
+    x.align["City name"] = "l" # Left align city names
     x.add_row(["Adelaide",1295, 1158259, 600.5])
     x.add_row(["Brisbane",5905, 1857594, 1146.4])
     x.add_row(["Darwin", 112, 120900, 1714.7])
