@@ -158,6 +158,78 @@ class PresetBasicTests(BasicTests):
         BasicTests.setUp(self)
         self.x.set_style(MSWORD_FRIENDLY)
 
-if __name__ == "__main__":
+class BreakLineTests(unittest.TestCase):
+    def testAsciiBreakLine(self):
+        t = PrettyTable(['Field 1', 'Field 2'])
+        t.add_row(['value 1', 'value2\nsecond line'])
+        t.add_row(['value 3', 'value4'])
+        result = t.get_string(hrules=True)
+        assert result.strip() == """
++---------+-------------+
+| Field 1 |   Field 2   |
++---------+-------------+
+| value 1 |    value2   |
+|         | second line |
++---------+-------------+
+| value 3 |    value4   |
++---------+-------------+
+""".strip()
 
+        t = PrettyTable(['Field 1', 'Field 2'])
+        t.add_row(['value 1', 'value2\nsecond line'])
+        t.add_row(['value 3\n\nother line', 'value4\n\n\nvalue5'])
+        result = t.get_string(hrules=True)
+        assert result.strip() == """
++------------+-------------+
+|  Field 1   |   Field 2   |
++------------+-------------+
+|  value 1   |    value2   |
+|            | second line |
++------------+-------------+
+|  value 3   |    value4   |
+|            |             |
+| other line |             |
+|            |    value5   |
++------------+-------------+
+""".strip()
+
+        t = PrettyTable(['Field 1', 'Field 2'])
+        t.add_row(['value 1', 'value2\nsecond line'])
+        t.add_row(['value 3\n\nother line', 'value4\n\n\nvalue5'])
+        result = t.get_string()
+        assert result.strip() == """
++------------+-------------+
+|  Field 1   |   Field 2   |
++------------+-------------+
+|  value 1   |    value2   |
+|            | second line |
+|  value 3   |    value4   |
+|            |             |
+| other line |             |
+|            |    value5   |
++------------+-------------+
+""".strip()
+
+    def testHtmlBreakLine(self):
+        t = PrettyTable(['Field 1', 'Field 2'])
+        t.add_row(['value 1', 'value2\nsecond line'])
+        t.add_row(['value 3', 'value4'])
+        result = t.get_html_string(hrules=True)
+        assert result.strip() == """
+<table border="1">
+    <tr>
+        <th>Field 1</th>
+        <th>Field 2</th>
+    </tr>
+    <tr>
+        <td>value 1</td>
+        <td>value2<br />second line</td>
+    <tr>
+        <td>value 3</td>
+        <td>value4</td>
+    </tr>
+</table>
+""".strip()
+
+if __name__ == "__main__":
     unittest.main()
