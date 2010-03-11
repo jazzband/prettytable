@@ -910,7 +910,7 @@ class PrettyTable(object):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 bits.append("        <td>%s</td>" % cgi.escape(unicode(datum)).replace("\n", "<br />"))
-        bits.append("    </tr>")
+            bits.append("    </tr>")
         bits.append("</table>")
         string = "\n".join(bits)
 
@@ -955,7 +955,7 @@ class PrettyTable(object):
                     bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum)).replace("\n", "<br />")))
                 else:
                     bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum)).replace("\n", "<br />")))
-        bits.append("    </tr>")
+            bits.append("    </tr>")
         bits.append("</table>")
         string = "\n".join(bits)
 

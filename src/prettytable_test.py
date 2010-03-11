@@ -224,9 +224,73 @@ class BreakLineTests(unittest.TestCase):
     <tr>
         <td>value 1</td>
         <td>value2<br />second line</td>
+    </tr>
     <tr>
         <td>value 3</td>
         <td>value4</td>
+    </tr>
+</table>
+""".strip()
+
+class HtmlOutputTests(unittest.TestCase):
+    def testHtmlOutput(self):
+        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
+        t.add_row(['value 1', 'value2', 'value3'])
+        t.add_row(['value 4', 'value5', 'value6'])
+        t.add_row(['value 7', 'value8', 'value9'])
+        result = t.get_html_string()
+        assert result.strip() == """
+<table border="1">
+    <tr>
+        <th>Field 1</th>
+        <th>Field 2</th>
+        <th>Field 3</th>
+    </tr>
+    <tr>
+        <td>value 1</td>
+        <td>value2</td>
+        <td>value3</td>
+    </tr>
+    <tr>
+        <td>value 4</td>
+        <td>value5</td>
+        <td>value6</td>
+    </tr>
+    <tr>
+        <td>value 7</td>
+        <td>value8</td>
+        <td>value9</td>
+    </tr>
+</table>
+""".strip()
+
+    def testHtmlOutputFormated(self):
+        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
+        t.add_row(['value 1', 'value2', 'value3'])
+        t.add_row(['value 4', 'value5', 'value6'])
+        t.add_row(['value 7', 'value8', 'value9'])
+        result = t.get_html_string(format=True)
+        assert result.strip() == """
+<table border="1">
+    <tr>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
+        <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value 1</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value2</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value3</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value 4</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value5</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value6</td>
+    </tr>
+    <tr>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value 7</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value8</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value9</td>
     </tr>
 </table>
 """.strip()
