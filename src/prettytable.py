@@ -57,7 +57,8 @@ def cache_clearing(method):
 def _get_size(text):
     max_width = 0
     max_height = 0
-    for line in unicode(text).split("\n"):
+    text = _unicode(text)
+    for line in text.split("\n"):
         max_height += 1
         if len(line) > max_width:
             max_width = len(line)
@@ -72,6 +73,13 @@ def _get_row_height(row):
             max_height = h
 
     return max_height
+
+def _unicode(value, encoding="UTF-8"):
+    if not isinstance(value, basestring):
+        value = str(value)
+    if not isinstance(value, unicode):
+        value = unicode(value, encoding, "replace")
+    return value
 
 class PrettyTable(object):
 
@@ -167,6 +175,9 @@ class PrettyTable(object):
         return newtable
 
     def __str__(self):
+        return self.get_string().encode("ascii","replace")
+
+    def __unicode__(self):
         return self.get_string()
 
     ##############################
@@ -208,7 +219,7 @@ class PrettyTable(object):
         try:
             assert int(val) >= 0
         except AssertionError:
-            raise Exception("Invalid value for %s: %s!" % (name, unicode(val)))
+            raise Exception("Invalid value for %s: %s!" % (name, _unicode(val)))
 
     def _validate_true_or_false(self, name, val):
         try:
@@ -237,7 +248,7 @@ class PrettyTable(object):
 
     def _validate_single_char(self, name, val):
         try:
-            assert len(unicode(val)) == 1
+            assert len(_unicode(val)) == 1
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be a string of length 1." % name)
 
@@ -557,8 +568,8 @@ class PrettyTable(object):
             raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._field_names)))
         self._rows.append(row)
         for i in range(0,len(row)):
-            if _get_size(unicode(row[i]))[0] > self._widths[i]:
-                self._widths[i] = _get_size(unicode(row[i]))[0]
+            if _get_size(_unicode(row[i]))[0] > self._widths[i]:
+                self._widths[i] = _get_size(_unicode(row[i]))[0]
 
     @cache_clearing
     def del_row(self, row_index):
@@ -595,8 +606,8 @@ class PrettyTable(object):
                 if len(self._rows) < i+1:
                     self._rows.append([])
                 self._rows[i].append(column[i])
-                if _get_size(unicode(column[i]))[0] > self._widths[-1]:
-                    self._widths[-1] = _get_size(unicode(column[i]))[0]
+                if _get_size(_unicode(column[i]))[0] > self._widths[-1]:
+                    self._widths[-1] = _get_size(_unicode(column[i]))[0]
         else:
             raise Exception("Column length %d does not match number of rows %d!" % (len(column), len(self._rows)))
 
@@ -606,7 +617,7 @@ class PrettyTable(object):
         """Delete all rows from the table but keep the current field names"""
 
         self._rows = []
-        self._widths = [_get_size(unicode(field_name))[0] for field_name in self._field_names]
+        self._widths = [_get_size(_unicode(field_name))[0] for field_name in self._field_names]
 
     @cache_clearing
     def clear(self):
@@ -632,8 +643,8 @@ class PrettyTable(object):
         self._widths = [_get_size(field)[0] for field in self._field_names]
         for row in self._rows:
             for i in range(0,len(row)):
-                if _get_size(unicode(row[i]))[0] > self._widths[i]:
-                    self._widths[i] = _get_size(unicode(row[i]))[0]
+                if _get_size(_unicode(row[i]))[0] > self._widths[i]:
+                    self._widths[i] = _get_size(_unicode(row[i]))[0]
 
     def _get_padding_widths(self, options):
 
@@ -723,8 +734,8 @@ class PrettyTable(object):
             self._widths = [0]*_get_size(self._field_names)[0]
             for row in self._rows:
                 for i in range(0,len(row)):
-                    if _get_size(unicode(row[i]))[0] > self._widths[i]:
-                        self._widths[i] = _get_size(unicode(row[i]))[0]
+                    if _get_size(_unicode(row[i]))[0] > self._widths[i]:
+                        self._widths[i] = _get_size(_unicode(row[i]))[0]
         if options["header"]:
             bits.append(self._stringify_header(options))
         elif options["border"] and options["hrules"] != NONE:
@@ -747,10 +758,11 @@ class PrettyTable(object):
             self._widths = old_widths
             for row in self._rows:
                 for i in range(0,len(row)):
-                    if _get_size(unicode(row[i]))[0] > self._widths[i]:
-                        self._widths[i] = _get_size(unicode(row[i]))[0]
+                    if _get_size(_unicode(row[i]))[0] > self._widths[i]:
+                        self._widths[i] = _get_size(_unicode(row[i]))[0]
 
-        return string
+        self._nonunicode = string
+        return _unicode(string)
 
     def _stringify_hrule(self, options):
 
@@ -778,11 +790,11 @@ class PrettyTable(object):
             if options["fields"] and field not in options["fields"]:
                 continue
             if self._align[field] == "l":
-                bits.append(" " * lpad + unicode(field).ljust(width) + " " * rpad)
+                bits.append(" " * lpad + _unicode(field).ljust(width) + " " * rpad)
             elif self._align[field] == "r":
-                bits.append(" " * lpad + unicode(field).rjust(width) + " " * rpad)
+                bits.append(" " * lpad + _unicode(field).rjust(width) + " " * rpad)
             else:
-                bits.append(" " * lpad + unicode(field).center(width) + " " * rpad)
+                bits.append(" " * lpad + _unicode(field).center(width) + " " * rpad)
             if options["border"]:
                 bits.append(options["vertical_char"])
         if options["border"] and options["hrules"] != NONE:
@@ -801,7 +813,7 @@ class PrettyTable(object):
                 bits[y].append(self.vertical_char)
 
         for field, value, width, in zip(self._field_names, row, self._widths):
-            lines = unicode(value).split("\n")
+            lines = _unicode(value).split("\n")
             if len(lines) < row_height:
                 lines = lines + ([""] * (row_height-len(lines)))
 
@@ -811,11 +823,11 @@ class PrettyTable(object):
                     continue
 
                 if self._align[field] == "l":
-                    bits[y].append(" " * lpad + unicode(l).ljust(width) + " " * rpad)
+                    bits[y].append(" " * lpad + _unicode(l).ljust(width) + " " * rpad)
                 elif self._align[field] == "r":
-                    bits[y].append(" " * lpad + unicode(l).rjust(width) + " " * rpad)
+                    bits[y].append(" " * lpad + _unicode(l).rjust(width) + " " * rpad)
                 else:
-                    bits[y].append(" " * lpad + unicode(l).center(width) + " " * rpad)
+                    bits[y].append(" " * lpad + _unicode(l).center(width) + " " * rpad)
                 if options["border"]:
                     bits[y].append(self.vertical_char)
 
@@ -903,7 +915,7 @@ class PrettyTable(object):
         for field in self._field_names:
             if options["fields"] and field not in options["fields"]:
                 continue
-            bits.append("        <th>%s</th>" % cgi.escape(unicode(field)).replace("\n", "<br />"))
+            bits.append("        <th>%s</th>" % cgi.escape(_unicode(field)).replace("\n", "<br />"))
         bits.append("    </tr>")
         # Data
         if options["sortby"]:
@@ -915,7 +927,7 @@ class PrettyTable(object):
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <td>%s</td>" % cgi.escape(unicode(datum)).replace("\n", "<br />"))
+                bits.append("        <td>%s</td>" % cgi.escape(_unicode(datum)).replace("\n", "<br />"))
             bits.append("    </tr>")
         bits.append("</table>")
         string = "\n".join(bits)
@@ -943,7 +955,7 @@ class PrettyTable(object):
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, cgi.escape(unicode(field)).replace("\n", "<br />")))
+                bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, cgi.escape(_unicode(field)).replace("\n", "<br />")))
             bits.append("    </tr>")
         # Data
         if options["sortby"]:
@@ -956,28 +968,29 @@ class PrettyTable(object):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if self._align[field] == "l":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum)).replace("\n", "<br />")))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (lpad, rpad, cgi.escape(_unicode(datum)).replace("\n", "<br />")))
                 elif self._align[field] == "r":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum)).replace("\n", "<br />")))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, cgi.escape(_unicode(datum)).replace("\n", "<br />")))
                 else:
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, cgi.escape(unicode(datum)).replace("\n", "<br />")))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, cgi.escape(_unicode(datum)).replace("\n", "<br />")))
             bits.append("    </tr>")
         bits.append("</table>")
         string = "\n".join(bits)
 
-        return string
+        return _unicode(string)
 
 def main():
 
     x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
     x.align["City name"] = "l" # Left align city names
-    x.add_row(["Adelaide",1295, 1158259, 600.5])
-    x.add_row(["Brisbane",5905, 1857594, 1146.4])
+    x.add_row(["Adelaide", 1295, 1158259, 600.5])
+    x.add_row(["Brisbane", 5905, 1857594, 1146.4])
     x.add_row(["Darwin", 112, 120900, 1714.7])
     x.add_row(["Hobart", 1357, 205556, 619.5])
     x.add_row(["Sydney", 2058, 4336374, 1214.8])
     x.add_row(["Melbourne", 1566, 3806092, 646.9])
     x.add_row(["Perth", 5386, 1554769, 869.4])
-
+    print x
+    
 if __name__ == "__main__":
     main()
