@@ -272,6 +272,7 @@ class PrettyTable(object):
 
     def _get_align(self):
         return self._align
+    
     @cache_clearing
     def _set_align(self, val):
         self._validate_align(val)
@@ -286,6 +287,7 @@ class PrettyTable(object):
 
         start - index of first data row to include in output"""
         return self._start
+
     def _set_start(self, val):
         self._validate_option("start", val)
         self._start = val
@@ -904,7 +906,7 @@ class PrettyTable(object):
             rows = self._get_sorted_rows(options)
         else:
             rows = self._rows
-        for row in self._rows:
+        for row in rows:
             bits.append("    <tr>")
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
@@ -972,7 +974,6 @@ def main():
     x.add_row(["Sydney", 2058, 4336374, 1214.8])
     x.add_row(["Melbourne", 1566, 3806092, 646.9])
     x.add_row(["Perth", 5386, 1554769, 869.4])
-    print x
 
 if __name__ == "__main__":
     main()
