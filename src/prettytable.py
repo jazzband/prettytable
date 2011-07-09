@@ -102,6 +102,7 @@ class PrettyTable(object):
         # Data
         self._field_names = []
         self._align = {}
+        self._rows = []
         if field_names:
             self.field_names = field_names
         else:
@@ -259,15 +260,18 @@ class PrettyTable(object):
         fields - list or tuple of field names"""
     @cache_clearing
     def _set_field_names(self, val):
-        # We *may* need to change the widths if this isn't the first time
-        # setting the field names.  This could certainly be done more
-        # efficiently.
         if self._field_names:
-            self._recompute_widths()
-        else:
-            self._widths = [_get_size(field)[0] for field in val]
+            old_names = self._field_names[:]
         self._field_names = val
-        self.align = "c"
+        self._recompute_widths()
+        if self._align:
+            for old_name, new_name in zip(old_names, val):
+                self._align[new_name] = self._align[old_name]
+            for old_name in old_names:
+                self._align.pop(old_name)
+        else:
+            for field in self._field_names:
+                self._align[field] = "c"
     field_names = property(_get_field_names, _set_field_names)
 
     def _get_align(self):
