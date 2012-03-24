@@ -121,7 +121,7 @@ class PrettyTable(object):
         self.html_cache = {}
 
         # Options
-        self._options = "start end fields header border sortby reversesort attributes format hrules caching".split()
+        self._options = "start end fields header border sortby reversesort sort_key attributes format hrules caching".split()
         self._options.extend("float_format padding_width left_padding_width right_padding_width".split())
         self._options.extend("vertical_char horizontal_char junction_char".split())
         for option in self._options:
@@ -142,8 +142,9 @@ class PrettyTable(object):
 
         self._sortby = kwargs["sortby"] or None
         self._reversesort = kwargs["reversesort"] or False
+        self._sort_key = kwargs["sort_key"] or (lambda x: x)
 
-	self._float_format = kwargs["float_format"] or ""
+        self._float_format = kwargs["float_format"] or ""
         self._padding_width = kwargs["padding_width"] or 1
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
@@ -198,6 +199,8 @@ class PrettyTable(object):
             self._validate_nonnegative_int(option, val)
         elif option in ("sortby"):
             self._validate_field_name(option, val)
+        elif option in ("sort_key"):
+            self._validate_function(option, val)
         elif option in ("hrules"):
             self._validate_hrules(option, val)
         elif option in ("fields"):
@@ -243,6 +246,12 @@ class PrettyTable(object):
             assert bits[1] == "" or bits[1].isdigit()
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be a float format string." % name)
+
+    def _validate_function(self, name, val):
+        try:
+            assert hasattr(val, "__call__")
+        except AssertionError:
+            raise Exception("Invalid value for %s!  Must be a function." % name)
 
     def _validate_hrules(self, name, val):
         try:
@@ -344,6 +353,7 @@ class PrettyTable(object):
 
         sortby - field name to sort by"""
         return self._sortby
+    @cache_clearing
     def _set_sortby(self, val):
         self._validate_option("sortby", val)
         self._sortby = val
@@ -356,11 +366,25 @@ class PrettyTable(object):
 
         reveresort - set to True to sort by descending order, or False to sort by ascending order"""
         return self._reversesort
+    @cache_clearing
     def _set_reversesort(self, val):
         self._validate_option("reversesort", val)
         self._reversesort = val
     reversesort = property(_get_reversesort, _set_reversesort)
 
+    def _get_sort_key(self):
+        """Sorting key function, applied to data points before sorting
+
+        Arguments:
+
+        sort_key - a function which takes one argument and returns something to be sorted"""
+        return self._sort_key
+    @cache_clearing
+    def _set_sort_key(self, val):
+        self._validate_option("sort_key", val)
+        self._sort_key = val
+    sort_key = property(_get_sort_key, _set_sort_key)
+ 
     def _get_header(self):
         """Controls printing of table header with field names
 
@@ -694,7 +718,7 @@ class PrettyTable(object):
         # Decorate
         rows = [[row[sortindex]]+row for row in rows]
         # Sort
-        rows.sort(reverse=options["reversesort"])
+        rows.sort(reverse=options["reversesort"], key=options["sort_key"])
         # Undecorate
         rows = [row[1:] for row in rows]
         return rows
@@ -752,7 +776,9 @@ class PrettyTable(object):
         options = self._get_options(kwargs)
 
         if self._caching:
-            key = cPickle.dumps(options)
+            cacheopts = copy.deepcopy(options)
+            cacheopts.pop("sort_key")    # Can't pickle a function
+            key = cPickle.dumps(cacheopts)
             if key in self._cache:
                 return self._cache[key]
 
@@ -913,7 +939,9 @@ class PrettyTable(object):
         options = self._get_options(kwargs)
 
         if self._caching:
-            key = cPickle.dumps(options)
+            cacheopts = copy.deepcopy(options)
+            cacheopts.pop("sort_key")    # Can't pickle a function
+            key = cPickle.dumps(cacheopts)
             if key in self.html_cache:
                 return self.html_cache[key]
 
@@ -1011,7 +1039,9 @@ class PrettyTable(object):
 def main():
 
     x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
-    x.float_format = "5."
+    x.sortby = "Population"
+    x.reversesort = True
+    x.float_format = "6.1"
     x.align["City name"] = "l" # Left align city names
     x.add_row(["Adelaide", 1295, 1158259, 600.5])
     x.add_row(["Brisbane", 5905, 1857594, 1146.4])

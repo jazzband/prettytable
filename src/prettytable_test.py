@@ -159,6 +159,51 @@ class PresetBasicTests(BasicTests):
         BasicTests.setUp(self)
         self.x.set_style(MSWORD_FRIENDLY)
 
+class SortingTests(CityDataTest):
+
+    def setUp(self):
+        CityDataTest.setUp(self)
+
+    def testSortBy(self):
+        self.x.sortby = self.x.field_names[0]
+        old = self.x.get_string()
+        for field in self.x.field_names[1:]:
+            self.x.sortby = field
+            new = self.x.get_string()
+            assert new != old
+
+    def testReverseSort(self):
+        for field in self.x.field_names:
+            self.x.sortby = field
+            self.x.reversesort = False
+            forward = self.x.get_string()
+            self.x.reversesort = True
+            backward = self.x.get_string()
+            forward_lines = forward.split("\n")[2:] # Discard header lines
+            backward_lines = backward.split("\n")[2:]
+            backward_lines.reverse()
+            assert forward_lines == backward_lines
+
+    def testSortKey(self):
+        # Test sorting by length of city name
+        def key(vals):
+            vals[0] = len(vals[0])
+            return vals
+        self.x.sortby = "City name"
+        self.x.sort_key = key
+        assert self.x.get_string().strip() == """+-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+|   Perth   | 5386 |  1554769   |    869.400000   |
+|   Darwin  | 112  |   120900   |   1714.700000   |
+|   Hobart  | 1357 |   205556   |    619.500000   |
+|   Sydney  | 2058 |  4336374   |   1214.800000   |
+|  Adelaide | 1295 |  1158259   |    600.500000   |
+|  Brisbane | 5905 |  1857594   |   1146.400000   |
+| Melbourne | 1566 |  3806092   |    646.900000   |
++-----------+------+------------+-----------------+
+""".strip()
+
 class FloatFormatBasicTests(BasicTests):
 
     """Run the basic tests after setting a float format string"""
