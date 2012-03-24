@@ -98,6 +98,7 @@ class PrettyTable(object):
         header - print a header showing field names (True or False)
         border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
+	float_format - controls formatting of floating point data
         padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
         right_padding_width - number of spaces on right hand side of column data
@@ -121,7 +122,7 @@ class PrettyTable(object):
 
         # Options
         self._options = "start end fields header border sortby reversesort attributes format hrules caching".split()
-        self._options.extend("padding_width left_padding_width right_padding_width".split())
+        self._options.extend("float_format padding_width left_padding_width right_padding_width".split())
         self._options.extend("vertical_char horizontal_char junction_char".split())
         for option in self._options:
             if option in kwargs:
@@ -142,6 +143,7 @@ class PrettyTable(object):
         self._sortby = kwargs["sortby"] or None
         self._reversesort = kwargs["reversesort"] or False
 
+	self._float_format = kwargs["float_format"] or ""
         self._padding_width = kwargs["padding_width"] or 1
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
@@ -202,6 +204,8 @@ class PrettyTable(object):
             self._validate_all_field_names(option, val)
         elif option in ("header", "border", "caching", "reversesort"):
             self._validate_true_or_false(option, val)
+        elif option in ("float_format"):
+            self._validate_float_format(option, val)
         elif option in ("vertical_char", "horizontal_char", "junction_char"):
             self._validate_single_char(option, val)
         elif option in ("attributes"):
@@ -226,6 +230,19 @@ class PrettyTable(object):
             assert val in (True, False)
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be True or False." % name)
+
+    def _validate_float_format(self, name, val):
+        if val == "":
+            return
+        try:
+            assert type(val) in (str, unicode)
+            assert "." in val
+            bits = val.split(".")
+            assert len(bits) <= 2
+            assert bits[0] == "" or bits[0].isdigit()
+            assert bits[1] == "" or bits[1].isdigit()
+        except AssertionError:
+            raise Exception("Invalid value for %s!  Must be a float format string." % name)
 
     def _validate_hrules(self, name, val):
         try:
@@ -379,6 +396,17 @@ class PrettyTable(object):
         self._validate_option("hrules", val)
         self._hrules = val
     hrules = property(_get_hrules, _set_hrules)
+
+    def _get_float_format(self):
+        """Controls formatting of floating point data
+        Arguments:
+
+        float_format - floating point format string"""
+        return self._float_format
+    def _set_float_format(self, val):
+        self._validate_option("float_format", val)
+        self._float_format = val
+    float_format = property(_get_float_format, _set_float_format)
 
     def _get_padding_width(self):
         """The number of empty spaces between a column's edge and its content
@@ -567,9 +595,7 @@ class PrettyTable(object):
         if len(row) != len(self._field_names):
             raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._field_names)))
         self._rows.append(row)
-        for i in range(0,len(row)):
-            if _get_size(_unicode(row[i]))[0] > self._widths[i]:
-                self._widths[i] = _get_size(_unicode(row[i]))[0]
+        self._recompute_widths()
 
     @cache_clearing
     def del_row(self, row_index):
@@ -643,8 +669,11 @@ class PrettyTable(object):
         self._widths = [_get_size(field)[0] for field in self._field_names]
         for row in self._rows:
             for i in range(0,len(row)):
-                if _get_size(_unicode(row[i]))[0] > self._widths[i]:
-                    self._widths[i] = _get_size(_unicode(row[i]))[0]
+                value = row[i]
+                # Format floats
+                if isinstance(value, float):
+                    value = ("%%%sf" % self._float_format) % value 
+                self._widths[i] = max(self._widths[i], _get_size(_unicode(value))[0])
 
     def _get_padding_widths(self, options):
 
@@ -686,6 +715,7 @@ class PrettyTable(object):
         header - print a header showing field names (True or False)
         border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
+	float_format - controls formatting of floating point data
         padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
         right_padding_width - number of spaces on right hand side of column data
@@ -709,6 +739,7 @@ class PrettyTable(object):
         header - print a header showing field names (True or False)
         border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
+	float_format - controls formatting of floating point data
         padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
         right_padding_width - number of spaces on right hand side of column data
@@ -732,10 +763,7 @@ class PrettyTable(object):
             # Recalculate widths - avoids tables with long field names but narrow data looking odd
             old_widths = self._widths[:]
             self._widths = [0]*_get_size(self._field_names)[0]
-            for row in self._rows:
-                for i in range(0,len(row)):
-                    if _get_size(_unicode(row[i]))[0] > self._widths[i]:
-                        self._widths[i] = _get_size(_unicode(row[i]))[0]
+            self._recompute_widths()
         if options["header"]:
             bits.append(self._stringify_header(options))
         elif options["border"] and options["hrules"] != NONE:
@@ -756,10 +784,7 @@ class PrettyTable(object):
         if not options["header"]:
             # Restore previous widths
             self._widths = old_widths
-            for row in self._rows:
-                for i in range(0,len(row)):
-                    if _get_size(_unicode(row[i]))[0] > self._widths[i]:
-                        self._widths[i] = _get_size(_unicode(row[i]))[0]
+            self._recompute_widths()
 
         self._nonunicode = string
         return _unicode(string)
@@ -813,6 +838,10 @@ class PrettyTable(object):
                 bits[y].append(self.vertical_char)
 
         for field, value, width, in zip(self._field_names, row, self._widths):
+            # Format floats
+            if isinstance(value, float):
+                value = ("%%%sf" % options["float_format"]) % value 
+
             lines = _unicode(value).split("\n")
             if len(lines) < row_height:
                 lines = lines + ([""] * (row_height-len(lines)))
@@ -982,6 +1011,7 @@ class PrettyTable(object):
 def main():
 
     x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
+    x.float_format = "5."
     x.align["City name"] = "l" # Left align city names
     x.add_row(["Adelaide", 1295, 1158259, 600.5])
     x.add_row(["Brisbane", 5905, 1857594, 1146.4])

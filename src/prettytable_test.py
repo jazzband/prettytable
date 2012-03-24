@@ -1,6 +1,7 @@
 import unittest
 import sys
 sys.path.append("../src/")
+from math import pi, e, sqrt
 from prettytable import *
 
 class BuildEquivelanceTest(unittest.TestCase):
@@ -157,6 +158,44 @@ class PresetBasicTests(BasicTests):
     def setUp(self):
         BasicTests.setUp(self)
         self.x.set_style(MSWORD_FRIENDLY)
+
+class FloatFormatBasicTests(BasicTests):
+
+    """Run the basic tests after setting a float format string"""
+
+    def setUp(self):
+        BasicTests.setUp(self)
+        self.x.float_format = "6.2"
+
+class FloatFormatTests(unittest.TestCase):
+
+    def setUp(self):
+        self.x = PrettyTable(["Constant", "Value"])
+        self.x.add_row(["Pi", pi]) 
+        self.x.add_row(["e", e]) 
+        self.x.add_row(["sqrt(2)", sqrt(2)]) 
+
+    def testNoDecimals(self):
+        self.x.float_format = ".0"
+        assert "." not in self.x.get_string()
+
+    def testRoundTo5DP(self):
+        self.x.float_format = ".5"
+        string = self.x.get_string()
+        assert "3.14159" in string
+        assert "3.141592" not in string
+        assert "2.71828" in string 
+        assert "2.718281" not in string 
+        assert "2.718282" not in string 
+        assert "1.41421" in string
+        assert "1.414213" not in string
+
+    def testPadWith2Zeroes(self):
+        self.x.float_format = "06.2"
+        string = self.x.get_string()
+        assert "003.14" in string
+        assert "002.72" in string
+        assert "001.41" in string
 
 class BreakLineTests(unittest.TestCase):
     def testAsciiBreakLine(self):
