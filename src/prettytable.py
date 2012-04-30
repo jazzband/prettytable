@@ -551,7 +551,7 @@ class PrettyTable(object):
 
         self.header = True
         self.border = True
-        self.hrules = FRAME
+        self._hrules = FRAME
         self.padding_width = 1
         self.left_padding_width = 1
         self.right_padding_width = 1
@@ -563,7 +563,7 @@ class PrettyTable(object):
 
         self.header = True
         self.border = True
-        self.hrules = NONE
+        self._hrules = NONE
         self.padding_width = 1
         self.left_padding_width = 1
         self.right_padding_width = 1
@@ -582,7 +582,7 @@ class PrettyTable(object):
         # Just for fun!
         self.header = random.choice((True, False))
         self.border = random.choice((True, False))
-        self.hrules = random.choice((ALL, FRAME, NONE))
+        self._hrules = random.choice((ALL, FRAME, NONE))
         self.left_padding_width = random.randint(0,5)
         self.right_padding_width = random.randint(0,5)
         self.vertical_char = random.choice("~!@#$%^&*()_+|-=\{}[];':\",./;<>?")
@@ -748,11 +748,13 @@ class PrettyTable(object):
             self._widths = [0]*_get_size(self._field_names)[0]
             self._recompute_widths()
 
+        self._hrule = self._stringify_hrule(options)
+
         # Add header or top of border
         if options["header"]:
             bits.append(self._stringify_header(options))
         elif options["border"] and options["hrules"] != NONE:
-            bits.append(self._stringify_hrule(options))
+            bits.append(self._hrule)
 
         # Figure out which rows we need to include
         if options["sortby"]:
@@ -766,7 +768,7 @@ class PrettyTable(object):
 
         # Add bottom of border
         if options["border"] and not options["hrules"]:
-            bits.append(self._stringify_hrule(options))
+            bits.append(self._hrule)
         
         # Reverse the width recomputing hack from earlier
         if not options["header"]:
@@ -797,7 +799,7 @@ class PrettyTable(object):
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
             if options["hrules"] != NONE:
-                bits.append(self._stringify_hrule(options))
+                bits.append(self._hrule)
                 bits.append("\n")
             bits.append(options["vertical_char"])
         for field, width, in zip(self._field_names, self._widths):
@@ -813,7 +815,7 @@ class PrettyTable(object):
                 bits.append(options["vertical_char"])
         if options["border"] and options["hrules"] != NONE:
             bits.append("\n")
-            bits.append(self._stringify_hrule(options))
+            bits.append(self._hrule)
         return "".join(bits)
 
     def _stringify_row(self, row, options):
@@ -882,7 +884,7 @@ class PrettyTable(object):
 
         if options["border"] and options["hrules"]== ALL:
             bits[row_height-1].append("\n")
-            bits[row_height-1].append(self._stringify_hrule(options))
+            bits[row_height-1].append(self._hrule)
 
         for y in range(0, row_height):
             bits[y] = "".join(bits[y])
