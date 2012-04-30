@@ -631,14 +631,11 @@ class PrettyTable(object):
         if len(self._rows) in (0, len(column)):
             self._validate_align(align)
             self._field_names.append(fieldname)
-            self._widths.append(_get_size(fieldname)[0])
             self._align[fieldname] = align
             for i in range(0, len(column)):
                 if len(self._rows) < i+1:
                     self._rows.append([])
                 self._rows[i].append(column[i])
-                if _get_size(_unicode(column[i]))[0] > self._widths[-1]:
-                    self._widths[-1] = _get_size(_unicode(column[i]))[0]
         else:
             raise Exception("Column length %d does not match number of rows %d!" % (len(column), len(self._rows)))
 
@@ -647,7 +644,6 @@ class PrettyTable(object):
         """Delete all rows from the table but keep the current field names"""
 
         self._rows = []
-        self._widths = [_get_size(_unicode(field_name))[0] for field_name in self._field_names]
 
     def clear(self):
 
@@ -751,6 +747,14 @@ class PrettyTable(object):
         rows = self._get_rows(options)
         self._compute_widths(rows, options)
 
+        # Build rows
+        # (for now, this is done before building headers etc. because rowbits.append
+        # contains width-adjusting voodoo which has to be done first.  This is ugly
+        # and Wrong and will change soon)
+        rowbits = []
+        for row in rows:
+            rowbits.append(self._stringify_row(row, options))
+
         self._hrule = self._stringify_hrule(options)
 
         # Add header or top of border
@@ -760,8 +764,7 @@ class PrettyTable(object):
             bits.append(self._hrule)
 
         # Add rows
-        for row in rows:
-            bits.append(self._stringify_row(row, options))
+        bits.extend(rowbits)
 
         # Add bottom of border
         if options["border"] and not options["hrules"]:
@@ -829,7 +832,8 @@ class PrettyTable(object):
             value = "\n".join(lines)
             row[index] = value
 
-        old_widths = self._widths[:]
+        #old_widths = self._widths[:]
+
         for index, field in enumerate(self._field_names):
             namewidth = len(field)
             datawidth = min(self._widths[index], self._max_width.get(field, self._widths[index]))
@@ -880,7 +884,7 @@ class PrettyTable(object):
         for y in range(0, row_height):
             bits[y] = "".join(bits[y])
 
-        self._widths = old_widths
+        #self._widths = old_widths
 
         return "\n".join(bits)
 
