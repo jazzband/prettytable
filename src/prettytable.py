@@ -693,18 +693,26 @@ class PrettyTable(object):
             rpad = options["padding_width"]
         return lpad, rpad
 
-    def _get_sorted_rows(self, options):
-        # Sort rows using the "Decorate, Sort, Undecorate" (DSU) paradigm
-        rows = copy.deepcopy(self._rows[options["start"]:options["end"]])
-        sortindex = self._field_names.index(options["sortby"])
-        # Decorate
-        rows = [[row[sortindex]]+row for row in rows]
-        # Sort
-        rows.sort(reverse=options["reversesort"], key=options["sort_key"])
-        # Undecorate
-        rows = [row[1:] for row in rows]
-        return rows
+    def _get_rows(self, options):
+        """Return only those data rows that should be printed, based on slicing and sorting.
 
+        Arguments:
+
+        options - dictionary of option settings."""
+       
+	# Make a copy of only those rows in the slice range 
+        rows = copy.deepcopy(self._rows[options["start"]:options["end"]])
+        # Sort if necessary
+        if options["sortby"]:
+            sortindex = self._field_names.index(options["sortby"])
+            # Decorate
+            rows = [[row[sortindex]]+row for row in rows]
+            # Sort
+            rows.sort(reverse=options["reversesort"], key=options["sort_key"])
+            # Undecorate
+            rows = [row[1:] for row in rows]
+        return rows
+         
     ##############################
     # PLAIN TEXT STRING METHODS  #
     ##############################
@@ -756,13 +764,8 @@ class PrettyTable(object):
         elif options["border"] and options["hrules"] != NONE:
             bits.append(self._hrule)
 
-        # Figure out which rows we need to include
-        if options["sortby"]:
-            rows = self._get_sorted_rows(options)
-        else:
-            rows = self._rows[options["start"]:options["end"]]
-
         # Add rows
+        rows = self._get_rows(options)
         for row in rows:
             bits.append(self._stringify_row(row, options))
 
@@ -946,11 +949,9 @@ class PrettyTable(object):
                 continue
             bits.append("        <th>%s</th>" % cgi.escape(_unicode(field)).replace("\n", "<br />"))
         bits.append("    </tr>")
+
         # Data
-        if options["sortby"]:
-            rows = self._get_sorted_rows(options)
-        else:
-            rows = self._rows
+        rows = self._get_rows(options)
         for row in rows:
             bits.append("    <tr>")
             for field, datum in zip(self._field_names, row):
@@ -958,6 +959,7 @@ class PrettyTable(object):
                     continue
                 bits.append("        <td>%s</td>" % cgi.escape(_unicode(datum)).replace("\n", "<br />"))
             bits.append("    </tr>")
+
         bits.append("</table>")
         string = "\n".join(bits)
 
@@ -988,10 +990,7 @@ class PrettyTable(object):
                 bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, cgi.escape(_unicode(field)).replace("\n", "<br />")))
             bits.append("    </tr>")
         # Data
-        if options["sortby"]:
-            rows = self._get_sorted_rows(options)
-        else:
-            rows = self._rows
+        rows = self._get_rows(options)
         for row in self._rows:
             bits.append("    <tr>")
             for field, datum in zip(self._field_names, row):
