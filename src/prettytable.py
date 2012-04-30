@@ -942,13 +942,15 @@ class PrettyTable(object):
                 table_tag += ' %s="%s"' % (attr_name, options["attributes"][attr_name])
         table_tag += '>'
         bits.append(table_tag)
+
         # Headers
-        bits.append("    <tr>")
-        for field in self._field_names:
-            if options["fields"] and field not in options["fields"]:
-                continue
-            bits.append("        <th>%s</th>" % cgi.escape(_unicode(field)).replace("\n", "<br />"))
-        bits.append("    </tr>")
+        if options["header"]:
+            bits.append("    <tr>")
+            for field in self._field_names:
+                if options["fields"] and field not in options["fields"]:
+                    continue
+                bits.append("        <th>%s</th>" % cgi.escape(_unicode(field)).replace("\n", "<br />"))
+            bits.append("    </tr>")
 
         # Data
         rows = self._get_rows(options)
