@@ -222,6 +222,7 @@ class FloatFormatTests(unittest.TestCase):
 
     def testNoDecimals(self):
         self.x.float_format = ".0"
+        self.x.caching = False
         assert "." not in self.x.get_string()
 
     def testRoundTo5DP(self):
