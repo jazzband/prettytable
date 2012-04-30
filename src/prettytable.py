@@ -676,6 +676,12 @@ class PrettyTable(object):
     # MISC PRIVATE METHODS       #
     ##############################
 
+    def _format_value(self, value):
+        # Format floats
+        if isinstance(value, float):
+            value = ("%%%sf" % self._float_format) % value 
+        return value
+
     def _compute_widths(self, rows, options):
         if options["header"]:
             widths = [_get_size(field)[0] for field in self._field_names]
@@ -683,9 +689,7 @@ class PrettyTable(object):
             widths = len(self.field_names) * [0]
         for row in rows:
             for index, value in enumerate(row):
-                # Format floats
-                if isinstance(value, float):
-                    value = ("%%%sf" % self._float_format) % value 
+                value = self._format_value(value)
                 widths[index] = max(widths[index], _get_size(_unicode(value))[0])
         self._widths = widths
 
@@ -826,9 +830,7 @@ class PrettyTable(object):
     def _stringify_row(self, row, options):
         
         for index, value in enumerate(row):
-            # Format floats
-            if isinstance(value, float):
-                row[index] = ("%%%sf" % options["float_format"]) % value 
+            row[index] = self._format_value(value)
 
         for index, field, value, width, in zip(range(0,len(row)), self._field_names, row, self._widths):
             # Enforce max widths
