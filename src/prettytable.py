@@ -31,10 +31,19 @@
 
 __version__ = "TRUNK"
 
-import cgi
+import sys
+
+py3k = sys.version_info >= (3,0,0)
+if py3k:
+    unicode = str
+    basestring = str
+
+if py3k:
+    from html import escape
+else:
+    from cgi import escape
 import copy
 import random
-import sys
 import textwrap
 
 # hrule styles
@@ -148,7 +157,7 @@ class PrettyTable(object):
         elif name == "colcount":
             return len(self._field_names)
         else:
-            raise AttributeError, name
+            raise AttributeError(name)
  
     def __getslice__(self, i, j):
         """Return a new PrettyTable whose data rows are a slice of this one's
@@ -163,7 +172,10 @@ class PrettyTable(object):
         return newtable
 
     def __str__(self):
-        return self.get_string().encode("ascii","replace")
+        if py3k:
+            return self.get_string()
+        else:
+            return self.get_string().encode("ascii","replace")
 
     def __unicode__(self):
         return self.get_string()
@@ -755,7 +767,6 @@ class PrettyTable(object):
         for row in rows:
             rowbits.append(self._stringify_row(row, options))
 
-        self._hrule = self._stringify_hrule(options)
 
         # Add header or top of border
         if options["header"]:
@@ -770,7 +781,7 @@ class PrettyTable(object):
         if options["border"] and not options["hrules"]:
             bits.append(self._hrule)
         
-	string = "\n".join(bits)
+        string = "\n".join(bits)
         self._nonunicode = string
         return _unicode(string)
 
@@ -877,6 +888,8 @@ class PrettyTable(object):
 
                 y += 1
 
+        self._hrule = self._stringify_hrule(options)
+        
         if options["border"] and options["hrules"]== ALL:
             bits[row_height-1].append("\n")
             bits[row_height-1].append(self._hrule)
@@ -941,7 +954,7 @@ class PrettyTable(object):
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <th>%s</th>" % cgi.escape(_unicode(field)).replace("\n", "<br />"))
+                bits.append("        <th>%s</th>" % escape(_unicode(field)).replace("\n", "<br />"))
             bits.append("    </tr>")
 
         # Data
@@ -951,7 +964,7 @@ class PrettyTable(object):
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <td>%s</td>" % cgi.escape(_unicode(datum)).replace("\n", "<br />"))
+                bits.append("        <td>%s</td>" % escape(_unicode(datum)).replace("\n", "<br />"))
             bits.append("    </tr>")
 
         bits.append("</table>")
@@ -981,7 +994,7 @@ class PrettyTable(object):
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, cgi.escape(_unicode(field)).replace("\n", "<br />")))
+                bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, escape(_unicode(field)).replace("\n", "<br />")))
             bits.append("    </tr>")
         # Data
         rows = self._get_rows(options)
@@ -991,11 +1004,11 @@ class PrettyTable(object):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if self._align[field] == "l":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (lpad, rpad, cgi.escape(_unicode(datum)).replace("\n", "<br />")))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (lpad, rpad, escape(_unicode(datum)).replace("\n", "<br />")))
                 elif self._align[field] == "r":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, cgi.escape(_unicode(datum)).replace("\n", "<br />")))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, escape(_unicode(datum)).replace("\n", "<br />")))
                 else:
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, cgi.escape(_unicode(datum)).replace("\n", "<br />")))
+                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, escape(_unicode(datum)).replace("\n", "<br />")))
             bits.append("    </tr>")
         bits.append("</table>")
         string = "\n".join(bits)
@@ -1017,7 +1030,7 @@ def main():
     x.add_row(["Sydney", 2058, 4336374, 1214.8])
     x.add_row(["Melbourne", 1566, 3806092, 646.9])
     x.add_row(["Perth", 5386, 1554769, 869.4])
-    print x
+    print(x)
     
 if __name__ == "__main__":
     main()

@@ -79,23 +79,23 @@ class OptionOverrideTests(CityDataTest):
     def testBorder(self):
         default = self.x.get_string()
         override = self.x.get_string(border=False)
-        self.assert_(default != override)
+        self.assertTrue(default != override)
 
     def testHeader(self):
         default = self.x.get_string()
         override = self.x.get_string(header=False)
-        self.assert_(default != override)
+        self.assertTrue(default != override)
 
     def testHrulesAll(self):
         default = self.x.get_string()
         override = self.x.get_string(hrules=ALL)
-        self.assert_(default != override)
+        self.assertTrue(default != override)
 
     def testHrulesNone(self):
 
         default = self.x.get_string()
         override = self.x.get_string(hrules=NONE)
-        self.assert_(default != override)
+        self.assertTrue(default != override)
 
 class BasicTests(CityDataTest):
 
@@ -107,7 +107,7 @@ class BasicTests(CityDataTest):
 
         string = self.x.get_string()
         lines = string.split("\n")
-        self.assert_("" not in lines)
+        self.assertTrue("" not in lines)
 
     def testAllLengthsEqual(self):
 
