@@ -168,7 +168,7 @@ class PrettyTable(object):
         j - ending slice index"""
 
         newtable = copy.deepcopy(self)
-        newtable.rows = self._rows[i:j]
+        newtable._rows = self._rows[i:j]
         return newtable
 
     def __str__(self):
@@ -307,7 +307,7 @@ class PrettyTable(object):
         if self._field_names:
             old_names = self._field_names[:]
         self._field_names = val
-        if self._align:
+        if self._align and old_names:
             for old_name, new_name in zip(old_names, val):
                 self._align[new_name] = self._align[old_name]
             for old_name in old_names:
@@ -639,7 +639,7 @@ class PrettyTable(object):
 
         if len(row) != len(self._field_names):
             raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._field_names)))
-        self._rows.append(row)
+        self._rows.append(list(row))
 
     def del_row(self, row_index):
 
@@ -783,7 +783,7 @@ class PrettyTable(object):
         bits = []
 
         # Don't think too hard about an empty table
-        if not self._field_names:
+        if self.rowcount == 0:
             return ""
 
         rows = self._get_rows(options)

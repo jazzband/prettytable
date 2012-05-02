@@ -159,6 +159,29 @@ class PresetBasicTests(BasicTests):
         BasicTests.setUp(self)
         self.x.set_style(MSWORD_FRIENDLY)
 
+class SlicingTests(CityDataTest):
+
+    def setUp(self):
+        CityDataTest.setUp(self)
+
+    def testSliceFirstTwoRows(self):
+	y = self.x[0:2]
+        string = y.get_string()
+        assert len(string.split("\n")) == 6
+        assert "Adelaide" in string
+        assert "Brisbane" in string
+        assert "Melbourne" not in string
+        assert "Perth" not in string
+
+    def testSliceLastTwoRows(self):
+	y = self.x[-2:]
+        string = y.get_string()
+        assert len(string.split("\n")) == 6
+        assert "Adelaide" not in string
+        assert "Brisbane" not in string
+        assert "Melbourne" in string
+        assert "Perth" in string
+
 class SortingTests(CityDataTest):
 
     def setUp(self):
