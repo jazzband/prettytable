@@ -1,28 +1,59 @@
+########## PrettyTable 0.6 - April XX, 2012 ##########
+
+* Code is now simultaneously compatible with Python 2 and 3
+* Replaced all setter methods with managed attributes
+* All styling options can now be set persistently as managed attributes
+* Added "add_style" method to make setting style options easily
+* Added "del_row", "clear_rows" and "clear" methods to facilitate
+  removal of data from table.
+* Added "copy" method to facilitate cloning of a table.
+* Removed caching functionality, which added complexity and fragility
+  for relatively little gain
+* Removed methods that just printed strings produced by get_string and
+  get_html_string - just use inbuilt print!
+* Improved unicode support (thanks to Google Code user ru.w31rd0 for
+  patch!)
+* Added support for decimal and floating point number formatting
+  support (thanks to Google Code user willfurnass for the suggestion!)
+* Added support for using a custom key sorting methods (thanks to
+  Google Code user amannijhawan for the suggestion!)
+* Added support for line breaks in data (suggested and implemented by
+  Klein Stephane)
+* Added support for max column widths (thanks to Tibor Arpas for the
+  suggestion!)
+* Fixed table slicing
+* Fixed bug where closing <tr/> tags in HTML tables were not printed
+  (thanks to Google Code user kehander for reporting this bug!)
+* Fixed HTML table sorting bug (thanks to Google Code user dougbeal
+  for reporting this bug!)
+* Fixed bug whereby changing field_names did not recompute widths
+  (thanks to Google Code user denilsonsa for reporting this bug!)
+
 ########## PrettyTable 0.5 - May 26, 2009 ##########
 
 * Fixed a bug whereby printing with headers=False and border=False 
-  would introduce an extraneous newline.  Thanks to Alexander Lamaison 
+  would introduce an extraneous newline. Thanks to Alexander Lamaison 
   for reporting this bug. 
 * When printing with headers=False, column widths will now be reduced 
   as appropriate in columns where the field name is wider than the 
-  data.  Thanks to Alexander Lamaison for suggesting this behaviour. 
-* Support for Unicode has improved.  Thanks to Chris Clark for 
+  data. Thanks to Alexander Lamaison for suggesting this behaviour. 
+* Support for Unicode has improved. Thanks to Chris Clark for 
   submitting this improvement. 
 * The value of the "border" argument now correctly controls the 
   presence of a border when printing HTML tables with print_html or 
-  get_html_string, instead of being incorrectly ignored.  Thanks to 
+  get_html_string, instead of being incorrectly ignored. Thanks to 
   Chris Clark for fixing this. 
 * The print_html and get_html_string methods now accept an 
   "attributes" argument which is a dictionary of name/value pairs to be 
   placed inside the <table> tag (so you can, e.g. set class, name or id 
-  values in order to style your table with CSS).  Thanks to Chris Clark 
+  values in order to style your table with CSS). Thanks to Chris Clark 
   for submitting this feature. 
 * The print_html and get_html_string methods now, by default, do their 
   best to match the various formatting options in their HTML output. 
   They use inline CSS to adjust the alignment of data in columns, the 
-  padding widths of columns and in some cases the border settings.  You 
+  padding widths of columns and in some cases the border settings. You 
   can give either method a "format=False" attribute to turn this 
-  behaviour off if you want to do your own styling.  With "format=False" 
+  behaviour off if you want to do your own styling. With "format=False" 
   the methods print a "bare bones" table, similar to the default 
   behaviour in 0.4.
 
