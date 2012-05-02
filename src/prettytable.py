@@ -32,19 +32,17 @@
 __version__ = "TRUNK"
 
 import sys
-
-py3k = sys.version_info >= (3,0,0)
-if py3k:
-    unicode = str
-    basestring = str
-
-if py3k:
-    from html import escape
-else:
-    from cgi import escape
 import copy
 import random
 import textwrap
+
+py3k = sys.version_info[0] >= 3
+if py3k:
+    unicode = str
+    basestring = str
+    from html import escape
+else:
+    from cgi import escape
 
 # hrule styles
 FRAME = 0
