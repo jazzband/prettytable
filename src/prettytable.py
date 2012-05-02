@@ -159,16 +159,15 @@ class PrettyTable(object):
         else:
             raise AttributeError(name)
  
-    def __getslice__(self, i, j):
-        """Return a new PrettyTable whose data rows are a slice of this one's
-
-        Arguments:
-
-        i - beginning slice index
-        j - ending slice index"""
+    def __getitem__(self, index):
 
         newtable = copy.deepcopy(self)
-        newtable._rows = self._rows[i:j]
+        if isinstance(index, slice):
+            newtable._rows = self._rows[index]
+        elif isinstance(index, int):
+            newtable._rows = [self._rows[index],]
+        else:
+            raise Exception("Index %s is invalid, must be an integer or slice" % str(index))
         return newtable
 
     def __str__(self):
