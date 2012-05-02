@@ -57,6 +57,30 @@ class BuildEquivelanceTest(unittest.TestCase):
 
         self.assertEqual(self.row.get_html_string(), self.mix.get_html_string())
 
+#class FieldnamelessTableTest(unittest.TestCase):
+#
+#    """Make sure that building and stringing a table with no fieldnames works fine"""
+#
+#    def setUp(self):
+#        self.x = PrettyTable()
+#        self.x.add_row(["Adelaide",1295, 1158259, 600.5])
+#        self.x.add_row(["Brisbane",5905, 1857594, 1146.4])
+#        self.x.add_row(["Darwin", 112, 120900, 1714.7])
+#        self.x.add_row(["Hobart", 1357, 205556, 619.5])
+#        self.x.add_row(["Sydney", 2058, 4336374, 1214.8])
+#        self.x.add_row(["Melbourne", 1566, 3806092, 646.9])
+#        self.x.add_row(["Perth", 5386, 1554769, 869.4])
+#
+#    def testCanStringASCII(self):
+#        self.x.get_string()
+#
+#    def testCanStringHTML(self):
+#        self.x.get_html_string()
+#
+#    def testAddFieldnamesLater(self):
+#        self.x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+#        self.x.get_string()
+
 class CityDataTest(unittest.TestCase):
 
     """Just build the Australian capital city data example table."""
@@ -165,7 +189,7 @@ class SlicingTests(CityDataTest):
         CityDataTest.setUp(self)
 
     def testSliceFirstTwoRows(self):
-	y = self.x[0:2]
+        y = self.x[0:2]
         string = y.get_string()
         assert len(string.split("\n")) == 6
         assert "Adelaide" in string
@@ -174,7 +198,7 @@ class SlicingTests(CityDataTest):
         assert "Perth" not in string
 
     def testSliceLastTwoRows(self):
-	y = self.x[-2:]
+        y = self.x[-2:]
         string = y.get_string()
         assert len(string.split("\n")) == 6
         assert "Adelaide" not in string
@@ -226,6 +250,14 @@ class SortingTests(CityDataTest):
 | Melbourne | 1566 |  3806092   |      646.9      |
 +-----------+------+------------+-----------------+
 """.strip()
+
+class IntegerFormatBasicTests(BasicTests):
+
+    """Run the basic tests after setting an integer format string"""
+
+    def setUp(self):
+        BasicTests.setUp(self)
+        self.x.int_format = "04"
 
 class FloatFormatBasicTests(BasicTests):
 

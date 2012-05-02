@@ -155,7 +155,12 @@ class PrettyTable(object):
         if name == "rowcount":
             return len(self._rows)
         elif name == "colcount":
-            return len(self._field_names)
+            if self._field_names:
+                return len(self._field_names)
+            elif self._rows:
+                return len(self._rows[0])
+            else:
+                return 0
         else:
             raise AttributeError(name)
  
@@ -237,7 +242,7 @@ class PrettyTable(object):
             return
         try:
             assert type(val) in (str, unicode)
-            assert val.isnumeric()
+            assert val.isdigit()
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be an integer format string." % name)
 
@@ -636,7 +641,7 @@ class PrettyTable(object):
         row - row of data, should be a list with as many elements as the table
         has fields"""
 
-        if len(row) != len(self._field_names):
+        if self._field_names and len(row) != len(self._field_names):
             raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._field_names)))
         self._rows.append(list(row))
 
