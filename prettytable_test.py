@@ -98,7 +98,7 @@ class CityDataTest(unittest.TestCase):
 
 class OptionOverrideTests(CityDataTest):
 
-    """Make sure all options are properly overwritten by printt."""
+    """Make sure all options are properly overwritten by get_string."""
 
     def testBorder(self):
         default = self.x.get_string()

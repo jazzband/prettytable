@@ -31,9 +31,10 @@
 
 __version__ = "TRUNK"
 
-import sys
 import copy
+import cStringIO
 import random
+import sys
 import textwrap
 
 py3k = sys.version_info[0] >= 3
@@ -751,7 +752,10 @@ class PrettyTable(object):
             # Undecorate
             rows = [row[1:] for row in rows]
         return rows
-         
+        
+    def _format_rows(self, rows, options):
+        return rows
+ 
     ##############################
     # PLAIN TEXT STRING METHODS  #
     ##############################
@@ -782,7 +786,7 @@ class PrettyTable(object):
 
         options = self._get_options(kwargs)
 
-        bits = []
+        string = cStringIO.StringIO()
 
         # Don't think too hard about an empty table
         if self.rowcount == 0:
@@ -791,29 +795,36 @@ class PrettyTable(object):
         rows = self._get_rows(options)
         self._compute_widths(rows, options)
 
+        formatted_rows = self._format_rows(rows, options)
+
         # Build rows
         # (for now, this is done before building headers etc. because rowbits.append
         # contains width-adjusting voodoo which has to be done first.  This is ugly
         # and Wrong and will change soon)
         rowbits = []
-        for row in rows:
+        for row in formatted_rows:
             rowbits.append(self._stringify_row(row, options))
 
 
         # Add header or top of border
         if options["header"]:
-            bits.append(self._stringify_header(options))
+            string.write(self._stringify_header(options))
+           # string.write("\n")
         elif options["border"] and options["hrules"] != NONE:
-            bits.append(self._hrule)
+            string.write(self._hrule)
+           # string.write("\n")
 
         # Add rows
-        bits.extend(rowbits)
+        for rowbit in rowbits:
+            string.write("\n")
+            string.write(rowbit)
 
         # Add bottom of border
         if options["border"] and not options["hrules"]:
-            bits.append(self._hrule)
+            string.write("\n")
+            string.write(self._hrule)
         
-        string = "\n".join(bits)
+        string = string.getvalue()
         self._nonunicode = string
         return _unicode(string)
 
@@ -828,6 +839,7 @@ class PrettyTable(object):
                 continue
             bits.append((width+lpad+rpad)*options["horizontal_char"])
             bits.append(options["junction_char"])
+#        bits.append("\n")
         return "".join(bits)
 
     def _stringify_header(self, options):
