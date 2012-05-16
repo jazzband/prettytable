@@ -83,7 +83,6 @@ class PrettyTable(object):
 
         field_names - list or tuple of field names
         fields - list or tuple of field names to include in displays
-        caching - boolean value to turn string caching on/off
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
@@ -114,7 +113,7 @@ class PrettyTable(object):
         self._rows = []
 
         # Options
-        self._options = "start end fields header border sortby reversesort sort_key attributes format hrules caching".split()
+        self._options = "start end fields header border sortby reversesort sort_key attributes format hrules".split()
         self._options.extend("int_format float_format padding_width left_padding_width right_padding_width".split())
         self._options.extend("vertical_char horizontal_char junction_char".split())
         for option in self._options:
@@ -123,7 +122,6 @@ class PrettyTable(object):
             else:
                 kwargs[option] = None
 
-        self._caching = kwargs["caching"] or True
 
         self._start = kwargs["start"] or 0
         self._end = kwargs["end"] or None
@@ -206,7 +204,7 @@ class PrettyTable(object):
             self._validate_hrules(option, val)
         elif option in ("fields"):
             self._validate_all_field_names(option, val)
-        elif option in ("header", "border", "caching", "reversesort"):
+        elif option in ("header", "border", "reversesort"):
             self._validate_true_or_false(option, val)
         elif option in ("int_format"):
             self._validate_int_format(option, val)
