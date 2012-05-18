@@ -32,7 +32,6 @@
 __version__ = "TRUNK"
 
 import copy
-import cStringIO
 import random
 import sys
 import textwrap
@@ -42,8 +41,10 @@ if py3k:
     unicode = str
     basestring = str
     from html import escape
+    from io import StringIO
 else:
     from cgi import escape
+    from cStringIO import StringIO
 
 # hrule styles
 FRAME = 0
@@ -195,7 +196,7 @@ class PrettyTable(object):
     # Secondly, in the _get_options method, where keyword arguments are mixed with persistent settings
 
     def _validate_option(self, option, val):
-        if option in ("start", "end", "padding_width", "left_padding_width", "right_padding_width", "format"):
+        if option in ("start", "end", "max_width", "padding_width", "left_padding_width", "right_padding_width", "format"):
             self._validate_nonnegative_int(option, val)
         elif option in ("sortby"):
             self._validate_field_name(option, val)
@@ -331,7 +332,7 @@ class PrettyTable(object):
     def _get_max_width(self):
         return self._max_width
     def _set_max_width(self, val):
-        self._validate_nonnegativeint(val)
+        self._validate_option("max_width", val)
         for field in self._field_names:
             self._max_width[field] = val
     max_width = property(_get_max_width, _set_max_width)
@@ -549,7 +550,7 @@ class PrettyTable(object):
         attributes - dictionary of attributes"""
         return self._attributes
     def _set_attributes(self, val):
-        self.validate_option("attributes", val)
+        self._validate_option("attributes", val)
         self._attributes = val
     attributes = property(_get_attributes, _set_attributes)
 
@@ -786,7 +787,7 @@ class PrettyTable(object):
 
         options = self._get_options(kwargs)
 
-        string = cStringIO.StringIO()
+        string = StringIO()
 
         # Don't think too hard about an empty table
         if self.rowcount == 0:

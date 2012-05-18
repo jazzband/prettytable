@@ -121,6 +121,38 @@ class OptionOverrideTests(CityDataTest):
         override = self.x.get_string(hrules=NONE)
         self.assertTrue(default != override)
 
+class OptionAttributeTests(CityDataTest):
+
+    """Make sure all options which have an attribute interface work as they should."""
+
+    def testSetForAllColumns(self):
+        self.x.field_names = sorted(self.x.field_names)
+        self.x.align = "l"
+        self.x.max_width = 10
+        self.x.start = 2
+        self.x.end = 4
+        self.x.sortby = "Area"
+        self.x.reversesort = True
+        self.x.header = True
+        self.x.border = False
+        self.x.hrule = True
+        self.x.int_format = "4"
+        self.x.float_format = "2.2"
+        self.x.padding_width = 2
+        self.x.left_padding_width = 2
+        self.x.right_padding_width = 2
+        self.x.vertical_char = "!"
+        self.x.horizontal_char = "~"
+        self.x.junction_char = "*"
+        self.x.format = True
+        self.x.attributes = {"class" : "prettytable"}
+
+    def testSetForOneColumn(self):
+        self.x.align["Rainfall"] = "l"
+        self.x.max_width["Name"] = 10
+        self.x.int_format["Population"] = "4"
+        self.x.float_format["Area"] = "2.2"
+
 class BasicTests(CityDataTest):
 
     """Some very basic tests."""

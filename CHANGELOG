@@ -1,3 +1,8 @@
+########## PrettyTable 0.7 - MM DD, 2012 ##########
+
+* Fixed a simple bug regarding validation of max_width (thanks to
+  Anthony Toole for pointing out this bug and providing a patch).
+
 ########## PrettyTable 0.6 - April XX, 2012 ##########
 
 * Code is now simultaneously compatible with Python 2 and 3
