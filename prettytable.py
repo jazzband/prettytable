@@ -58,15 +58,10 @@ PLAIN_COLUMNS = 12
 RANDOM = 20
 
 def _get_size(text):
-    max_width = 0
-    max_height = 0
-    text = _unicode(text)
-    for line in text.split("\n"):
-        max_height += 1
-        if len(line) > max_width:
-            max_width = len(line)
-
-    return (max_width, max_height)
+    lines = text.split("\n")
+    height = len(lines)
+    width = max([len(line) for line in lines])
+    return (width, height)
         
 def _unicode(value, encoding="UTF-8"):
     if not isinstance(value, basestring):
@@ -706,10 +701,10 @@ class PrettyTable(object):
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            value = ("%%%sd" % self._int_format[field]) % value 
+            value = _unicode(("%%%sd" % self._int_format[field]) % value)
         elif isinstance(value, float) and field in self._float_format:
-            value = ("%%%sf" % self._float_format[field]) % value 
-        return value
+            value = _unicode(("%%%sf" % self._float_format[field]) % value)
+        return _unicode(value)
 
     def _compute_widths(self, rows, options):
         if options["header"]:
@@ -754,8 +749,14 @@ class PrettyTable(object):
             rows = [row[1:] for row in rows]
         return rows
         
+    def _format_row(self, row, options):
+        fields = self._field_names
+        if options["fields"]:
+            fields = options["fields"]
+        return [self._format_value(field, value) for (field, value) in zip(fields, row)]
+
     def _format_rows(self, rows, options):
-        return rows
+        return [self._format_row(row, options) for row in rows]
  
     ##############################
     # PLAIN TEXT STRING METHODS  #
@@ -790,35 +791,30 @@ class PrettyTable(object):
         string = StringIO()
 
         # Don't think too hard about an empty table
+        # Is this the desired behaviour?  Maybe we should still print the header?
         if self.rowcount == 0:
             return ""
 
+	# Get the rows we need to print, taking into account slicing, sorting, etc.
         rows = self._get_rows(options)
-        self._compute_widths(rows, options)
 
+	# Turn all data in all rows into Unicode, formatted as desired
         formatted_rows = self._format_rows(rows, options)
 
-        # Build rows
-        # (for now, this is done before building headers etc. because rowbits.append
-        # contains width-adjusting voodoo which has to be done first.  This is ugly
-        # and Wrong and will change soon)
-        rowbits = []
-        for row in formatted_rows:
-            rowbits.append(self._stringify_row(row, options))
-
+	# Compute column widths
+        self._compute_widths(formatted_rows, options)
 
         # Add header or top of border
+        self._hrule = self._stringify_hrule(options)
         if options["header"]:
             string.write(self._stringify_header(options))
-           # string.write("\n")
         elif options["border"] and options["hrules"] != NONE:
             string.write(self._hrule)
-           # string.write("\n")
 
         # Add rows
-        for rowbit in rowbits:
+        for row in formatted_rows:
             string.write("\n")
-            string.write(rowbit)
+            string.write(self._stringify_row(row, options))
 
         # Add bottom of border
         if options["border"] and not options["hrules"]:
@@ -840,7 +836,6 @@ class PrettyTable(object):
                 continue
             bits.append((width+lpad+rpad)*options["horizontal_char"])
             bits.append(options["junction_char"])
-#        bits.append("\n")
         return "".join(bits)
 
     def _stringify_header(self, options):
@@ -870,13 +865,10 @@ class PrettyTable(object):
 
     def _stringify_row(self, row, options):
         
-        for index, value in enumerate(row):
-            row[index] = self._format_value(self.field_names[index], value)
-
         for index, field, value, width, in zip(range(0,len(row)), self._field_names, row, self._widths):
             # Enforce max widths
             max_width = self._max_width.get(field, 0)
-            lines = _unicode(value).split("\n")
+            lines = value.split("\n")
             new_lines = []
             for line in lines: 
                 if max_width and len(line) > max_width:
@@ -886,16 +878,6 @@ class PrettyTable(object):
             value = "\n".join(lines)
             row[index] = value
 
-        #old_widths = self._widths[:]
-
-        for index, field in enumerate(self._field_names):
-            namewidth = len(field)
-            datawidth = min(self._widths[index], self._max_width.get(field, self._widths[index]))
-            if options["header"]:
-               self._widths[index] = max(namewidth, datawidth)
-            else:
-               self._widths[index] = datawidth
-        
         row_height = 0
         for c in row:
             h = _get_size(c)[1]
@@ -911,7 +893,7 @@ class PrettyTable(object):
 
         for field, value, width, in zip(self._field_names, row, self._widths):
 
-            lines = _unicode(value).split("\n")
+            lines = value.split("\n")
             if len(lines) < row_height:
                 lines = lines + ([""] * (row_height-len(lines)))
 
@@ -921,17 +903,16 @@ class PrettyTable(object):
                     continue
 
                 if self._align[field] == "l":
-                    bits[y].append(" " * lpad + _unicode(l).ljust(width) + " " * rpad)
+                    bits[y].append(" " * lpad + l.ljust(width) + " " * rpad)
                 elif self._align[field] == "r":
-                    bits[y].append(" " * lpad + _unicode(l).rjust(width) + " " * rpad)
+                    bits[y].append(" " * lpad + l.rjust(width) + " " * rpad)
                 else:
-                    bits[y].append(" " * lpad + _unicode(l).center(width) + " " * rpad)
+                    bits[y].append(" " * lpad + l.center(width) + " " * rpad)
                 if options["border"]:
                     bits[y].append(self.vertical_char)
 
                 y += 1
 
-        self._hrule = self._stringify_hrule(options)
         
         if options["border"] and options["hrules"]== ALL:
             bits[row_height-1].append("\n")
@@ -939,8 +920,6 @@ class PrettyTable(object):
 
         for y in range(0, row_height):
             bits[y] = "".join(bits[y])
-
-        #self._widths = old_widths
 
         return "\n".join(bits)
 
