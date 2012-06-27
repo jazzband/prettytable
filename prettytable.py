@@ -40,11 +40,13 @@ py3k = sys.version_info[0] >= 3
 if py3k:
     unicode = str
     basestring = str
-    from html import escape
     from io import StringIO
 else:
-    from cgi import escape
     from cStringIO import StringIO
+if py3k and sys.version_info[1] >= 2:
+    from html import escape
+else:
+    from cgi import escape
 
 # hrule styles
 FRAME = 0
