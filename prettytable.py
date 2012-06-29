@@ -87,12 +87,13 @@ class PrettyTable(object):
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
         header - print a header showing field names (True or False)
+        header_style - stylisation to apply to field names in header ("cap", "title", "upper", "lower" or None)
         border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE
 	int_format - controls formatting of integer data
 	float_format - controls formatting of floating point data
         padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
-        left_padding-2012_width - number of spaces on left hand side of column data
+        left_padding_width - number of spaces on left hand side of column data
         right_padding_width - number of spaces on right hand side of column data
         vertical_char - single character string used to draw vertical lines
         horizontal_char - single character string used to draw horizontal lines
@@ -115,7 +116,7 @@ class PrettyTable(object):
         # Options
         self._options = "start end fields header border sortby reversesort sort_key attributes format hrules".split()
         self._options.extend("int_format float_format padding_width left_padding_width right_padding_width".split())
-        self._options.extend("vertical_char horizontal_char junction_char".split())
+        self._options.extend("vertical_char horizontal_char junction_char header_style".split())
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
@@ -128,6 +129,7 @@ class PrettyTable(object):
         self._fields = kwargs["fields"] or None
 
         self._header = kwargs["header"] or True
+        self._header_style = kwargs["header_style"] or None
         self._border = kwargs["border"] or True
         self._hrules = kwargs["hrules"] or FRAME
 
@@ -208,6 +210,8 @@ class PrettyTable(object):
             self._validate_all_field_names(option, val)
         elif option in ("header", "border", "reversesort"):
             self._validate_true_or_false(option, val)
+        elif option in ("header_style"):
+            self._validate_header_style(val)
         elif option in ("int_format"):
             self._validate_int_format(option, val)
         elif option in ("float_format"):
@@ -236,6 +240,12 @@ class PrettyTable(object):
             assert len(val) == len(set(val))
         except AssertionError:
             raise Exception("Field names must be unique!")
+
+    def _validate_header_style(self, val):
+        try:
+            assert val in ("cap", "title", "upper", "lower", None)
+        except AssertionError:
+            raise Exception("Invalid header style, use cap, title, upper, lower or None!")
 
     def _validate_align(self, val):
         try:
@@ -428,6 +438,18 @@ class PrettyTable(object):
         self._validate_option("header", val)
         self._header = val
     header = property(_get_header, _set_header)
+
+    def _get_header_style(self):
+        """Controls stylisation applied to field names in header
+
+        Arguments:
+
+        header_style - stylisation to apply to field names in header ("cap", "title", "upper", "lower" or None)"""
+        return self._header_style
+    def _set_header_style(self, val):
+        self._validate_header_style(val)
+        self._header_style = val
+    header_style = property(_get_header_style, _set_header_style)
 
     def _get_border(self):
         """Controls printing of border around table
@@ -876,12 +898,22 @@ class PrettyTable(object):
         for field, width, in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
-            if self._align[field] == "l":
-                bits.append(" " * lpad + _unicode(field).ljust(width) + " " * rpad)
-            elif self._align[field] == "r":
-                bits.append(" " * lpad + _unicode(field).rjust(width) + " " * rpad)
+            if self._header_style == "cap":
+                fieldname = field.capitalize()
+            elif self._header_style == "title":
+                fieldname = field.title()
+            elif self._header_style == "upper":
+                fieldname = field.upper()
+            elif self._header_style == "lower":
+                fieldname = field.lower()
             else:
-                bits.append(" " * lpad + _unicode(field).center(width) + " " * rpad)
+                fieldname = field
+            if self._align[field] == "l":
+                bits.append(" " * lpad + _unicode(fieldname).ljust(width) + " " * rpad)
+            elif self._align[field] == "r":
+                bits.append(" " * lpad + _unicode(fieldname).rjust(width) + " " * rpad)
+            else:
+                bits.append(" " * lpad + _unicode(fieldname).center(width) + " " * rpad)
             if options["border"]:
                 bits.append(options["vertical_char"])
         if options["border"] and options["hrules"] != NONE:
