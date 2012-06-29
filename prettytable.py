@@ -32,6 +32,7 @@
 __version__ = "TRUNK"
 
 import copy
+import csv
 import random
 import sys
 import textwrap
@@ -1066,6 +1067,30 @@ class PrettyTable(object):
 
         self._nonunicode = string
         return _unicode(string)
+
+##############################
+# TABLE FACTORIES            #
+##############################
+
+def from_csv(fp, field_names = None):
+    dialect = csv.Sniffer().sniff(fp.read(1024))
+    fp.seek(0)
+    reader = csv.reader(fp, dialect)
+
+    table = PrettyTable()
+    if field_names:
+        table.field_names = field_names
+    else:
+        table.field_names = reader.next()
+
+    for row in reader:
+        table.add_row(row)
+
+    return table
+
+##############################
+# MAIN (TEST FUNCTION)       #
+##############################
 
 def main():
 
