@@ -91,7 +91,7 @@ class PrettyTable(object):
 	int_format - controls formatting of integer data
 	float_format - controls formatting of floating point data
         padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
-        left_padding_width - number of spaces on left hand side of column data
+        left_padding-2012_width - number of spaces on left hand side of column data
         right_padding_width - number of spaces on right hand side of column data
         vertical_char - single character string used to draw vertical lines
         horizontal_char - single character string used to draw horizontal lines
@@ -193,7 +193,9 @@ class PrettyTable(object):
     # Secondly, in the _get_options method, where keyword arguments are mixed with persistent settings
 
     def _validate_option(self, option, val):
-        if option in ("start", "end", "max_width", "padding_width", "left_padding_width", "right_padding_width", "format"):
+        if option in ("field_names"):
+            self._validate_field_names(val)
+        elif option in ("start", "end", "max_width", "padding_width", "left_padding_width", "right_padding_width", "format"):
             self._validate_nonnegative_int(option, val)
         elif option in ("sortby"):
             self._validate_field_name(option, val)
@@ -215,6 +217,24 @@ class PrettyTable(object):
             self._validate_attributes(option, val)
         else:
             raise Exception("Unrecognised option: %s!" % option)
+
+    def _validate_field_names(self, val):
+        # Check for appropriate length
+        if self._field_names:
+            try:
+               assert len(val) == len(self._field_names)
+            except AssertionError:
+               raise Exception("Field name list has incorrect number of values, (actual) %d!=%d (expected)" % (len(val), len(self._field_names)))
+        if self._rows:
+            try:
+               assert len(val) == len(self._rows[0])
+            except AssertionError:
+               raise Exception("Field name list has incorrect number of values, (actual) %d!=%d (expected)" % (len(val), len(self._rows[0])))
+        # Check for uniqueness
+        try:
+            assert len(val) == len(set(val))
+        except AssertionError:
+            raise Exception("Field names must be unique!")
 
     def _validate_align(self, val):
         try:
@@ -305,6 +325,7 @@ class PrettyTable(object):
 
         fields - list or tuple of field names"""
     def _set_field_names(self, val):
+        self._validate_option("field_names", val)
         if self._field_names:
             old_names = self._field_names[:]
         self._field_names = val
@@ -640,6 +661,8 @@ class PrettyTable(object):
 
         if self._field_names and len(row) != len(self._field_names):
             raise Exception("Row has incorrect number of values, (actual) %d!=%d (expected)" %(len(row),len(self._field_names)))
+        if not self._field_names:
+            self.field_names = [("Field %d" % (n+1)) for n in range(0,len(row))]
         self._rows.append(list(row))
 
     def del_row(self, row_index):
@@ -715,8 +738,11 @@ class PrettyTable(object):
             widths = len(self.field_names) * [0]
         for row in rows:
             for index, value in enumerate(row):
-                value = self._format_value(self.field_names[index], value)
-                widths[index] = max(widths[index], _get_size(_unicode(value))[0])
+                fieldname = self.field_names[index]
+                if fieldname in self.max_width:
+                    widths[index] = max(widths[index], min(_get_size(value)[0], self.max_width[fieldname]))
+                else:
+                    widths[index] = max(widths[index], _get_size(value)[0])
         self._widths = widths
 
     def _get_padding_widths(self, options):
@@ -869,12 +895,11 @@ class PrettyTable(object):
         
         for index, field, value, width, in zip(range(0,len(row)), self._field_names, row, self._widths):
             # Enforce max widths
-            max_width = self._max_width.get(field, 0)
             lines = value.split("\n")
             new_lines = []
             for line in lines: 
-                if max_width and len(line) > max_width:
-                    line = textwrap.fill(line, max_width)
+                if len(line) > width:
+                    line = textwrap.fill(line, width)
                 new_lines.append(line)
             lines = new_lines
             value = "\n".join(lines)
@@ -962,81 +987,82 @@ class PrettyTable(object):
 
     def _get_simple_html_string(self, options):
 
-        bits = []
-        # Slow but works
-        table_tag = '<table'
+        string = StringIO()
+
+        string.write("<table")
         if options["border"]:
-            table_tag += ' border="1"'
+            string.write(" border=\"1\"")
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                table_tag += ' %s="%s"' % (attr_name, options["attributes"][attr_name])
-        table_tag += '>'
-        bits.append(table_tag)
+                string.write(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
+        string.write(">\n")
 
         # Headers
         if options["header"]:
-            bits.append("    <tr>")
+            string.write("    <tr>\n")
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <th>%s</th>" % escape(_unicode(field)).replace("\n", "<br />"))
-            bits.append("    </tr>")
+                string.write("        <th>%s</th>\n" % escape(_unicode(field)).replace("\n", "<br />"))
+            string.write("    </tr>\n")
 
         # Data
         rows = self._get_rows(options)
-        for row in rows:
-            bits.append("    <tr>")
+        formatted_rows = self._format_rows(rows, options)
+        for row in formatted_rows:
+            string.write("    <tr>\n")
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <td>%s</td>" % escape(_unicode(datum)).replace("\n", "<br />"))
-            bits.append("    </tr>")
+                string.write("        <td>%s</td>\n" % escape(datum).replace("\n", "<br />"))
+            string.write("    </tr>\n")
 
-        bits.append("</table>")
-        string = "\n".join(bits)
+        string.write("</table>")
+        string = string.getvalue()
 
         self._nonunicode = string
         return _unicode(string)
 
     def _get_formatted_html_string(self, options):
 
-        bits = []
+        string = StringIO()
+
         lpad, rpad = self._get_padding_widths(options)
-        # Slow but works
-        table_tag = '<table'
+        string.write("<table")
         if options["border"]:
-            table_tag += ' border="1"'
+            string.write(" border=\"1\"")
         if options["hrules"] == NONE:
-            table_tag += ' frame="vsides" rules="cols"'
+            string.write(" frame=\"vsides\" rules=\"cols\"")
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                table_tag += ' %s="%s"' % (attr_name, options["attributes"][attr_name])
-        table_tag += '>'
-        bits.append(table_tag)
+                string.write(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
+        string.write(">\n")
+
         # Headers
         if options["header"]:
-            bits.append("    <tr>")
+            string.write("    <tr>\n")
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                bits.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, escape(_unicode(field)).replace("\n", "<br />")))
-            bits.append("    </tr>")
+                string.write("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>\n" % (lpad, rpad, escape(_unicode(field)).replace("\n", "<br />")))
+            string.write("    </tr>\n")
+
         # Data
         rows = self._get_rows(options)
-        for row in self._rows:
-            bits.append("    <tr>")
-            for field, datum in zip(self._field_names, row):
+        formatted_rows = self._format_rows(rows, options)
+        aligns = []
+        for field in self._field_names:
+                aligns.append({ "l" : "left", "r" : "right", "c" : "center" }[self._align[field]])
+        for row in formatted_rows:
+            string.write("    <tr>\n")
+            for field, datum, align in zip(self._field_names, row, aligns):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                if self._align[field] == "l":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: left\">%s</td>" % (lpad, rpad, escape(_unicode(datum)).replace("\n", "<br />")))
-                elif self._align[field] == "r":
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: right\">%s</td>" % (lpad, rpad, escape(_unicode(datum)).replace("\n", "<br />")))
-                else:
-                    bits.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</td>" % (lpad, rpad, escape(_unicode(datum)).replace("\n", "<br />")))
-            bits.append("    </tr>")
-        bits.append("</table>")
-        string = "\n".join(bits)
+                string.write("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: %s\">%s</td>\n" % (lpad, rpad, align, escape(datum).replace("\n", "<br />")))
+            string.write("    </tr>\n")
+        string.write("</table>\n")
+
+        string = string.getvalue()
 
         self._nonunicode = string
         return _unicode(string)
