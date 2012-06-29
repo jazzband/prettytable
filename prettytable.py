@@ -779,10 +779,7 @@ class PrettyTable(object):
         return rows
         
     def _format_row(self, row, options):
-        fields = self._field_names
-        if options["fields"]:
-            fields = options["fields"]
-        return [self._format_value(field, value) for (field, value) in zip(fields, row)]
+        return [self._format_value(field, value) for (field, value) in zip(self._field_names, row)]
 
     def _format_rows(self, rows, options):
         return [self._format_row(row, options) for row in rows]
@@ -1073,6 +1070,7 @@ class PrettyTable(object):
 ##############################
 
 def from_csv(fp, field_names = None):
+
     dialect = csv.Sniffer().sniff(fp.read(1024))
     fp.seek(0)
     reader = csv.reader(fp, dialect)
@@ -1086,6 +1084,14 @@ def from_csv(fp, field_names = None):
     for row in reader:
         table.add_row(row)
 
+    return table
+
+def from_db_cursor(cursor):
+
+    table = PrettyTable()
+    table.field_names = [col[0] for col in cursor.description]
+    for row in cursor.fetchall():
+        table.add_row(row)
     return table
 
 ##############################
