@@ -297,7 +297,7 @@ class FloatFormatBasicTests(BasicTests):
 
     def setUp(self):
         BasicTests.setUp(self)
-        self.x.float_format = "6.2"
+        self.x.float_format = "6.2f"
 
 class FloatFormatTests(unittest.TestCase):
 
@@ -308,12 +308,12 @@ class FloatFormatTests(unittest.TestCase):
         self.x.add_row(["sqrt(2)", sqrt(2)]) 
 
     def testNoDecimals(self):
-        self.x.float_format = ".0"
+        self.x.float_format = ".0f"
         self.x.caching = False
         assert "." not in self.x.get_string()
 
     def testRoundTo5DP(self):
-        self.x.float_format = ".5"
+        self.x.float_format = ".5f"
         string = self.x.get_string()
         assert "3.14159" in string
         assert "3.141592" not in string
@@ -324,7 +324,7 @@ class FloatFormatTests(unittest.TestCase):
         assert "1.414213" not in string
 
     def testPadWith2Zeroes(self):
-        self.x.float_format = "06.2"
+        self.x.float_format = "06.2f"
         string = self.x.get_string()
         assert "003.14" in string
         assert "002.72" in string

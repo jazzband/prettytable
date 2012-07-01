@@ -212,10 +212,10 @@ class PrettyTable(object):
             self._validate_true_or_false(option, val)
         elif option in ("header_style"):
             self._validate_header_style(val)
-        elif option in ("int_format"):
-            self._validate_int_format(option, val)
-        elif option in ("float_format"):
-            self._validate_float_format(option, val)
+#        elif option in ("int_format"):
+#            self._validate_int_format(option, val)
+#        elif option in ("float_format"):
+#            self._validate_float_format(option, val)
         elif option in ("vertical_char", "horizontal_char", "junction_char"):
             self._validate_single_char(option, val)
         elif option in ("attributes"):
@@ -482,7 +482,7 @@ class PrettyTable(object):
         int_format - integer format string"""
         return self._int_format
     def _set_int_format(self, val):
-        self._validate_option("int_format", val)
+#        self._validate_option("int_format", val)
         for field in self._field_names:
             self._int_format[field] = val
     int_format = property(_get_int_format, _set_int_format)
@@ -494,7 +494,7 @@ class PrettyTable(object):
         float_format - floating point format string"""
         return self._float_format
     def _set_float_format(self, val):
-        self._validate_option("float_format", val)
+#        self._validate_option("float_format", val)
         for field in self._field_names:
             self._float_format[field] = val
     float_format = property(_get_float_format, _set_float_format)
@@ -749,9 +749,9 @@ class PrettyTable(object):
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            value = _unicode(("%%%sd" % self._int_format[field]) % value)
+            value = _unicode(("{0:" + self._int_format[field] + "}").format(value))
         elif isinstance(value, float) and field in self._float_format:
-            value = _unicode(("%%%sf" % self._float_format[field]) % value)
+            value = _unicode(("{0:" + self._float_format[field] + "}").format(value))
         return _unicode(value)
 
     def _compute_widths(self, rows, options):
@@ -1135,8 +1135,8 @@ def main():
     x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
     x.sortby = "Population"
     x.reversesort = True
-    x.int_format["Area"] = "04"
-    x.float_format = "6.1"
+    x.int_format["Area"] = "04d"
+    x.float_format = "6.1f"
     x.align["City name"] = "l" # Left align city names
     x.add_row(["Adelaide", 1295, 1158259, 600.5])
     x.add_row(["Brisbane", 5905, 1857594, 1146.4])
