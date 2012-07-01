@@ -41,9 +41,6 @@ py3k = sys.version_info[0] >= 3
 if py3k:
     unicode = str
     basestring = str
-    from io import StringIO
-else:
-    from cStringIO import StringIO
 if py3k and sys.version_info[1] >= 2:
     from html import escape
 else:
@@ -66,13 +63,6 @@ def _get_size(text):
     width = max([len(line) for line in lines])
     return (width, height)
         
-def _unicode(value, encoding="UTF-8"):
-    if not isinstance(value, basestring):
-        value = str(value)
-    if not isinstance(value, unicode):
-        value = unicode(value, encoding, "replace")
-    return value
-
 class PrettyTable(object):
 
     def __init__(self, field_names=None, **kwargs):
@@ -81,6 +71,7 @@ class PrettyTable(object):
 
         Arguments:
 
+        encoding - Unicode encoding scheme used to decode any encoded input
         field_names - list or tuple of field names
         fields - list or tuple of field names to include in displays
         start - index of first data row to include in output
@@ -101,6 +92,11 @@ class PrettyTable(object):
         sortby - name of field to sort rows by
         sort_key - sorting key function, applied to data points before sorting
         reversesort - True or False to sort in descending or ascending order"""
+
+        if "encoding" in kwargs:
+            self.encoding = kwargs["encoding"]
+        else:
+            self.encoding = "UTF-8"
 
         # Data
         self._field_names = []
@@ -143,13 +139,20 @@ class PrettyTable(object):
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
 
-        self._vertical_char = kwargs["vertical_char"] or "|"
-        self._horizontal_char = kwargs["horizontal_char"] or "-"
-        self._junction_char = kwargs["junction_char"] or "+"
+        self._vertical_char = kwargs["vertical_char"] or self._unicode("|")
+        self._horizontal_char = kwargs["horizontal_char"] or self._unicode("-")
+        self._junction_char = kwargs["junction_char"] or self._unicode("+")
         
         self._format = kwargs["format"] or False
         self._attributes = kwargs["attributes"] or {}
    
+    def _unicode(self, value):
+        if not isinstance(value, basestring):
+            value = str(value)
+        if not isinstance(value, unicode):
+            value = unicode(value, self.encoding, "strict")
+        return value
+
     def __getattr__(self, name):
 
         if name == "rowcount":
@@ -176,10 +179,7 @@ class PrettyTable(object):
         return newtable
 
     def __str__(self):
-        if py3k:
-            return self.get_string()
-        else:
-            return self.get_string().encode("ascii","replace")
+        return self.__unicode__().encode(self.encoding)
 
     def __unicode__(self):
         return self.get_string()
@@ -257,7 +257,7 @@ class PrettyTable(object):
         try:
             assert int(val) >= 0
         except AssertionError:
-            raise Exception("Invalid value for %s: %s!" % (name, _unicode(val)))
+            raise Exception("Invalid value for %s: %s!" % (name, self._unicode(val)))
 
     def _validate_true_or_false(self, name, val):
         try:
@@ -314,7 +314,7 @@ class PrettyTable(object):
 
     def _validate_single_char(self, name, val):
         try:
-            assert len(_unicode(val)) == 1
+            assert len(val) == 1
         except AssertionError:
             raise Exception("Invalid value for %s!  Must be a string of length 1." % name)
 
@@ -336,6 +336,7 @@ class PrettyTable(object):
 
         fields - list or tuple of field names"""
     def _set_field_names(self, val):
+        val = [self._unicode(x) for x in val]
         self._validate_option("field_names", val)
         if self._field_names:
             old_names = self._field_names[:]
@@ -543,6 +544,7 @@ class PrettyTable(object):
         vertical_char - single character string used to draw vertical lines"""
         return self._vertical_char
     def _set_vertical_char(self, val):
+        val = self._unicode(val)
         self._validate_option("vertical_char", val)
         self._vertical_char = val
     vertical_char = property(_get_vertical_char, _set_vertical_char)
@@ -555,6 +557,7 @@ class PrettyTable(object):
         horizontal_char - single character string used to draw horizontal lines"""
         return self._horizontal_char
     def _set_horizontal_char(self, val):
+        val = self._unicode(val)
         self._validate_option("horizontal_char", val)
         self._horizontal_char = val
     horizontal_char = property(_get_horizontal_char, _set_horizontal_char)
@@ -567,6 +570,7 @@ class PrettyTable(object):
         junction_char - single character string used to draw line junctions"""
         return self._junction_char
     def _set_junction_char(self, val):
+        val = self._unicode(val)
         self._validate_option("vertical_char", val)
         self._junction_char = val
     junction_char = property(_get_junction_char, _set_junction_char)
@@ -749,10 +753,10 @@ class PrettyTable(object):
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            value = _unicode(("{0:" + self._int_format[field] + "}").format(value))
+            value = self._unicode(("{0:" + self._int_format[field] + "}").format(value))
         elif isinstance(value, float) and field in self._float_format:
-            value = _unicode(("{0:" + self._float_format[field] + "}").format(value))
-        return _unicode(value)
+            value = self._unicode(("{0:" + self._float_format[field] + "}").format(value))
+        return self._unicode(value)
 
     def _compute_widths(self, rows, options):
         if options["header"]:
@@ -836,7 +840,7 @@ class PrettyTable(object):
 
         options = self._get_options(kwargs)
 
-        string = StringIO()
+        lines = []
 
         # Don't think too hard about an empty table
         # Is this the desired behaviour?  Maybe we should still print the header?
@@ -855,23 +859,19 @@ class PrettyTable(object):
         # Add header or top of border
         self._hrule = self._stringify_hrule(options)
         if options["header"]:
-            string.write(self._stringify_header(options))
+            lines.append(self._stringify_header(options))
         elif options["border"] and options["hrules"] != NONE:
-            string.write(self._hrule)
+            lines.append(self._hrule)
 
         # Add rows
         for row in formatted_rows:
-            string.write("\n")
-            string.write(self._stringify_row(row, options))
+            lines.append(self._stringify_row(row, options))
 
         # Add bottom of border
         if options["border"] and not options["hrules"]:
-            string.write("\n")
-            string.write(self._hrule)
+            lines.append(self._hrule)
         
-        string = string.getvalue()
-        self._nonunicode = string
-        return _unicode(string)
+        return self._unicode("\n").join(lines)
 
     def _stringify_hrule(self, options):
 
@@ -909,11 +909,11 @@ class PrettyTable(object):
             else:
                 fieldname = field
             if self._align[field] == "l":
-                bits.append(" " * lpad + _unicode(fieldname).ljust(width) + " " * rpad)
+                bits.append(" " * lpad + fieldname.ljust(width) + " " * rpad)
             elif self._align[field] == "r":
-                bits.append(" " * lpad + _unicode(fieldname).rjust(width) + " " * rpad)
+                bits.append(" " * lpad + fieldname.rjust(width) + " " * rpad)
             else:
-                bits.append(" " * lpad + _unicode(fieldname).center(width) + " " * rpad)
+                bits.append(" " * lpad + fieldname.center(width) + " " * rpad)
             if options["border"]:
                 bits.append(options["vertical_char"])
         if options["border"] and options["hrules"] != NONE:
@@ -1012,70 +1012,71 @@ class PrettyTable(object):
         else:
             string = self._get_simple_html_string(options)
 
-        self._nonunicode = string
-        return _unicode(string)
+        return string
 
     def _get_simple_html_string(self, options):
 
-        string = StringIO()
+        lines = []
 
-        string.write("<table")
+        open_tag = []
+        open_tag.append("<table")
         if options["border"]:
-            string.write(" border=\"1\"")
+            open_tag.append(" border=\"1\"")
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                string.write(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
-        string.write(">\n")
+                open_tag.append(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
+        open_tag.append(">")
+        lines.append("".join(open_tag))
 
         # Headers
         if options["header"]:
-            string.write("    <tr>\n")
+            lines.append("    <tr>")
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                string.write("        <th>%s</th>\n" % escape(_unicode(field)).replace("\n", "<br />"))
-            string.write("    </tr>\n")
+                lines.append("        <th>%s</th>" % escape(field).replace("\n", "<br />"))
+            lines.append("    </tr>")
 
         # Data
         rows = self._get_rows(options)
         formatted_rows = self._format_rows(rows, options)
         for row in formatted_rows:
-            string.write("    <tr>\n")
+            lines.append("    <tr>")
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                string.write("        <td>%s</td>\n" % escape(datum).replace("\n", "<br />"))
-            string.write("    </tr>\n")
+                lines.append("        <td>%s</td>" % escape(datum).replace("\n", "<br />"))
+            lines.append("    </tr>")
 
-        string.write("</table>")
-        string = string.getvalue()
+        lines.append("</table>")
 
-        self._nonunicode = string
-        return _unicode(string)
+        return self._unicode("\n").join(lines)
 
     def _get_formatted_html_string(self, options):
 
-        string = StringIO()
-
+        lines = []
         lpad, rpad = self._get_padding_widths(options)
-        string.write("<table")
+
+        open_tag = []
+        open_tag.append("<table")
         if options["border"]:
-            string.write(" border=\"1\"")
+            open_tag.append(" border=\"1\"")
         if options["hrules"] == NONE:
-            string.write(" frame=\"vsides\" rules=\"cols\"")
+            open_tag.append(" frame=\"vsides\" rules=\"cols\"")
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                string.write(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
-        string.write(">\n")
+                open_tag.append(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
+        open_tag.append(">")
+        lines.append("".join(open_tag))
 
         # Headers
         if options["header"]:
-            string.write("    <tr>\n")
+            lines.append("    <tr>")
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                string.write("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>\n" % (lpad, rpad, escape(_unicode(field)).replace("\n", "<br />")))
-            string.write("    </tr>\n")
+                lines.append("        <th style=\"padding-left: %dem; padding-right: %dem; text-align: center\">%s</th>" % (lpad, rpad, escape(field).replace("\n", "<br />")))
+            lines.append("    </tr>")
 
         # Data
         rows = self._get_rows(options)
@@ -1084,18 +1085,15 @@ class PrettyTable(object):
         for field in self._field_names:
                 aligns.append({ "l" : "left", "r" : "right", "c" : "center" }[self._align[field]])
         for row in formatted_rows:
-            string.write("    <tr>\n")
+            lines.append("    <tr>")
             for field, datum, align in zip(self._field_names, row, aligns):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                string.write("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: %s\">%s</td>\n" % (lpad, rpad, align, escape(datum).replace("\n", "<br />")))
-            string.write("    </tr>\n")
-        string.write("</table>\n")
+                lines.append("        <td style=\"padding-left: %dem; padding-right: %dem; text-align: %s\">%s</td>" % (lpad, rpad, align, escape(datum).replace("\n", "<br />")))
+            lines.append("    </tr>")
+        lines.append("</table>")
 
-        string = string.getvalue()
-
-        self._nonunicode = string
-        return _unicode(string)
+        return self._unicode("\n").join(lines)
 
 ##############################
 # TABLE FACTORIES            #
