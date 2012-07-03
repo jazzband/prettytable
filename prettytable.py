@@ -1126,25 +1126,26 @@ class PrettyTable(object):
 ##############################
 
 def _char_block_width(char):
-    char = ord(char)
     # Basic Latin, which is probably the most common case
-    if char in range(0x0021, 0x007e):
+    #if char in xrange(0x0021, 0x007e):
+    #if char >= 0x0021 and char <= 0x007e:
+    if 0x0021 <= char <= 0x007e:
         return 1
     # Chinese, Japanese, Korean (common)
-    if char in range(0x4e00, 0x9fff):
+    if 0x4e00 <= char <= 0x9fff:
         return 2
     # Combining?
     if unicodedata.combining(uni_chr(char)):
         return 0
     # Hiragana and Katakana
-    if char in range(0x3040, 0x309f) or char in range(0x30a0, 0x30ff):
+    if 0x3040 <= char <= 0x309f or 0x30a0 <= char <= 0x30ff:
         return 2
     # Take a guess
     return 1
 
 def _str_block_width(val):
 
-    return sum(itermap(_char_block_width, val))
+    return sum(itermap(_char_block_width, itermap(ord, val)))
 
 ##############################
 # TABLE FACTORIES            #
