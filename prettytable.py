@@ -1122,6 +1122,31 @@ class PrettyTable(object):
         return self._unicode("\n").join(lines)
 
 ##############################
+# UNICODE WIDTH FUNCTIONS    #
+##############################
+
+def _char_block_width(char):
+    char = ord(char)
+    # Basic Latin, which is probably the most common case
+    if char in range(0x0021, 0x007e):
+        return 1
+    # Chinese, Japanese, Korean (common)
+    if char in range(0x4e00, 0x9fff):
+        return 2
+    # Combining?
+    if unicodedata.combining(uni_chr(char)):
+        return 0
+    # Hiragana and Katakana
+    if char in range(0x3040, 0x309f) or char in range(0x30a0, 0x30ff):
+        return 2
+    # Take a guess
+    return 1
+
+def _str_block_width(val):
+
+    return sum(itermap(_char_block_width, val))
+
+##############################
 # TABLE FACTORIES            #
 ##############################
 
@@ -1135,10 +1160,10 @@ def from_csv(fp, field_names = None):
     if field_names:
         table.field_names = field_names
     else:
-        table.field_names = reader.next()
+        table.field_names = [x.strip() for x in reader.next()]
 
     for row in reader:
-        table.add_row(row)
+        table.add_row([x.strip() for x in row])
 
     return table
 
@@ -1173,23 +1198,3 @@ def main():
     
 if __name__ == "__main__":
     main()
-
-def _char_block_width(char):
-    # Basic Latin, which is probably the most common case
-    if char in range(0x0021, 0x007e):
-        return 1
-    # Chinese, Japanese, Korean (common)
-    if char in range(0x4e00, 0x9fff):
-        return 2
-    # Combining?
-    if unicodedata.combining(uni_chr(char)):
-        return 0
-    # Hiragana and Katakana
-    if char in range(0x3040, 0x309f):
-        return 2
-    # Take a guess
-    return 1
-
-def _str_block_width(val):
-
-    return sum(map(_char_block_width, map(ord, val)))
