@@ -209,8 +209,12 @@ class PrettyTable(object):
             raise Exception("Index %s is invalid, must be an integer or slice" % str(index))
         return newtable
 
-    def __str__(self):
-        return self.__unicode__().encode(self.encoding)
+    if py3k:
+        def __str__(self):
+           return self.__unicode__()
+    else:
+        def __str__(self):
+           return self.__unicode__().encode(self.encoding)
 
     def __unicode__(self):
         return self.get_string()

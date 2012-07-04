@@ -1,4 +1,3 @@
-#import cProfile, pstats
 import unittest
 import sys
 sys.path.append("../src/")
@@ -468,9 +467,10 @@ class HtmlOutputTests(unittest.TestCase):
 </table>
 """.strip()
 
+class PrintTest(CityDataTest):
+
+    def testPrint(self):
+        print(self.x)
+
 if __name__ == "__main__":
-    #cProfile.run("unittest.main()", "fooprof")
-    #p = pstats.Stats("fooprof")
-    #p.sort_stats("time")
-    #p.print_stats()
     unittest.main()
