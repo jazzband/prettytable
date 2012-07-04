@@ -1161,7 +1161,7 @@ def from_csv(fp, field_names = None):
     if field_names:
         table.field_names = field_names
     else:
-        table.field_names = [x.strip() for x in reader.next()]
+        table.field_names = [x.strip() for x in next(reader)]
 
     for row in reader:
         table.add_row([x.strip() for x in row])
