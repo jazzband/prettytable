@@ -943,12 +943,7 @@ class PrettyTable(object):
                 fieldname = field.lower()
             else:
                 fieldname = field
-            if self._align[field] == "l":
-                bits.append(" " * lpad + fieldname.ljust(width) + " " * rpad)
-            elif self._align[field] == "r":
-                bits.append(" " * lpad + fieldname.rjust(width) + " " * rpad)
-            else:
-                bits.append(" " * lpad + fieldname.center(width) + " " * rpad)
+            bits.append(" " * lpad + self._justify(fieldname, width, self._align[field]) + " " * rpad)
             if options["border"]:
                 bits.append(options["vertical_char"])
         if options["border"] and options["hrules"] != NONE:
@@ -1138,12 +1133,27 @@ def _char_block_width(char):
     # Chinese, Japanese, Korean (common)
     if 0x4e00 <= char <= 0x9fff:
         return 2
+    # Hangul
+    if 0xac00 <= char <= 0xd7af:
+        return 2
     # Combining?
     if unicodedata.combining(uni_chr(char)):
         return 0
     # Hiragana and Katakana
     if 0x3040 <= char <= 0x309f or 0x30a0 <= char <= 0x30ff:
         return 2
+    # Full-width Latin characters
+    if 0xff01 <= char <= 0xff60:
+        return 2
+    # CJK punctuation
+    if 0x3000 <= char <= 0x303e:
+        return 2
+    # Backspace and delete
+    if char in (0x0008, 0x007f):
+        return -1
+    # Other control characters
+    elif char in (0x0000, 0x001f):
+        return 0
     # Take a guess
     return 1
 

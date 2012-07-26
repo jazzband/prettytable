@@ -1,3 +1,5 @@
+# coding=UTF-8
+
 import unittest
 import sys
 sys.path.append("../src/")
@@ -467,9 +469,28 @@ class HtmlOutputTests(unittest.TestCase):
 </table>
 """.strip()
 
-class PrintTest(CityDataTest):
+class PrintEnglishTest(CityDataTest):
 
     def testPrint(self):
+        print()
+        print(self.x)
+
+class PrintJapanestTest(unittest.TestCase):
+
+    def setUp(self):
+
+        self.x = PrettyTable(["Kanji", "Hiragana", "English"])
+        self.x.add_row(["神戸", "こうべ", "Kobe"])
+        self.x.add_row(["京都", "きょうと", "Kyoto"])
+        self.x.add_row(["長崎", "ながさき", "Nagasaki"])
+        self.x.add_row(["名古屋", "なごや", "Nagoya"])
+        self.x.add_row(["大阪", "おおさか", "Osaka"])
+        self.x.add_row(["札幌", "さっぽろ", "Sapporo"])
+        self.x.add_row(["東京", "とうきょう", "Tokyo"])
+        self.x.add_row(["横浜", "よこはま", "Yokohama"])
+
+    def testPrint(self):
+        print()
         print(self.x)
 
 if __name__ == "__main__":
