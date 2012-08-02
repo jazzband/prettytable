@@ -2,6 +2,9 @@
 
 * Fixed a simple bug regarding validation of max_width (thanks to
   Anthony Toole for pointing out this bug and providing a patch).
+* Fixed a simple bug regarding initialisation of int_format value
+  for new tables (thanks to Ingo Schmiegel for pointing out this
+  bug!)
 
 ########## PrettyTable 0.6 - April XX, 2012 ##########
 

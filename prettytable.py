@@ -143,7 +143,7 @@ class PrettyTable(object):
         self._reversesort = kwargs["reversesort"] or False
         self._sort_key = kwargs["sort_key"] or (lambda x: x)
 
-        self._int_format = kwargs["float_format"] or {}
+        self._int_format = kwargs["int_format"] or {}
         self._float_format = kwargs["float_format"] or {}
         self._padding_width = kwargs["padding_width"] or 1
         self._left_padding_width = kwargs["left_padding_width"] or None
