@@ -384,6 +384,29 @@ class BreakLineTests(unittest.TestCase):
 +------------+-------------+
 """.strip()
 
+        t = PrettyTable(['Field 1', 'Field 2'])
+        t.add_row(['value 1', 'value2\nsecond line\nthird line'], valign = "m")
+        t.add_row(['value 3\nsecond line\nthirdline', 'value4'], valign = "b")
+        t.add_row(['value 3\nsecond line\nthirdline', 'value4'], valign = "t")
+        result = t.get_string(hrules=True)
+        assert result.strip() == """
++-------------+-------------+
+|   Field 1   |   Field 2   |
++-------------+-------------+
+|             |    value2   |
+|   value 1   | second line |
+|             |  third line |
++-------------+-------------+
+|   value 3   |             |
+| second line |             |
+|  thirdline  |    value4   |
++-------------+-------------+
+|   value 3   |    value4   |
+| second line |             |
+|  thirdline  |             |
++-------------+-------------+
+""".strip()
+
     def testHtmlBreakLine(self):
         t = PrettyTable(['Field 1', 'Field 2'])
         t.add_row(['value 1', 'value2\nsecond line'])
