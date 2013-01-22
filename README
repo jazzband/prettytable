@@ -1,4 +1,4 @@
-TUTORIAL ON HOW TO USE THE PRETTYTABLE 0.6 API
+TUTORIAL ON HOW TO USE THE PRETTYTABLE 0.6+ API
 
 *** This tutorial is distributed with PrettyTable and is meant to serve
 as a "quick start" guide for the lazy or impatient.  It is not an
@@ -13,15 +13,15 @@ Let's suppose you have a shiny new PrettyTable:
 from prettytable import PrettyTable
 x = PrettyTable()
 
-and you want to put some data into it.  You have two (sane) options
+and you want to put some data into it.  You have a few options.
 
 == Row by row ==
 
-You can add data one row at a time.  To do this you need to set the field names 
-first using the `set_field_names` method, and then add the rows one at a time 
+You can add data one row at a time.  To do this you can set the field names 
+first using the `field_names` attribute, and then add the rows one at a time 
 using the `add_row` method:
 
-x.set_field_names(["City name", "Area", "Population", "Annual Rainfall"])
+x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
 x.add_row(["Adelaide",1295, 1158259, 600.5])
 x.add_row(["Brisbane",5905, 1857594, 1146.4])
 x.add_row(["Darwin", 112, 120900, 1714.7])
@@ -53,6 +53,28 @@ unit test which makes sure that doing things this way will always work out
 nicely as if you'd done it using just one of the two approaches.  Tables built 
 this way are kind of confusing for other people to read, though, so don't do 
 this unless you have a good reason.
+
+== Importing data from a CSV file ==
+
+If you have your table data in a comma separated values file (.csv), you can
+read this data into a PrettyTable like this:
+
+from prettytable import from_csv
+fp = open("myfile.csv", "r")
+mytable = from_csv(fp)
+fp.close()
+
+== Importing data from a database cursor ==
+
+If you have your table data in a database which you can access using a library which confirms to the Python DB-API (e.g. an SQLite database accessible using the sqlite module), then you can build a PrettyTable using a cursor object, like this:
+
+import sqlite3
+from prettytable import from_cursor
+
+connection = sqlite3.connect("mydb.db")
+cursor = connection.cursor()
+cursor.execute("SELECT field1, field2, field3 FROM my_table")
+mytable = from_cursor(cursor)
 
 == Getting data out ==
 
@@ -99,8 +121,9 @@ print(x)
 
 in Python 3.x.
 
-The old x.printt() method from versions 0.5 and earlier has been removed.  To
-pass options changing the look of the table, use the get_string() method
+The old x.printt() method from versions 0.5 and earlier has been removed.
+
+To pass options changing the look of the table, use the get_string() method
 documented below:
 
 print x.get_string()
@@ -314,9 +337,11 @@ The options are these:
     or not the first row of the table is a header showing the names of all the 
     fields.
   * `hrules` - Controls printing of horizontal rules after rows.  Allowed 
-    values: FRAME, ALL, NONE - note that these are variables defined inside the 
-    `prettytable` module so make sure you import them or use `prettytable.FRAME` 
-    etc.
+    values: FRAME, HEADER, ALL, NONE - note that these are variables defined
+    inside the `prettytable` module so make sure you import them or use
+    `prettytable.FRAME` etc.
+  * `vrules` - Controls printing of vertical rules between columns.  Allowed 
+    values: FRAME, ALL, NONE.
   * `int_format` - A string which controls the way integer data is printed.
     This works like: print "%<int_format>d" % data
   * `float_format` - A string which controls the way floating point data is
@@ -390,7 +415,7 @@ exactly the same way as ASCII printing.
 By default, PrettyTable outputs HTML for "vanilla" tables.  The HTML code is 
 quite simple.  It looks like this:
 
-<table border="1">
+<table>
     <tr>
         <th>City name</th>
         <th>Area</th>
@@ -437,7 +462,7 @@ x.print_html(attributes={"name":"my_table", "class":"red_table"})
 
 will print:
 
-<table border="1" name="my_table" class="red_table">
+<table name="my_table" class="red_table">
     <tr>
         <th>City name</th>
         <th>Area</th>
