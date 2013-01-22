@@ -337,7 +337,7 @@ class BreakLineTests(unittest.TestCase):
         t = PrettyTable(['Field 1', 'Field 2'])
         t.add_row(['value 1', 'value2\nsecond line'])
         t.add_row(['value 3', 'value4'])
-        result = t.get_string(hrules=True)
+        result = t.get_string(hrules=ALL)
         assert result.strip() == """
 +---------+-------------+
 | Field 1 |   Field 2   |
@@ -352,7 +352,7 @@ class BreakLineTests(unittest.TestCase):
         t = PrettyTable(['Field 1', 'Field 2'])
         t.add_row(['value 1', 'value2\nsecond line'])
         t.add_row(['value 3\n\nother line', 'value4\n\n\nvalue5'])
-        result = t.get_string(hrules=True)
+        result = t.get_string(hrules=ALL)
         assert result.strip() == """
 +------------+-------------+
 |  Field 1   |   Field 2   |
@@ -388,7 +388,7 @@ class BreakLineTests(unittest.TestCase):
         t.add_row(['value 1', 'value2\nsecond line\nthird line'], valign = "m")
         t.add_row(['value 3\nsecond line\nthirdline', 'value4'], valign = "b")
         t.add_row(['value 3\nsecond line\nthirdline', 'value4'], valign = "t")
-        result = t.get_string(hrules=True)
+        result = t.get_string(hrules=ALL)
         assert result.strip() == """
 +-------------+-------------+
 |   Field 1   |   Field 2   |
@@ -411,9 +411,9 @@ class BreakLineTests(unittest.TestCase):
         t = PrettyTable(['Field 1', 'Field 2'])
         t.add_row(['value 1', 'value2\nsecond line'])
         t.add_row(['value 3', 'value4'])
-        result = t.get_html_string(hrules=True)
+        result = t.get_html_string(hrules=ALL)
         assert result.strip() == """
-<table border="1">
+<table>
     <tr>
         <th>Field 1</th>
         <th>Field 2</th>
@@ -437,7 +437,7 @@ class HtmlOutputTests(unittest.TestCase):
         t.add_row(['value 7', 'value8', 'value9'])
         result = t.get_html_string()
         assert result.strip() == """
-<table border="1">
+<table>
     <tr>
         <th>Field 1</th>
         <th>Field 2</th>
@@ -468,7 +468,7 @@ class HtmlOutputTests(unittest.TestCase):
         t.add_row(['value 7', 'value8', 'value9'])
         result = t.get_html_string(format=True)
         assert result.strip() == """
-<table border="1">
+<table frame="box" rules="cols">
     <tr>
         <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
         <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
