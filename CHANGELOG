@@ -1,12 +1,26 @@
-########## PrettyTable 0.7 - MM DD, 2012 ##########
+########## PrettyTable 0.7 - Jan XX, 2013 ###########
 
+* Improved Python 3 compatibility.
+* Improved support for non-Latin characters.  Table widths should
+  now be calculated correctly for tables with e.g. Japanese text.
+* Table contents can now be read in from a .csv file
+* Table contents can now be read in from a DB-API compatible cursor
+* hrules attribute can now be set to HEADER, which draws a rule only
+  under the header row
+* new vrules attribute controls drawing of vertical rules and can
+  be set to FRAME, ALL or NONE
+* new header_style attribute controls formatting of text in table
+  headers and can be set to "cap", "title", "upper", "lower" or None
 * Fixed a simple bug regarding validation of max_width (thanks to
   Anthony Toole for pointing out this bug and providing a patch).
 * Fixed a simple bug regarding initialisation of int_format value
   for new tables (thanks to Ingo Schmiegel for pointing out this
   bug!)
+* Fixed a bug regarding some constructor keywords, such as "border",
+  being ignored (thanks to Google Code user antonio.s.messina for
+  reporting this bug).
 
-########## PrettyTable 0.6 - April XX, 2012 ##########
+########## PrettyTable 0.6 - May 5, 2012 ##########
 
 * Code is now simultaneously compatible with Python 2 and 3
 * Replaced all setter methods with managed attributes
