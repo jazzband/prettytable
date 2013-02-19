@@ -1,10 +1,20 @@
 # coding=UTF-8
 
-import unittest
-import sys
-sys.path.append("../src/")
-from math import pi, e, sqrt
 from prettytable import *
+
+import sys
+py3k = sys.version_info[0] >= 3
+try:
+    import sqlite3
+    _have_sqlite = True
+except ImportError:
+    _have_sqlite = False
+if py3k:
+    import io as StringIO
+else:
+    import StringIO
+from math import pi, e, sqrt
+import unittest
 
 class BuildEquivelanceTest(unittest.TestCase):
 
@@ -125,7 +135,9 @@ class OptionOverrideTests(CityDataTest):
 
 class OptionAttributeTests(CityDataTest):
 
-    """Make sure all options which have an attribute interface work as they should."""
+    """Make sure all options which have an attribute interface work as they should.
+    Also make sure option settings are copied correctly when a table is cloned by
+    slicing."""
 
     def testSetForAllColumns(self):
         self.x.field_names = sorted(self.x.field_names)
@@ -148,12 +160,14 @@ class OptionAttributeTests(CityDataTest):
         self.x.junction_char = "*"
         self.x.format = True
         self.x.attributes = {"class" : "prettytable"}
+        assert self.x.get_string() == self.x[:].get_string()
 
     def testSetForOneColumn(self):
         self.x.align["Rainfall"] = "l"
         self.x.max_width["Name"] = 10
         self.x.int_format["Population"] = "4"
         self.x.float_format["Area"] = "2.2"
+        assert self.x.get_string() == self.x[:].get_string()
 
 class BasicTests(CityDataTest):
 
@@ -221,6 +235,10 @@ class SlicingTests(CityDataTest):
 
     def setUp(self):
         CityDataTest.setUp(self)
+
+    def testSliceAll(self):
+        y = self.x[:]
+        assert self.x.get_string() == y.get_string()
 
     def testSliceFirstTwoRows(self):
         y = self.x[0:2]
@@ -384,29 +402,6 @@ class BreakLineTests(unittest.TestCase):
 +------------+-------------+
 """.strip()
 
-        t = PrettyTable(['Field 1', 'Field 2'])
-        t.add_row(['value 1', 'value2\nsecond line\nthird line'], valign = "m")
-        t.add_row(['value 3\nsecond line\nthirdline', 'value4'], valign = "b")
-        t.add_row(['value 3\nsecond line\nthirdline', 'value4'], valign = "t")
-        result = t.get_string(hrules=ALL)
-        assert result.strip() == """
-+-------------+-------------+
-|   Field 1   |   Field 2   |
-+-------------+-------------+
-|             |    value2   |
-|   value 1   | second line |
-|             |  third line |
-+-------------+-------------+
-|   value 3   |             |
-| second line |             |
-|  thirdline  |    value4   |
-+-------------+-------------+
-|   value 3   |    value4   |
-| second line |             |
-|  thirdline  |             |
-+-------------+-------------+
-""".strip()
-
     def testHtmlBreakLine(self):
         t = PrettyTable(['Field 1', 'Field 2'])
         t.add_row(['value 1', 'value2\nsecond line'])
@@ -430,6 +425,7 @@ class BreakLineTests(unittest.TestCase):
 """.strip()
 
 class HtmlOutputTests(unittest.TestCase):
+
     def testHtmlOutput(self):
         t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
         t.add_row(['value 1', 'value2', 'value3'])
@@ -475,22 +471,75 @@ class HtmlOutputTests(unittest.TestCase):
         <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
     </tr>
     <tr>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value 1</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value2</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value3</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 1</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value2</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value3</td>
     </tr>
     <tr>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value 4</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value5</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value6</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 4</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value5</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value6</td>
     </tr>
     <tr>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value 7</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value8</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center">value9</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 7</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value8</td>
+        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value9</td>
     </tr>
 </table>
 """.strip()
+
+class CsvConstructorTest(BasicTests):
+
+    def setUp(self):
+
+        csv_string = """City name, Area , Population , Annual Rainfall
+        Sydney, 2058 ,  4336374   ,      1214.8
+        Melbourne, 1566 ,  3806092   ,       646.9
+        Brisbane, 5905 ,  1857594   ,      1146.4
+        Perth, 5386 ,  1554769   ,       869.4
+        Adelaide, 1295 ,  1158259   ,       600.5
+        Hobart, 1357 ,   205556   ,       619.5
+        Darwin, 0112 ,   120900   ,      1714.7"""
+        csv_fp = StringIO.StringIO(csv_string)
+        self.x = from_csv(csv_fp)
+
+if _have_sqlite:
+    class DatabaseConstructorTest(BasicTests):
+
+        def setUp(self):
+            self.conn = sqlite3.connect(":memory:")
+            self.cur = self.conn.cursor()
+            self.cur.execute("CREATE TABLE cities (name TEXT, area INTEGER, population INTEGER, rainfall REAL)")
+            self.cur.execute("INSERT INTO cities VALUES (\"Adelaide\", 1295, 1158259, 600.5)")
+            self.cur.execute("INSERT INTO cities VALUES (\"Brisbane\", 5905, 1857594, 1146.4)")
+            self.cur.execute("INSERT INTO cities VALUES (\"Darwin\", 112, 120900, 1714.7)")
+            self.cur.execute("INSERT INTO cities VALUES (\"Hobart\", 1357, 205556, 619.5)")
+            self.cur.execute("INSERT INTO cities VALUES (\"Sydney\", 2058, 4336374, 1214.8)")
+            self.cur.execute("INSERT INTO cities VALUES (\"Melbourne\", 1566, 3806092, 646.9)")
+            self.cur.execute("INSERT INTO cities VALUES (\"Perth\", 5386, 1554769, 869.4)")
+            self.cur.execute("SELECT * FROM cities")
+            self.x = from_db_cursor(self.cur)
+
+        def testNonSelectCurosr(self):
+            self.cur.execute("INSERT INTO cities VALUES (\"Adelaide\", 1295, 1158259, 600.5)")
+            assert from_db_cursor(self.cur) is None
+
+class HtmlConstructorTest(CityDataTest):
+
+    def testHtmlAndBack(self):
+        html_string = self.x.get_html_string()
+        new_table = from_html(html_string)[0]
+        assert new_table.get_string() == self.x.get_string()
+
+    def testHtmlOneAndBack(self):
+        html_string = self.x.get_html_string()
+        new_table = from_html_one(html_string)
+        assert new_table.get_string() == self.x.get_string()
+
+    def testHtmlOneFailOnMany(self):
+        html_string = self.x.get_html_string()
+        html_string += self.x.get_html_string()
+        self.assertRaises(Exception, from_html_one, html_string)
 
 class PrintEnglishTest(CityDataTest):
 
