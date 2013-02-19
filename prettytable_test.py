@@ -415,7 +415,7 @@ class BreakLineTests(unittest.TestCase):
     </tr>
     <tr>
         <td>value 1</td>
-        <td>value2<br />second line</td>
+        <td>value2<br>second line</td>
     </tr>
     <tr>
         <td>value 3</td>
