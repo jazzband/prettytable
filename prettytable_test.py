@@ -223,6 +223,25 @@ class HrulesAllBasicTests(BasicTests):
         BasicTests.setUp(self)
         self.x.hrules = ALL
 
+class EmptyTableTests(CityDataTest):
+
+    """Make sure the print_empty option works"""
+
+    def setUp(self):
+        CityDataTest.setUp(self)
+        self.y = PrettyTable()
+        self.y.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+
+    def testPrintEmptyTrue(self):
+        assert self.y.get_string(print_empty=True) != ""
+        assert self.x.get_string(print_empty=True) != self.y.get_string(print_empty=True)
+
+    def testPrintEmptyFalse(self):
+        assert self.y.get_string(print_empty=False) == ""
+        assert self.y.get_string(print_empty=False) != self.x.get_string(print_empty=False)
+
+    def testInteractionWithBorder(self):
+        assert self.y.get_string(border=False, print_empty=True) == ""
 class PresetBasicTests(BasicTests):
 
     """Run the basic tests after using set_style"""

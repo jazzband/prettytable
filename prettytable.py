@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2009, Luke Maurits <luke@maurits.id.au>
+# Copyright (c) 2009-2013, Luke Maurits <luke@maurits.id.au>
 # All rights reserved.
 # With contributions from:
 #  * Chris Clark
@@ -126,7 +126,7 @@ class PrettyTable(object):
         # Options
         self._options = "start end fields header border sortby reversesort sort_key attributes format hrules vrules".split()
         self._options.extend("int_format float_format padding_width left_padding_width right_padding_width".split())
-        self._options.extend("vertical_char horizontal_char junction_char header_style valign xhtml".split())
+        self._options.extend("vertical_char horizontal_char junction_char header_style valign xhtml print_empty".split())
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
@@ -166,6 +166,10 @@ class PrettyTable(object):
         self._horizontal_char = kwargs["horizontal_char"] or self._unicode("-")
         self._junction_char = kwargs["junction_char"] or self._unicode("+")
         
+        if kwargs["print_empty"] in (True, False):
+            self._print_empty = kwargs["print_empty"]
+        else:
+            self._print_empty = True
         self._format = kwargs["format"] or False
         self._xhtml = kwargs["xhtml"] or False
         self._attributes = kwargs["attributes"] or {}
@@ -264,7 +268,7 @@ class PrettyTable(object):
             self._validate_vrules(option, val)
         elif option in ("fields"):
             self._validate_all_field_names(option, val)
-        elif option in ("header", "border", "reversesort", "xhtml"):
+        elif option in ("header", "border", "reversesort", "xhtml", "print_empty"):
             self._validate_true_or_false(option, val)
         elif option in ("header_style"):
             self._validate_header_style(val)
@@ -697,6 +701,18 @@ class PrettyTable(object):
         self._format = val
     format = property(_get_format, _set_format)
 
+    def _get_print_empty(self):
+        """Controls whether or not empty tables produce a header and frame or just an empty string
+
+        Arguments:
+
+        print_empty - True or False"""
+        return self._print_empty
+    def _set_print_empty(self, val):
+        self._validate_option("print_empty", val)
+        self._print_empty = val
+    print_empty = property(_get_print_empty, _set_print_empty)
+
     def _get_attributes(self):
         """A dictionary of HTML attribute name/value pairs to be included in the <table> tag when printing HTML
 
@@ -952,7 +968,8 @@ class PrettyTable(object):
         junction_char - single character string used to draw line junctions
         sortby - name of field to sort rows by
         sort_key - sorting key function, applied to data points before sorting
-        reversesort - True or False to sort in descending or ascending order"""
+        reversesort - True or False to sort in descending or ascending order
+        print empty - if True, stringify just the header for an empty table, if False return an empty string """
 
         options = self._get_options(kwargs)
 
@@ -960,7 +977,7 @@ class PrettyTable(object):
 
         # Don't think too hard about an empty table
         # Is this the desired behaviour?  Maybe we should still print the header?
-        if self.rowcount == 0:
+        if self.rowcount == 0 and (not options["print_empty"] or not options["border"]):
             return ""
 
         # Get the rows we need to print, taking into account slicing, sorting, etc.
@@ -998,6 +1015,10 @@ class PrettyTable(object):
             bits = [options["junction_char"]]
         else:
             bits = [options["horizontal_char"]]
+        # For tables with no data or fieldnames
+        if not self._field_names:
+                bits.append(options["junction_char"])
+                return "".join(bits)
         for field, width in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
@@ -1019,6 +1040,12 @@ class PrettyTable(object):
             if options["hrules"] in (ALL, FRAME):
                 bits.append(self._hrule)
                 bits.append("\n")
+            if options["vrules"] in (ALL, FRAME):
+                bits.append(options["vertical_char"])
+            else:
+                bits.append(" ")
+        # For tables with no data or field names
+        if not self._field_names:
             if options["vrules"] in (ALL, FRAME):
                 bits.append(options["vertical_char"])
             else:
