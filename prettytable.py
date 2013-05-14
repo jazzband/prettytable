@@ -108,7 +108,8 @@ class PrettyTable(object):
         sortby - name of field to sort rows by
         sort_key - sorting key function, applied to data points before sorting
         valign - default valign for each row (None, "t", "m" or "b")
-        reversesort - True or False to sort in descending or ascending order"""
+        reversesort - True or False to sort in descending or ascending order
+        oldsortslice - Slice rows before sorting in the "old style" """
 
         self.encoding = kwargs.get("encoding", "UTF-8")
 
@@ -126,7 +127,7 @@ class PrettyTable(object):
         # Options
         self._options = "start end fields header border sortby reversesort sort_key attributes format hrules vrules".split()
         self._options.extend("int_format float_format padding_width left_padding_width right_padding_width".split())
-        self._options.extend("vertical_char horizontal_char junction_char header_style valign xhtml print_empty".split())
+        self._options.extend("vertical_char horizontal_char junction_char header_style valign xhtml print_empty oldsortslice".split())
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
@@ -170,6 +171,10 @@ class PrettyTable(object):
             self._print_empty = kwargs["print_empty"]
         else:
             self._print_empty = True
+        if kwargs["oldsortslice"] in (True, False):
+            self._oldsortslice = kwargs["oldsortslice"]
+        else:
+            self._oldsortslice = False
         self._format = kwargs["format"] or False
         self._xhtml = kwargs["xhtml"] or False
         self._attributes = kwargs["attributes"] or {}
@@ -268,7 +273,7 @@ class PrettyTable(object):
             self._validate_vrules(option, val)
         elif option in ("fields"):
             self._validate_all_field_names(option, val)
-        elif option in ("header", "border", "reversesort", "xhtml", "print_empty"):
+        elif option in ("header", "border", "reversesort", "xhtml", "print_empty", "oldsortslice"):
             self._validate_true_or_false(option, val)
         elif option in ("header_style"):
             self._validate_header_style(val)
@@ -725,6 +730,15 @@ class PrettyTable(object):
         self._attributes = val
     attributes = property(_get_attributes, _set_attributes)
 
+    @property
+    def oldsortslice(self):
+        """ oldsortslice - Slice rows before sorting in the "old style" """
+        return self._oldsortslice
+    @oldsortslice.setter
+    def oldsortslice(self):
+        self._validate_option("oldsortslice", val)
+        self._oldsortslice = val
+
     ##############################
     # OPTION MIXER               #
     ##############################
@@ -921,10 +935,13 @@ class PrettyTable(object):
         Arguments:
 
         options - dictionary of option settings."""
-       
-        # Make a copy of only those rows in the slice range 
-        rows = copy.deepcopy(self._rows[options["start"]:options["end"]])
-        # Sort if necessary
+      
+        if options["oldsortslice"]:
+            rows = copy.deepcopy(self._rows[options["start"]:options["end"]])
+        else:
+            rows = copy.deepcopy(self._rows)
+
+        # Sort
         if options["sortby"]:
             sortindex = self._field_names.index(options["sortby"])
             # Decorate
@@ -933,6 +950,11 @@ class PrettyTable(object):
             rows.sort(reverse=options["reversesort"], key=options["sort_key"])
             # Undecorate
             rows = [row[1:] for row in rows]
+
+        # Slice if necessary
+        if not options["oldsortslice"]:
+            rows = rows[options["start"]:options["end"]]
+
         return rows
         
     def _format_row(self, row, options):

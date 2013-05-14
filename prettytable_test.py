@@ -322,6 +322,18 @@ class SortingTests(CityDataTest):
 +-----------+------+------------+-----------------+
 """.strip()
 
+    def testSortSlice(self):
+        """Make sure sorting and slicing interact in the expected way"""
+        x = PrettyTable(["Foo"])
+        for i in range(20, 0, -1):
+            x.add_row([i])
+        newstyle = x.get_string(sortby="Foo", end=10)
+        assert "10" in newstyle
+        assert "20" not in newstyle
+        oldstyle = x.get_string(sortby="Foo", end=10, oldsortslice=True)
+        assert "10" not in oldstyle
+        assert "20" in oldstyle
+
 class IntegerFormatBasicTests(BasicTests):
 
     """Run the basic tests after setting an integer format string"""
