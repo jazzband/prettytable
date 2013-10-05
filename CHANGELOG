@@ -1,5 +1,9 @@
 ########## PrettyTable 0.8 - Oct XX, 2013 ###########
 
+* When slice syntax is used to create a new sub-table out of an
+  existing table, the rows are sorted before, not after, the slicing.
+  The old behaviour (slice then sort) can be achieved by setting
+  oldsortslice=True.
 * The from_csv table factory now accepts CSV format parameters as
   keyword arguments (e.g. delimiter, doublequote, escapechar, etc.)
 
