@@ -1,3 +1,8 @@
+########## PrettyTable 0.8 - Oct XX, 2013 ###########
+
+* The from_csv table factory now accepts CSV format parameters as
+  keyword arguments (e.g. delimiter, doublequote, escapechar, etc.)
+
 ########## PrettyTable 0.7 - Jan XX, 2013 ###########
 
 * Improved Python 3 compatibility.
