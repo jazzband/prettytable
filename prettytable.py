@@ -88,6 +88,7 @@ class PrettyTable(object):
         Arguments:
 
         encoding - Unicode encoding scheme used to decode any encoded input
+        title - optional table title
         field_names - list or tuple of field names
         fields - list or tuple of field names to include in displays
         start - index of first data row to include in output
@@ -125,7 +126,7 @@ class PrettyTable(object):
             self._widths = []
 
         # Options
-        self._options = "start end fields header border sortby reversesort sort_key attributes format hrules vrules".split()
+        self._options = "title start end fields header border sortby reversesort sort_key attributes format hrules vrules".split()
         self._options.extend("int_format float_format padding_width left_padding_width right_padding_width".split())
         self._options.extend("vertical_char horizontal_char junction_char header_style valign xhtml print_empty oldsortslice".split())
         for option in self._options:
@@ -134,6 +135,7 @@ class PrettyTable(object):
             else:
                 kwargs[option] = None
 
+        self._title = kwargs["title"] or None
         self._start = kwargs["start"] or 0
         self._end = kwargs["end"] or None
         self._fields = kwargs["fields"] or None
@@ -285,8 +287,6 @@ class PrettyTable(object):
             self._validate_single_char(option, val)
         elif option in ("attributes"):
             self._validate_attributes(option, val)
-        else:
-            raise Exception("Unrecognised option: %s!" % option)
 
     def _validate_field_names(self, val):
         # Check for appropriate length
@@ -473,6 +473,18 @@ class PrettyTable(object):
         self._validate_option("fields", val)
         self._fields = val
     fields = property(_get_fields, _set_fields)
+
+    def _get_title(self):
+        """Optional table title
+
+        Arguments:
+
+        title - table title"""
+        return self._title
+
+    def _set_title(self, val):
+        self._title = self._unicode(val)
+    title = property(_get_title, _set_title)
 
     def _get_start(self):
         """Start index of the range of rows to print
@@ -973,6 +985,7 @@ class PrettyTable(object):
 
         Arguments:
 
+        title - optional table title
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
@@ -1010,9 +1023,14 @@ class PrettyTable(object):
 
         # Compute column widths
         self._compute_widths(formatted_rows, options)
+        self._hrule = self._stringify_hrule(options)
+
+        # Add title
+        title = options["title"] or self._title
+        if title:
+            lines.append(self._stringify_title(title, options))
 
         # Add header or top of border
-        self._hrule = self._stringify_hrule(options)
         if options["header"]:
             lines.append(self._stringify_header(options))
         elif options["border"] and options["hrules"] in (ALL, FRAME):
@@ -1052,6 +1070,21 @@ class PrettyTable(object):
         if options["vrules"] == FRAME:
             bits.pop()
             bits.append(options["junction_char"])
+        return "".join(bits)
+
+    def _stringify_title(self, title, options):
+        lpad, rpad = self._get_padding_widths(options)
+        lines = [self._hrule]
+        bits = []
+        if options["vrules"] in (ALL, FRAME):
+            bits.append(options["vertical_char"])
+        else:
+            bits.append(" ")
+        bits.append(" " * lpad + self._justify(title, len(self._hrule)-2-lpad-rpad, "c") + " " * rpad)
+        if options["vrules"] in (ALL, FRAME):
+            bits.append(options["vertical_char"])
+        else:
+            bits.append(" ")
         return "".join(bits)
 
     def _stringify_header(self, options):

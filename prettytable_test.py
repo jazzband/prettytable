@@ -192,6 +192,14 @@ class BasicTests(CityDataTest):
         lengths = set(lengths)
         self.assertEqual(len(lengths),1)
 
+class TitleBasicTests(BasicTests):
+
+    """Run the basic tests with a title"""
+
+    def setUp(self):
+        BasicTests.setUp(self)
+        self.x.title = "My table"
+
 class NoBorderBasicTests(BasicTests):
 
     """Run the basic tests with border = False"""
@@ -243,6 +251,7 @@ class EmptyTableTests(CityDataTest):
 
     def testInteractionWithBorder(self):
         assert self.y.get_string(border=False, print_empty=True) == ""
+
 class PresetBasicTests(BasicTests):
 
     """Run the basic tests after using set_style"""
