@@ -1238,6 +1238,7 @@ class PrettyTable(object):
 
         Arguments:
 
+        title - optional table title
         start - index of first data row to include in output
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
@@ -1279,6 +1280,14 @@ class PrettyTable(object):
                 open_tag.append(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
         open_tag.append(">")
         lines.append("".join(open_tag))
+
+        # Title
+        title = options["title"] or self._title
+        if title:
+            cols = len(options["fields"]) if options["fields"] else len(self.field_names)
+            lines.append("    <tr>")
+            lines.append("        <td colspan=%d>%s</td>" % (cols, title))
+            lines.append("    </tr>")
 
         # Headers
         if options["header"]:
@@ -1335,6 +1344,14 @@ class PrettyTable(object):
                 open_tag.append(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
         open_tag.append(">")
         lines.append("".join(open_tag))
+
+        # Title
+        title = options["title"] or self._title
+        if title:
+            cols = len(options["fields"]) if options["fields"] else len(self.field_names)
+            lines.append("    <tr>")
+            lines.append("        <td colspan=%d>%s</td>" % (cols, title))
+            lines.append("    </tr>")
 
         # Headers
         if options["header"]:
