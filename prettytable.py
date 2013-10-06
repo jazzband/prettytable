@@ -405,14 +405,13 @@ class PrettyTable(object):
     # ATTRIBUTE MANAGEMENT       #
     ##############################
 
-    def _get_field_names(self):
+    @property
+    def field_names(self):
+        """List or tuple of field names"""
         return self._field_names
-        """The names of the fields
 
-        Arguments:
-
-        fields - list or tuple of field names"""
-    def _set_field_names(self, val):
+    @field_names.setter
+    def field_names(self, val):
         val = [self._unicode(x) for x in val]
         self._validate_option("field_names", val)
         if self._field_names:
@@ -436,45 +435,48 @@ class PrettyTable(object):
         else:
             for field in self._field_names:
                 self._valign[field] = "t"
-    field_names = property(_get_field_names, _set_field_names)
-
-    def _get_align(self):
+    @property
+    def align(self):
         return self._align
-    def _set_align(self, val):
+
+    @align.setter
+    def align(self, val):
         self._validate_align(val)
         for field in self._field_names:
             self._align[field] = val
-    align = property(_get_align, _set_align)
 
-    def _get_valign(self):
+    @property
+    def valign(self):
         return self._valign
-    def _set_valign(self, val):
+
+    @valign.setter
+    def valign(self, val):
         self._validate_valign(val)
         for field in self._field_names:
             self._valign[field] = val
-    valign = property(_get_valign, _set_valign)
 
-    def _get_max_width(self):
+    @property
+    def max_width(self):
         return self._max_width
-    def _set_max_width(self, val):
+
+    @max_width.setter
+    def max_width(self, val):
         self._validate_option("max_width", val)
         for field in self._field_names:
             self._max_width[field] = val
-    max_width = property(_get_max_width, _set_max_width)
-    
-    def _get_fields(self):
-        """List or tuple of field names to include in displays
-
-        Arguments:
-
-        fields - list or tuple of field names to include in displays"""
+   
+    @property
+    def fields(self):
+        """List or tuple of field names to include in displays"""
         return self._fields
-    def _set_fields(self, val):
+
+    @fields.setter
+    def fields(self, val):
         self._validate_option("fields", val)
         self._fields = val
-    fields = property(_get_fields, _set_fields)
 
-    def _get_title(self):
+    @property
+    def title(self):
         """Optional table title
 
         Arguments:
@@ -482,11 +484,12 @@ class PrettyTable(object):
         title - table title"""
         return self._title
 
-    def _set_title(self, val):
+    @title.setter
+    def title(self, val):
         self._title = self._unicode(val)
-    title = property(_get_title, _set_title)
 
-    def _get_start(self):
+    @property
+    def start(self):
         """Start index of the range of rows to print
 
         Arguments:
@@ -494,253 +497,272 @@ class PrettyTable(object):
         start - index of first data row to include in output"""
         return self._start
 
-    def _set_start(self, val):
+    @start.setter
+    def start(self, val):
         self._validate_option("start", val)
         self._start = val
-    start = property(_get_start, _set_start)
 
-    def _get_end(self):
+    @property
+    def end(self):
         """End index of the range of rows to print
 
         Arguments:
 
         end - index of last data row to include in output PLUS ONE (list slice style)"""
         return self._end
-    def _set_end(self, val):
+    @end.setter
+    def end(self, val):
         self._validate_option("end", val)
         self._end = val
-    end = property(_get_end, _set_end)
 
-    def _get_sortby(self):
+    @property
+    def sortby(self):
         """Name of field by which to sort rows
 
         Arguments:
 
         sortby - field name to sort by"""
         return self._sortby
-    def _set_sortby(self, val):
+    @sortby.setter
+    def sortby(self, val):
         self._validate_option("sortby", val)
         self._sortby = val
-    sortby = property(_get_sortby, _set_sortby)
 
-    def _get_reversesort(self):
+    @property
+    def reversesort(self):
         """Controls direction of sorting (ascending vs descending)
 
         Arguments:
 
         reveresort - set to True to sort by descending order, or False to sort by ascending order"""
         return self._reversesort
-    def _set_reversesort(self, val):
+    @reversesort.setter
+    def reversesort(self, val):
         self._validate_option("reversesort", val)
         self._reversesort = val
-    reversesort = property(_get_reversesort, _set_reversesort)
 
-    def _get_sort_key(self):
+    @property
+    def sort_key(self):
         """Sorting key function, applied to data points before sorting
 
         Arguments:
 
         sort_key - a function which takes one argument and returns something to be sorted"""
         return self._sort_key
-    def _set_sort_key(self, val):
+    @sort_key.setter
+    def sort_key(self, val):
         self._validate_option("sort_key", val)
         self._sort_key = val
-    sort_key = property(_get_sort_key, _set_sort_key)
  
-    def _get_header(self):
+    @property
+    def header(self):
         """Controls printing of table header with field names
 
         Arguments:
 
         header - print a header showing field names (True or False)"""
         return self._header
-    def _set_header(self, val):
+    @header.setter
+    def header(self, val):
         self._validate_option("header", val)
         self._header = val
-    header = property(_get_header, _set_header)
 
-    def _get_header_style(self):
+    @property
+    def header_style(self):
         """Controls stylisation applied to field names in header
 
         Arguments:
 
         header_style - stylisation to apply to field names in header ("cap", "title", "upper", "lower" or None)"""
         return self._header_style
-    def _set_header_style(self, val):
+    @header_style.setter
+    def header_style(self, val):
         self._validate_header_style(val)
         self._header_style = val
-    header_style = property(_get_header_style, _set_header_style)
 
-    def _get_border(self):
+    @property
+    def border(self):
         """Controls printing of border around table
 
         Arguments:
 
         border - print a border around the table (True or False)"""
         return self._border
-    def _set_border(self, val):
+    @border.setter
+    def border(self, val):
         self._validate_option("border", val)
         self._border = val
-    border = property(_get_border, _set_border)
 
-    def _get_hrules(self):
+    @property
+    def hrules(self):
         """Controls printing of horizontal rules after rows
 
         Arguments:
 
         hrules - horizontal rules style.  Allowed values: FRAME, ALL, HEADER, NONE"""
         return self._hrules
-    def _set_hrules(self, val):
+    @hrules.setter
+    def hrules(self, val):
         self._validate_option("hrules", val)
         self._hrules = val
-    hrules = property(_get_hrules, _set_hrules)
 
-    def _get_vrules(self):
+    @property
+    def vrules(self):
         """Controls printing of vertical rules between columns
 
         Arguments:
 
         vrules - vertical rules style.  Allowed values: FRAME, ALL, NONE"""
         return self._vrules
-    def _set_vrules(self, val):
+    @vrules.setter
+    def vrules(self, val):
         self._validate_option("vrules", val)
         self._vrules = val
-    vrules = property(_get_vrules, _set_vrules)
 
-    def _get_int_format(self):
+    @property
+    def int_format(self):
         """Controls formatting of integer data
         Arguments:
 
         int_format - integer format string"""
         return self._int_format
-    def _set_int_format(self, val):
-#        self._validate_option("int_format", val)
+    @int_format.setter
+    def int_format(self, val):
         for field in self._field_names:
             self._int_format[field] = val
-    int_format = property(_get_int_format, _set_int_format)
 
-    def _get_float_format(self):
+    @property
+    def float_format(self):
         """Controls formatting of floating point data
         Arguments:
 
         float_format - floating point format string"""
         return self._float_format
-    def _set_float_format(self, val):
-#        self._validate_option("float_format", val)
+    @float_format.setter
+    def float_format(self, val):
         for field in self._field_names:
             self._float_format[field] = val
-    float_format = property(_get_float_format, _set_float_format)
 
-    def _get_padding_width(self):
+    @property
+    def padding_width(self):
         """The number of empty spaces between a column's edge and its content
 
         Arguments:
 
         padding_width - number of spaces, must be a positive integer"""
         return self._padding_width
-    def _set_padding_width(self, val):
+    @padding_width.setter
+    def padding_width(self, val):
         self._validate_option("padding_width", val)
         self._padding_width = val
-    padding_width = property(_get_padding_width, _set_padding_width)
 
-    def _get_left_padding_width(self):
+    @property
+    def left_padding_width(self):
         """The number of empty spaces between a column's left edge and its content
 
         Arguments:
 
         left_padding - number of spaces, must be a positive integer"""
         return self._left_padding_width
-    def _set_left_padding_width(self, val):
+    @left_padding_width.setter
+    def left_padding_width(self, val):
         self._validate_option("left_padding_width", val)
         self._left_padding_width = val
-    left_padding_width = property(_get_left_padding_width, _set_left_padding_width)
 
-    def _get_right_padding_width(self):
+    @property
+    def right_padding_width(self):
         """The number of empty spaces between a column's right edge and its content
 
         Arguments:
 
         right_padding - number of spaces, must be a positive integer"""
         return self._right_padding_width
-    def _set_right_padding_width(self, val):
+    @right_padding_width.setter
+    def right_padding_width(self, val):
         self._validate_option("right_padding_width", val)
         self._right_padding_width = val
-    right_padding_width = property(_get_right_padding_width, _set_right_padding_width)
 
-    def _get_vertical_char(self):
+    @property
+    def vertical_char(self):
         """The charcter used when printing table borders to draw vertical lines
 
         Arguments:
 
         vertical_char - single character string used to draw vertical lines"""
         return self._vertical_char
-    def _set_vertical_char(self, val):
+    @vertical_char.setter
+    def vertical_char(self, val):
         val = self._unicode(val)
         self._validate_option("vertical_char", val)
         self._vertical_char = val
-    vertical_char = property(_get_vertical_char, _set_vertical_char)
 
-    def _get_horizontal_char(self):
+    @property
+    def horizontal_char(self):
         """The charcter used when printing table borders to draw horizontal lines
 
         Arguments:
 
         horizontal_char - single character string used to draw horizontal lines"""
         return self._horizontal_char
-    def _set_horizontal_char(self, val):
+    @horizontal_char.setter
+    def horizontal_char(self, val):
         val = self._unicode(val)
         self._validate_option("horizontal_char", val)
         self._horizontal_char = val
-    horizontal_char = property(_get_horizontal_char, _set_horizontal_char)
 
-    def _get_junction_char(self):
+    @property
+    def junction_char(self):
         """The charcter used when printing table borders to draw line junctions
 
         Arguments:
 
         junction_char - single character string used to draw line junctions"""
         return self._junction_char
-    def _set_junction_char(self, val):
+    @junction_char.setter
+    def junction_char(self, val):
         val = self._unicode(val)
         self._validate_option("vertical_char", val)
         self._junction_char = val
-    junction_char = property(_get_junction_char, _set_junction_char)
 
-    def _get_format(self):
+    @property
+    def format(self):
         """Controls whether or not HTML tables are formatted to match styling options
 
         Arguments:
 
         format - True or False"""
         return self._format
-    def _set_format(self, val):
+    @format.setter
+    def format(self, val):
         self._validate_option("format", val)
         self._format = val
-    format = property(_get_format, _set_format)
 
-    def _get_print_empty(self):
+    @property
+    def print_empty(self):
         """Controls whether or not empty tables produce a header and frame or just an empty string
 
         Arguments:
 
         print_empty - True or False"""
         return self._print_empty
-    def _set_print_empty(self, val):
+    @print_empty.setter
+    def print_empty(self, val):
         self._validate_option("print_empty", val)
         self._print_empty = val
-    print_empty = property(_get_print_empty, _set_print_empty)
 
-    def _get_attributes(self):
+    @property
+    def attributes(self):
         """A dictionary of HTML attribute name/value pairs to be included in the <table> tag when printing HTML
 
         Arguments:
 
         attributes - dictionary of attributes"""
         return self._attributes
-    def _set_attributes(self, val):
+
+    @attributes.setter
+    def attributes(self, val):
         self._validate_option("attributes", val)
         self._attributes = val
-    attributes = property(_get_attributes, _set_attributes)
 
     @property
     def oldsortslice(self):
