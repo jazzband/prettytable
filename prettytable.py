@@ -1562,6 +1562,7 @@ def from_html_one(html_code, **kwargs):
 def main():
 
     x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
+    x.title = "Australian capital cities"
     x.sortby = "Population"
     x.reversesort = True
     x.int_format["Area"] = "04"
