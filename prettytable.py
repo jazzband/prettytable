@@ -1551,16 +1551,26 @@ class TableHandler(HTMLParser):
         self.active = None
         self.last_content = ""
         self.is_last_row_header = False
+        self.colspan = 0
 
     def handle_starttag(self,tag, attrs):
         self.active = tag
         if tag == "th":
             self.is_last_row_header = True
+        for (key, value) in attrs:
+            if key == "colspan":
+                self.colspan = int(value)
+
 
     def handle_endtag(self,tag):
         if tag in ["th", "td"]:
             stripped_content = self.last_content.strip()
             self.last_row.append(stripped_content)
+            if self.colspan:
+                for i in range(1, self.colspan):
+                    self.last_row.append("")
+                self.colspan = 0
+
         if tag == "tr":
             self.rows.append(
                 (self.last_row, self.is_last_row_header))

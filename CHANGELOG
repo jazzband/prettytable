@@ -1,5 +1,7 @@
 ########## PrettyTable 0.8 - Oct XX, 2013 ###########
 
+* from_html now handles HTML tables with colspan, rather than
+  choking on them.
 * Added "min_width", "min_table_width" and "max_table_width"
   attribute/options for better control of table sizing.
 * Added "title" attribute/option for table titles.
