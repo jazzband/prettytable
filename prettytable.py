@@ -33,11 +33,12 @@ __version__ = "trunk"
 
 import copy
 import csv
+import itertools
+import math
 import random
 import re
 import sys
 import textwrap
-import itertools
 import unicodedata
 
 py3k = sys.version_info[0] >= 3
@@ -1001,16 +1002,24 @@ class PrettyTable(object):
             if table_width > self._max_table_width:
                 # Shrink widths in proportion
                 scale = 1.0*self._max_table_width / table_width
-                widths = [int(w*scale) for w in widths]
+                widths = [int(math.floor(w*scale)) for w in widths]
                 self._widths = widths
 
-        # Are we under min_table_width?
-        if self._min_table_width:
+        # Are we under min_table_width or title width?
+        if self._min_table_width or options["title"]:
+            if options["title"]:
+                title_width = len(options["title"])+sum(self._get_padding_widths(options))
+                if options["vrules"] in (FRAME, ALL):
+                    title_width += 2
+            else:
+                title_width = 0
+            min_table_width = self.min_table_width or 0
+            min_width = max(title_width, min_table_width)
             table_width = self._compute_table_width(options)
-            if table_width < self._min_table_width:
+            if table_width < min_width:
                 # Grow widths in proportion
-                scale = 1.0*self._min_table_width / table_width
-                widths = [int(w*scale) for w in widths]
+                scale = 1.0*min_width / table_width
+                widths = [int(math.ceil(w*scale)) for w in widths]
                 self._widths = widths
 
     def _get_padding_widths(self, options):
@@ -1159,6 +1168,7 @@ class PrettyTable(object):
     def _stringify_title(self, title, options):
 
         lines = []
+        lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
             if options["vrules"] == ALL:
                 options["vrules"] = FRAME
@@ -1169,6 +1179,7 @@ class PrettyTable(object):
         bits = []
         endpoint = options["vertical_char"] if options["vrules"] in (ALL, FRAME) else " "
         bits.append(endpoint)
+        title = " "*lpad + title + " "*rpad
         bits.append(self._justify(title, len(self._hrule)-2, "c"))
         bits.append(endpoint)
         lines.append("".join(bits))
