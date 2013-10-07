@@ -119,6 +119,7 @@ class PrettyTable(object):
         self._align = {}
         self._valign = {}
         self._max_width = {}
+        self._min_width = {}
         self._rows = []
         if field_names:
             self.field_names = field_names
@@ -263,7 +264,7 @@ class PrettyTable(object):
     def _validate_option(self, option, val):
         if option in ("field_names"):
             self._validate_field_names(val)
-        elif option in ("start", "end", "max_width", "padding_width", "left_padding_width", "right_padding_width", "format"):
+        elif option in ("start", "end", "max_width", "min_width", "padding_width", "left_padding_width", "right_padding_width", "format"):
             self._validate_nonnegative_int(option, val)
         elif option in ("sortby"):
             self._validate_field_name(option, val)
@@ -465,6 +466,16 @@ class PrettyTable(object):
         for field in self._field_names:
             self._max_width[field] = val
    
+    @property
+    def min_width(self):
+        return self._min_width
+
+    @min_width.setter
+    def min_width(self, val):
+        self._validate_option("min_width", val)
+        for field in self._field_names:
+            self._min_width[field] = val
+
     @property
     def fields(self):
         """List or tuple of field names to include in displays"""
@@ -949,6 +960,8 @@ class PrettyTable(object):
                     widths[index] = max(widths[index], min(_get_size(value)[0], self.max_width[fieldname]))
                 else:
                     widths[index] = max(widths[index], _get_size(value)[0])
+                if fieldname in self.min_width:
+                    widths[index] = max(widths[index], self.min_width[fieldname])
         self._widths = widths
 
     def _get_padding_widths(self, options):

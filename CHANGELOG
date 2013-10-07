@@ -1,5 +1,6 @@
 ########## PrettyTable 0.8 - Oct XX, 2013 ###########
 
+* Added "min_width" attribute/option.
 * Added "title" attribute/option for table titles.
 * When slice syntax is used to create a new sub-table out of an
   existing table, the rows are sorted before, not after, the slicing.
