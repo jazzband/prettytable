@@ -1304,6 +1304,19 @@ class PrettyTable(object):
 
         return "\n".join(bits)
 
+    def paginate(self, page_length=58, **kwargs):
+
+        pages = []
+        kwargs["start"] = kwargs.get("start", 0)
+        true_end = kwargs.get("end", self.rowcount)
+        while True:
+            kwargs["end"] = min(kwargs["start"] + page_length, true_end)
+            pages.append(self.get_string(**kwargs))
+            if kwargs["end"] == true_end:
+                break
+            kwargs["start"] += page_length 
+        return "\f".join(pages)
+
     ##############################
     # HTML STRING METHODS        #
     ##############################
