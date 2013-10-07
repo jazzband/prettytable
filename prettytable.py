@@ -1095,19 +1095,22 @@ class PrettyTable(object):
         return "".join(bits)
 
     def _stringify_title(self, title, options):
-        lpad, rpad = self._get_padding_widths(options)
-        lines = [self._hrule]
+
+        lines = []
+        if options["border"]:
+            if options["vrules"] == ALL:
+                options["vrules"] = FRAME
+                lines.append(self._stringify_hrule(options))
+                options["vrules"] = ALL
+            elif options["vrules"] == FRAME:
+                lines.append(self._stringify_hrule(options))
         bits = []
-        if options["vrules"] in (ALL, FRAME):
-            bits.append(options["vertical_char"])
-        else:
-            bits.append(" ")
-        bits.append(" " * lpad + self._justify(title, len(self._hrule)-2-lpad-rpad, "c") + " " * rpad)
-        if options["vrules"] in (ALL, FRAME):
-            bits.append(options["vertical_char"])
-        else:
-            bits.append(" ")
-        return "".join(bits)
+        endpoint = options["vertical_char"] if options["vrules"] in (ALL, FRAME) else " "
+        bits.append(endpoint)
+        bits.append(self._justify(title, len(self._hrule)-2, "c"))
+        bits.append(endpoint)
+        lines.append("".join(bits))
+        return "\n".join(lines)
 
     def _stringify_header(self, options):
 
