@@ -100,6 +100,8 @@ class PrettyTable(object):
         vrules - controls printing of vertical rules between columns.  Allowed values: FRAME, ALL, NONE
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
+        min_table_width - minimum desired table width, in characters
+        max_table_width - maximum desired table width, in characters
         padding_width - number of spaces on either side of column data (only used if left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
         right_padding_width - number of spaces on right hand side of column data
@@ -128,7 +130,7 @@ class PrettyTable(object):
 
         # Options
         self._options = "title start end fields header border sortby reversesort sort_key attributes format hrules vrules".split()
-        self._options.extend("int_format float_format padding_width left_padding_width right_padding_width".split())
+        self._options.extend("int_format float_format min_table_width max_table_width padding_width left_padding_width right_padding_width".split())
         self._options.extend("vertical_char horizontal_char junction_char header_style valign xhtml print_empty oldsortslice".split())
         for option in self._options:
             if option in kwargs:
@@ -140,7 +142,7 @@ class PrettyTable(object):
         self._start = kwargs["start"] or 0
         self._end = kwargs["end"] or None
         self._fields = kwargs["fields"] or None
-
+        
         if kwargs["header"] in (True, False):
             self._header = kwargs["header"]
         else:
@@ -162,6 +164,8 @@ class PrettyTable(object):
 
         self._int_format = kwargs["int_format"] or {}
         self._float_format = kwargs["float_format"] or {}
+        self._min_table_width = kwargs["min_table_width"] or None
+        self._max_table_width = kwargs["max_table_width"] or None
         self._padding_width = kwargs["padding_width"] or 1
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
@@ -264,7 +268,7 @@ class PrettyTable(object):
     def _validate_option(self, option, val):
         if option in ("field_names"):
             self._validate_field_names(val)
-        elif option in ("start", "end", "max_width", "min_width", "padding_width", "left_padding_width", "right_padding_width", "format"):
+        elif option in ("start", "end", "max_width", "min_width", "min_table_width", "max_table_width", "padding_width", "left_padding_width", "right_padding_width", "format"):
             self._validate_nonnegative_int(option, val)
         elif option in ("sortby"):
             self._validate_field_name(option, val)
@@ -475,6 +479,24 @@ class PrettyTable(object):
         self._validate_option("min_width", val)
         for field in self._field_names:
             self._min_width[field] = val
+
+    @property
+    def min_table_width(self):
+        return self._min_table_width
+
+    @min_table_width.setter
+    def min_table_width(self, val):
+        self._validate_option("min_table_width", val)
+        self._min_table_width = val
+
+    @property
+    def max_table_width(self):
+        return self._max_table_width
+
+    @max_table_width.setter
+    def max_table_width(self, val):
+        self._validate_option("max_table_width", val)
+        self._max_table_width = val
 
     @property
     def fields(self):
@@ -948,11 +970,20 @@ class PrettyTable(object):
             value = self._unicode(("%%%sf" % self._float_format[field]) % value)
         return self._unicode(value)
 
+    def _compute_table_width(self, options):
+        table_width = 2 if options["vrules"] in (FRAME, ALL) else 0
+        per_col_padding = sum(self._get_padding_widths(options))
+        for index, fieldname in enumerate(self.field_names):
+            if not options["fields"] or (options["fields"] and fieldname in options["fields"]):
+                table_width += self._widths[index] + per_col_padding
+        return table_width
+
     def _compute_widths(self, rows, options):
         if options["header"]:
             widths = [_get_size(field)[0] for field in self._field_names]
         else:
             widths = len(self.field_names) * [0]
+
         for row in rows:
             for index, value in enumerate(row):
                 fieldname = self.field_names[index]
@@ -963,6 +994,24 @@ class PrettyTable(object):
                 if fieldname in self.min_width:
                     widths[index] = max(widths[index], self.min_width[fieldname])
         self._widths = widths
+
+        # Are we exceeding max_table_width?
+        if self._max_table_width:
+            table_width = self._compute_table_width(options)
+            if table_width > self._max_table_width:
+                # Shrink widths in proportion
+                scale = 1.0*self._max_table_width / table_width
+                widths = [int(w*scale) for w in widths]
+                self._widths = widths
+
+        # Are we under min_table_width?
+        if self._min_table_width:
+            table_width = self._compute_table_width(options)
+            if table_width < self._min_table_width:
+                # Grow widths in proportion
+                scale = 1.0*self._min_table_width / table_width
+                widths = [int(w*scale) for w in widths]
+                self._widths = widths
 
     def _get_padding_widths(self, options):
 
