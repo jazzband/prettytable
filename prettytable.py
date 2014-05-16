@@ -1502,7 +1502,7 @@ def _char_block_width(char):
     if char in (0x0008, 0x007f):
         return -1
     # Other control characters
-    elif char in (0x0000, 0x001f):
+    elif char in (0x0000, 0x000f, 0x001f):
         return 0
     # Take a guess
     return 1
