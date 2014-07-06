@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2009-2013, Luke Maurits <luke@maurits.id.au>
+# Copyright (c) 2009-2014, Luke Maurits <luke@maurits.id.au>
 # All rights reserved.
 # With contributions from:
 #  * Chris Clark
 #  * Klein Stephane
+#  * John Filleau
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -119,11 +120,13 @@ class PrettyTable(object):
 
         # Data
         self._field_names = []
-        self._align = {}
-        self._valign = {}
-        self._max_width = {}
-        self._min_width = {}
         self._rows = []
+        self.align = {}
+        self.valign = {}
+        self.max_width = {}
+        self.min_width = {}
+        self.int_format = {}
+        self.float_format = {}
         if field_names:
             self.field_names = field_names
         else:
@@ -133,6 +136,7 @@ class PrettyTable(object):
         self._options = "title start end fields header border sortby reversesort sort_key attributes format hrules vrules".split()
         self._options.extend("int_format float_format min_table_width max_table_width padding_width left_padding_width right_padding_width".split())
         self._options.extend("vertical_char horizontal_char junction_char header_style valign xhtml print_empty oldsortslice".split())
+        self._options.extend("align valign max_width min_width".split())
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
@@ -163,8 +167,14 @@ class PrettyTable(object):
             self._reversesort = False
         self._sort_key = kwargs["sort_key"] or (lambda x: x)
 
-        self._int_format = kwargs["int_format"] or {}
-        self._float_format = kwargs["float_format"] or {}
+        # Column specific arguments, use property.setters
+        self.align = kwargs["align"] or {}
+        self.valign = kwargs["valign"] or {}
+        self.max_width = kwargs["max_width"] or {}
+        self.min_width = kwargs["min_width"] or {}
+        self.int_format = kwargs["int_format"] or {}
+        self.float_format = kwargs["float_format"] or {}
+        
         self._min_table_width = kwargs["min_table_width"] or None
         self._max_table_width = kwargs["max_table_width"] or None
         self._padding_width = kwargs["padding_width"] or 1
@@ -247,10 +257,10 @@ class PrettyTable(object):
 
     if py3k:
         def __str__(self):
-           return self.__unicode__()
+            return self.__unicode__()
     else:
         def __str__(self):
-           return self.__unicode__().encode(self.encoding)
+            return self.__unicode__().encode(self.encoding)
 
     def __unicode__(self):
         return self.get_string()
@@ -298,14 +308,14 @@ class PrettyTable(object):
         # Check for appropriate length
         if self._field_names:
             try:
-               assert len(val) == len(self._field_names)
+                assert len(val) == len(self._field_names)
             except AssertionError:
-               raise Exception("Field name list has incorrect number of values, (actual) %d!=%d (expected)" % (len(val), len(self._field_names)))
+                raise Exception("Field name list has incorrect number of values, (actual) %d!=%d (expected)" % (len(val), len(self._field_names)))
         if self._rows:
             try:
-               assert len(val) == len(self._rows[0])
+                assert len(val) == len(self._rows[0])
             except AssertionError:
-               raise Exception("Field name list has incorrect number of values, (actual) %d!=%d (expected)" % (len(val), len(self._rows[0])))
+                raise Exception("Field name list has incorrect number of values, (actual) %d!=%d (expected)" % (len(val), len(self._rows[0])))
         # Check for uniqueness
         try:
             assert len(val) == len(set(val))
@@ -430,8 +440,7 @@ class PrettyTable(object):
                 if old_name not in self._align:
                     self._align.pop(old_name)
         else:
-            for field in self._field_names:
-                self._align[field] = "c"
+            self.align = "c"
         if self._valign and old_names:
             for old_name, new_name in zip(old_names, val):
                 self._valign[new_name] = self._valign[old_name]
@@ -439,47 +448,77 @@ class PrettyTable(object):
                 if old_name not in self._valign:
                     self._valign.pop(old_name)
         else:
-            for field in self._field_names:
-                self._valign[field] = "t"
+            self.valign = "t"
     @property
     def align(self):
+        """Controls alignment of fields
+        Arguments:
+
+        align - alignment, one of "l", "c", or "r" """
         return self._align
 
     @align.setter
     def align(self, val):
-        self._validate_align(val)
-        for field in self._field_names:
-            self._align[field] = val
+        if not self._field_names:
+            self._align = {}
+        elif val is None or (isinstance(val,dict) and len(val) is 0):
+            for field in self._field_names:
+                self._align[field] = "c"
+        else:
+            self._validate_align(val)
+            for field in self._field_names:
+                self._align[field] = val
 
     @property
     def valign(self):
-        return self._valign
+        """Controls vertical alignment of fields
+        Arguments:
 
+        valign - vertical alignment, one of "t", "m", or "b" """
+        return self._valign
     @valign.setter
     def valign(self, val):
-        self._validate_valign(val)
-        for field in self._field_names:
-            self._valign[field] = val
+        if not self._field_names:
+            self._valign = {}
+        elif val is None or (isinstance(val,dict) and len(val) is 0):
+            for field in self._field_names:
+                self._valign[field] = "t"
+        else:
+            self._validate_valign(val)
+            for field in self._field_names:
+                self._valign[field] = val
 
     @property
     def max_width(self):
-        return self._max_width
+        """Controls maximum width of fields
+        Arguments:
 
+        max_width - maximum width integer"""
+        return self._max_width
     @max_width.setter
     def max_width(self, val):
-        self._validate_option("max_width", val)
-        for field in self._field_names:
-            self._max_width[field] = val
+        if val is None or (isinstance(val,dict) and len(val) is 0):
+            self._max_width = {}
+        else:
+            self._validate_option("max_width",val)
+            for field in self._field_names:
+                self._max_width[field] = val
    
     @property
     def min_width(self):
-        return self._min_width
+        """Controls minimum width of fields
+        Arguments:
 
+        min_width - minimum width integer"""
+        return self._min_width
     @min_width.setter
     def min_width(self, val):
-        self._validate_option("min_width", val)
-        for field in self._field_names:
-            self._min_width[field] = val
+        if val is None or (isinstance(val,dict) and len(val) is 0):
+            self._min_width = {}
+        else:
+            self._validate_option("min_width",val)
+            for field in self._field_names:
+                self._min_width[field] = val
 
     @property
     def min_table_width(self):
@@ -662,8 +701,12 @@ class PrettyTable(object):
         return self._int_format
     @int_format.setter
     def int_format(self, val):
-        for field in self._field_names:
-            self._int_format[field] = val
+        if val is None or (isinstance(val,dict) and len(val) is 0):
+            self._int_format = {}
+        else:
+            self._validate_option("int_format",val)
+            for field in self._field_names:
+                self._int_format[field] = val
 
     @property
     def float_format(self):
@@ -674,8 +717,12 @@ class PrettyTable(object):
         return self._float_format
     @float_format.setter
     def float_format(self, val):
-        for field in self._field_names:
-            self._float_format[field] = val
+        if val is None or (isinstance(val,dict) and len(val) is 0):
+            self._float_format = {}
+        else:
+            self._validate_option("float_format",val)
+            for field in self._field_names:
+                self._float_format[field] = val
 
     @property
     def padding_width(self):
@@ -803,7 +850,7 @@ class PrettyTable(object):
         """ oldsortslice - Slice rows before sorting in the "old style" """
         return self._oldsortslice
     @oldsortslice.setter
-    def oldsortslice(self):
+    def oldsortslice(self, val):
         self._validate_option("oldsortslice", val)
         self._oldsortslice = val
 
@@ -1269,11 +1316,11 @@ class PrettyTable(object):
             dHeight = row_height - len(lines)
             if dHeight:
                 if valign == "m":
-                  lines = [""] * int(dHeight / 2) + lines + [""] * (dHeight - int(dHeight / 2))
+                    lines = [""] * int(dHeight / 2) + lines + [""] * (dHeight - int(dHeight / 2))
                 elif valign == "b":
-                  lines = [""] * dHeight + lines
+                    lines = [""] * dHeight + lines
                 else:
-                  lines = lines + [""] * dHeight
+                    lines = lines + [""] * dHeight
 
             y = 0
             for l in lines:
@@ -1657,6 +1704,7 @@ def from_html_one(html_code, **kwargs):
 
 def main():
 
+    print("Generated using setters:")
     x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
     x.title = "Australian capital cities"
     x.sortby = "Population"
@@ -1672,6 +1720,30 @@ def main():
     x.add_row(["Melbourne", 1566, 3806092, 646.9])
     x.add_row(["Perth", 5386, 1554769, 869.4])
     print(x)
+    
+    print
+    
+    print("Generated using constructor arguments:")
+    
+    y = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"],
+        title = "Australian capital cities",
+        sortby = "Population",
+        reversesort = True,
+        int_format = "04",
+        float_format = "6.1",
+        max_width = 12,
+        min_width = 4,
+        align = "c",
+        valign = "t")
+    y.align["City name"] = "l" # Left align city names
+    y.add_row(["Adelaide", 1295, 1158259, 600.5])
+    y.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    y.add_row(["Darwin", 112, 120900, 1714.7])
+    y.add_row(["Hobart", 1357, 205556, 619.5])
+    y.add_row(["Sydney", 2058, 4336374, 1214.8])
+    y.add_row(["Melbourne", 1566, 3806092, 646.9])
+    y.add_row(["Perth", 5386, 1554769, 869.4])
+    print(y)
     
 if __name__ == "__main__":
     main()
