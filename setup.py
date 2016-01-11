@@ -19,7 +19,8 @@ setup(
     description='A simple Python library for easily displaying tabular data in a visually appealing ASCII table format',
     author='Luke Maurits',
     author_email='luke@maurits.id.au',
-    url='http://code.google.com/p/prettytable',
+    maintainer='Jazz Band',
+    url='https://github.com/jazzband/prettytable',
     py_modules=['prettytable'],
     test_suite = "prettytable_test"
 )
