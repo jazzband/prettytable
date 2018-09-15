@@ -1409,8 +1409,7 @@ class PrettyTable(object):
         else:
             linebreak = "<br>"
 
-        open_tag = []
-        open_tag.append("<table")
+        open_tag = ["<table"]
         if options["attributes"]:
             for attr_name in options["attributes"]:
                 open_tag.append(" {}=\"{}\"".format(attr_name, options["attributes"][attr_name]))
@@ -1458,8 +1457,7 @@ class PrettyTable(object):
         else:
             linebreak = "<br>"
 
-        open_tag = []
-        open_tag.append("<table")
+        open_tag = ["<table"]
         if options["border"]:
             if options["hrules"] == ALL and options["vrules"] == ALL:
                 open_tag.append(" frame=\"box\" rules=\"all\"")
