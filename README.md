@@ -1,26 +1,31 @@
-TUTORIAL ON HOW TO USE THE PRETTYTABLE 0.6+ API
+# PrettyTable
 
-*** This tutorial is distributed with PrettyTable and is meant to serve
+## Tutorial on how to use the PrettyTable 0.6+ API
+
+*This tutorial is distributed with PrettyTable and is meant to serve
 as a "quick start" guide for the lazy or impatient.  It is not an
 exhaustive description of the whole API, and it is not guaranteed to be
 100% up to date.  For more complete and update documentation, check the
-PrettyTable wiki at http://code.google.com/p/prettytable/w/list ***
+[PrettyTable wiki](https://code.google.com/archive/p/prettytable/wikis).*
 
-= Getting your data into (and out of) the table =
+### Getting your data into (and out of) the table
 
 Let's suppose you have a shiny new PrettyTable:
 
+```python
 from prettytable import PrettyTable
 x = PrettyTable()
+```
 
 and you want to put some data into it.  You have a few options.
 
-== Row by row ==
+#### Row by row
 
 You can add data one row at a time.  To do this you can set the field names 
 first using the `field_names` attribute, and then add the rows one at a time 
 using the `add_row` method:
 
+```python
 x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
 x.add_row(["Adelaide",1295, 1158259, 600.5])
 x.add_row(["Brisbane",5905, 1857594, 1146.4])
@@ -29,14 +34,16 @@ x.add_row(["Hobart", 1357, 205556, 619.5])
 x.add_row(["Sydney", 2058, 4336374, 1214.8])
 x.add_row(["Melbourne", 1566, 3806092, 646.9])
 x.add_row(["Perth", 5386, 1554769, 869.4])
+```
 
-== Column by column ==
+#### Column by column
 
 You can add data one column at a time as well.  To do this you use the 
 `add_column` method, which takes two arguments - a string which is the name for 
 the field the column you are adding corresponds to, and a list or tuple which 
 contains the column data"
 
+```python
 x.add_column("City name", 
 ["Adelaide","Brisbane","Darwin","Hobart","Sydney","Melbourne","Perth"])
 x.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
@@ -44,8 +51,9 @@ x.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092,
 1554769])
 x.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 
 869.4])
+```
 
-== Mixing and matching ==
+#### Mixing and matching
 
 If you really want to, you can even mix and match `add_row` and `add_column` 
 and build some of your table in one way and some of it in the other.  There's a 
@@ -54,20 +62,23 @@ nicely as if you'd done it using just one of the two approaches.  Tables built
 this way are kind of confusing for other people to read, though, so don't do 
 this unless you have a good reason.
 
-== Importing data from a CSV file ==
+#### Importing data from a CSV file
 
 If you have your table data in a comma separated values file (.csv), you can
 read this data into a PrettyTable like this:
 
+```python
 from prettytable import from_csv
 fp = open("myfile.csv", "r")
 mytable = from_csv(fp)
 fp.close()
+```
 
-== Importing data from a database cursor ==
+#### Importing data from a database cursor
 
 If you have your table data in a database which you can access using a library which confirms to the Python DB-API (e.g. an SQLite database accessible using the sqlite module), then you can build a PrettyTable using a cursor object, like this:
 
+```python
 import sqlite3
 from prettytable import from_cursor
 
@@ -75,8 +86,9 @@ connection = sqlite3.connect("mydb.db")
 cursor = connection.cursor()
 cursor.execute("SELECT field1, field2, field3 FROM my_table")
 mytable = from_cursor(cursor)
+```
 
-== Getting data out ==
+#### Getting data out
 
 There are three ways to get data out of a PrettyTable, in increasing order of 
 completeness:
@@ -89,11 +101,12 @@ it with the same kind of data.
 names.  It's not quite the same as creating a fresh table instance, though - 
 style related settings, discussed later, are maintained.
 
-= Displaying your table in ASCII form =
+### Displaying your table in ASCII form
 
 PrettyTable's main goal is to let you print tables in an attractive ASCII form, 
 like this:
 
+```
 +-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
@@ -105,30 +118,37 @@ like this:
 | Perth     | 5386 |  1554769   |      869.4      |
 | Sydney    | 2058 |  4336374   |      1214.8     |
 +-----------+------+------------+-----------------+
+```
 
 You can print tables like this to `stdout` or get string representations of 
 them.
 
-== Printing ==
+#### Printing
 
 To print a table in ASCII form, you can just do this:
 
+```python
 print x
+```
 
 in Python 2.x or:
 
+```python
 print(x)
+```
 
 in Python 3.x.
 
-The old x.printt() method from versions 0.5 and earlier has been removed.
+The old `x.printt()` method from versions 0.5 and earlier has been removed.
 
-To pass options changing the look of the table, use the get_string() method
+To pass options changing the look of the table, use the `get_string()` method
 documented below:
 
+```python
 print x.get_string()
+```
 
-== Stringing ==
+#### Stringing
 
 If you don't want to actually print your table in ASCII form but just get a 
 string containing what _would_ be printed if you use "print x", you can use 
@@ -148,10 +168,13 @@ only the fields or rows you like.
 The `fields` argument to these methods takes a list of field names to be 
 printed:
 
+```python
 print x.get_string(fields=["City name", "Population"])
+```
 
 gives:
 
+```
 +-----------+------------+
 | City name | Population |
 +-----------+------------+
@@ -163,6 +186,7 @@ gives:
 | Perth     |  1554769   |
 | Sydney    |  4336374   |
 +-----------+------------+
+```
 
 The `start` and `end` arguments take the index of the first and last row to 
 print respectively.  Note that the indexing works like Python list slicing - to 
@@ -170,10 +194,13 @@ print the 2nd, 3rd and 4th rows of the table, set `start` to 1 (the first row
 is row 0, so the second is row 1) and set `end` to 4 (the index of the 4th row, 
 plus 1):
 
+```python
 print x.get_string(start=1,end=4)
+```
 
 prints:
 
+```
 +-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
@@ -181,22 +208,26 @@ prints:
 | Darwin    | 112  |     120900 | 1714.7          |
 | Hobart    | 1357 |     205556 | 619.5           |
 +-----------+------+------------+-----------------+
+```
 
-== Changing the alignment of columns ==
+#### Changing the alignment of columns
 
 By default, all columns in a table are centre aligned.
 
-=== All columns at once ===
+##### All columns at once
 
 You can change the alignment of all the columns in a table at once by assigning 
 a one character string to the `align` attribute.  The allowed strings are "l", 
 "r" and "c" for left, right and centre alignment, respectively:
 
+```python
 x.align = "r"
 print x
+```
 
 gives:
 
+```
 +-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
@@ -208,21 +239,25 @@ gives:
 |     Perth | 5386 |    1554769 |           869.4 |
 |    Sydney | 2058 |    4336374 |          1214.8 |
 +-----------+------+------------+-----------------+
+```
 
-=== One column at a time ===
+##### One column at a time
 
 You can also change the alignment of individual columns based on the 
 corresponding field name by treating the `align` attribute as if it were a 
 dictionary.
 
+```python
 x.align["City name"] = "l"
 x.align["Area"] = "c"
 x.align["Population"] = "r"
 x.align["Annual Rainfall"] = "c"
 print x
+```
 
 gives:
 
+```
 +-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
@@ -234,8 +269,9 @@ gives:
 | Perth     | 5386 |    1554769 |      869.4      |
 | Sydney    | 2058 |    4336374 |      1214.8     |
 +-----------+------+------------+-----------------+
+```
 
-== Sorting your table by a field ==
+##### Sorting your table by a field
 
 You can make sure that your ASCII tables are produced with the data sorted by 
 one particular field by giving `get_string` a `sortby` keyword argument, which
@@ -244,10 +280,13 @@ one particular field by giving `get_string` a `sortby` keyword argument, which
 For example, to print the example table we built earlier of Australian capital 
 city data, so that the most populated city comes last, we can do this:
 
+```python
 print x.get_string(sortby="Population")
+```
 
 to get
 
+```
 +-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
@@ -259,6 +298,7 @@ to get
 | Melbourne | 1566 |  3806092   |      646.9      |
 | Sydney    | 2058 |  4336374   |      1214.8     |
 +-----------+------+------------+-----------------+
+```
 
 If we want the most populated city to come _first_, we can also give a 
 `reversesort=True` argument.
@@ -266,16 +306,20 @@ If we want the most populated city to come _first_, we can also give a
 If you _always_ want your tables to be sorted in a certain way, you can make 
 the setting long term like this:
 
+```python
 x.sortby = "Population"
 print x
 print x
 print x
+```
 
 All three tables printed by this code will be sorted by population (you could 
 do `x.reversesort = True` as well, if you wanted).  The behaviour will persist 
 until you turn it off:
 
+```python
 x.sortby = None
+```
 
 If you want to specify a custom sorting function, you can use the `sort_key`
 keyword argument.  Pass this a function which accepts two lists of values
@@ -287,7 +331,7 @@ the column specified by the `sort_by` argument.  The remaining n elements
 are the data in each of the table's columns, in order, including a repeated
 instance of the data in the `sort_by` column.
 
-= Changing the appearance of your table - the easy way =
+### Changing the appearance of your table - the easy way
 
 By default, PrettyTable produces ASCII tables that look like the ones used in 
 SQL database shells.  But if can print them in a variety of other formats as 
@@ -295,15 +339,17 @@ well.  If the format you want to use is common, PrettyTable makes this very
 easy for you to do using the `set_style` method.  If you want to produce an 
 uncommon table, you'll have to do things slightly harder (see later).
 
-== Setting a table style ==
+#### Setting a table style
 
 You can set the style for your table using the `set_style` method before any 
 calls to `print` or `get_string`.  Here's how to print a table in a format 
 which works nicely with Microsoft Word's "Convert to table" feature:
 
+```python
 from prettytable import MSWORD_FRIENDLY
 x.set_style(MSWORD_FRIENDLY)
 print x
+```
 
 In addition to `MSWORD_FRIENDLY` there are currently two other in-built styles 
 you can use for your tables:
@@ -315,14 +361,14 @@ programs for columnar data
 
 Other styles are likely to appear in future releases.
 
-= Changing the appearance of your table - the hard way =
+### Changing the appearance of your table - the hard way
 
 If you want to display your table in a style other than one of the in-built 
 styles listed above, you'll have to set things up the hard way.
 
 Don't worry, it's not really that hard!
 
-== Style options ==
+#### Style options
 
 PrettyTable has a number of style options which control various aspects of how 
 tables are displayed.  You have the freedom to set each of these options 
@@ -359,22 +405,26 @@ The options are these:
 
 You can set the style options to your own settings in two ways:
 
-== Setting style options for the long term ==
+#### Setting style options for the long term
 
 If you want to print your table with a different style several times, you can 
 set your option for the "long term" just by changing the appropriate 
 attributes.  If you never want your tables to have borders you can do this:
 
+```python
 x.border = False
 print x
 print x
 print x
+```
 
 Neither of the 3 tables printed by this will have borders, even if you do 
 things like add extra rows inbetween them.  The lack of borders will last until 
 you do:
 
+```python
 x.border = True
+```
 
 to turn them on again.  This sort of long term setting is exactly how 
 `set_style` works.  `set_style` just sets a bunch of attributes to pre-set 
@@ -384,36 +434,41 @@ Note that if you know what style options you want at the moment you are
 creating your table, you can specify them using keyword arguments to the 
 constructor.  For example, the following two code blocks are equivalent:
 
+```python
 x = PrettyTable()
 x.border = False
 x.header = False
 x.padding_width = 5
 
 x = PrettyTable(border=False, header=False, padding_width=5)
+```
 
-== Changing style options just once ==
+#### Changing style options just once
 
 If you don't want to make long term style changes by changing an attribute like 
 in the previous section, you can make changes that last for just one 
 ``get_string`` by giving those methods keyword arguments.  To print two 
 "normal" tables with one borderless table between them, you could do this:
 
+```python
 print x
 print x.get_string(border=False)
 print x
+```
 
-= Displaying your table in HTML form =
+### Displaying your table in HTML form
 
 PrettyTable will also print your tables in HTML form, as `<table>`s.  Just like 
 in ASCII form, you can actually get a string representation - just use 
 `get_html_string()`.  HTML printing supports the `fields`, `start`, `end`, 
 `sortby` and `reversesort` arguments in exactly the same way as ASCII printing.
 
-== Styling HTML tables ==
+#### Styling HTML tables
 
 By default, PrettyTable outputs HTML for "vanilla" tables.  The HTML code is 
 quite simple.  It looks like this:
 
+```html
 <table>
     <tr>
         <th>City name</th>
@@ -435,13 +490,16 @@ quite simple.  It looks like this:
     ...
     ...
 </table>
+```
 
 If you like, you can ask PrettyTable to do its best to mimick the style options 
 that your table has set using inline CSS.  This is done by giving a 
 `format=True` keyword argument to `get_html_string` method.  Note that if you 
 _always_ want to print formatted HTML you can do:
 
+```python
 x.format = True
+```
 
 and the setting will persist until you turn it off.
 
@@ -449,7 +507,7 @@ Just like with ASCII tables, if you want to change the table's style for just
 one `get_html_string` you can pass those methods keyword arguments - exactly 
 like `print` and `get_string`.
 
-== Setting HTML attributes ==
+#### Setting HTML attributes
 
 You can provide a dictionary of HTML attribute name/value pairs to the 
 `get_html_string` method using the `attributes` keyword argument.  
@@ -457,10 +515,13 @@ This lets you specify common HTML attributes like `name`, `id` and
 `class` that can be used for linking to your tables or customising their 
 appearance using CSS.  For example:
 
-print x.get_html_string(attributes={"name":"my_table", "class":"red_table"})
+```python
+print(x.get_html_string(attributes={"name":"my_table", "class":"red_table"}))
+```
 
 will print:
 
+```html
 <table name="my_table" class="red_table">
     <tr>
         <th>City name</th>
@@ -472,10 +533,11 @@ will print:
     ...
     ...
 </table>
+```
 
-= Miscellaneous things =
+### Miscellaneous things
 
-== Copying a table ==
+#### Copying a table
 
 You can call the `copy` method on a PrettyTable object without arguments to 
 return an identical independent copy of the table.
@@ -483,4 +545,6 @@ return an identical independent copy of the table.
 If you want a copy of a PrettyTable object with just a subset of the rows,
 you can use list slicing notation:
 
+```python
 new_table = old_table[0:5]
+```
