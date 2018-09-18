@@ -24,5 +24,5 @@ setup(
     maintainer='Jazz Band',
     url='https://github.com/jazzband/prettytable',
     py_modules=['prettytable'],
-    test_suite = "prettytable_test"
+    test_suite="prettytable_test",
 )
