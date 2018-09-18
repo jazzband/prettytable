@@ -364,9 +364,9 @@ class FloatFormatTests(unittest.TestCase):
 
     def setUp(self):
         self.x = PrettyTable(["Constant", "Value"])
-        self.x.add_row(["Pi", pi]) 
-        self.x.add_row(["e", e]) 
-        self.x.add_row(["sqrt(2)", sqrt(2)]) 
+        self.x.add_row(["Pi", pi])
+        self.x.add_row(["e", e])
+        self.x.add_row(["sqrt(2)", sqrt(2)])
 
     def testNoDecimals(self):
         self.x.float_format = ".0f"
@@ -378,9 +378,9 @@ class FloatFormatTests(unittest.TestCase):
         string = self.x.get_string()
         assert "3.14159" in string
         assert "3.141592" not in string
-        assert "2.71828" in string 
-        assert "2.718281" not in string 
-        assert "2.718282" not in string 
+        assert "2.71828" in string
+        assert "2.718281" not in string
+        assert "2.718282" not in string
         assert "1.41421" in string
         assert "1.414213" not in string
 
