@@ -405,10 +405,9 @@ print x
 = Displaying your table in HTML form =
 
 PrettyTable will also print your tables in HTML form, as `<table>`s.  Just like 
-in ASCII form, you can actually print your table - just use `print_html()` - or 
-get a string representation - just use `get_html_string()`.  HTML printing 
-supports the `fields`, `start`, `end`, `sortby` and `reversesort` arguments in 
-exactly the same way as ASCII printing.
+in ASCII form, you can actually get a string representation - just use 
+`get_html_string()`.  HTML printing supports the `fields`, `start`, `end`, 
+`sortby` and `reversesort` arguments in exactly the same way as ASCII printing.
 
 == Styling HTML tables ==
 
@@ -439,26 +438,26 @@ quite simple.  It looks like this:
 
 If you like, you can ask PrettyTable to do its best to mimick the style options 
 that your table has set using inline CSS.  This is done by giving a 
-`format=True` keyword argument to either the `print_html` or `get_html_string` 
-methods.  Note that if you _always_ want to print formatted HTML you can do:
+`format=True` keyword argument to `get_html_string` method.  Note that if you 
+_always_ want to print formatted HTML you can do:
 
 x.format = True
 
 and the setting will persist until you turn it off.
 
 Just like with ASCII tables, if you want to change the table's style for just 
-one `print_html` or one `get_html_string` you can pass those methods keyword 
-arguments - exactly like `print` and `get_string`.
+one `get_html_string` you can pass those methods keyword arguments - exactly 
+like `print` and `get_string`.
 
 == Setting HTML attributes ==
 
 You can provide a dictionary of HTML attribute name/value pairs to the 
-`print_html` and `get_html_string` methods using the `attributes` keyword 
-argument.  This lets you specify common HTML attributes like `name`, `id` and 
+`get_html_string` method using the `attributes` keyword argument.  
+This lets you specify common HTML attributes like `name`, `id` and 
 `class` that can be used for linking to your tables or customising their 
 appearance using CSS.  For example:
 
-x.print_html(attributes={"name":"my_table", "class":"red_table"})
+print x.get_html_string(attributes={"name":"my_table", "class":"red_table"})
 
 will print:
 
