@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
-from prettytable import *
-
 import sys
+import unittest
+from math import e, pi, sqrt
+
+from prettytable import (ALL, MSWORD_FRIENDLY, NONE, PrettyTable, from_csv,
+                         from_db_cursor, from_html, from_html_one)
+
 py3k = sys.version_info[0] >= 3
 try:
     import sqlite3
@@ -14,8 +18,6 @@ if py3k:
     import io as StringIO
 else:
     import StringIO
-from math import pi, e, sqrt
-import unittest
 
 class BuildEquivelanceTest(unittest.TestCase):
 
