@@ -344,7 +344,7 @@ class PrettyTable(object):
         try:
             assert int(val) >= 0
         except AssertionError:
-            raise Exception("Invalid value for %s: %s!" % (name, self._unicode(val)))
+            raise Exception("Invalid value for {}: {}!".format(name, self._unicode(val)))
 
     def _validate_true_or_false(self, name, val):
         try:
@@ -1409,11 +1409,10 @@ class PrettyTable(object):
         else:
             linebreak = "<br>"
 
-        open_tag = []
-        open_tag.append("<table")
+        open_tag = ["<table"]
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
+                open_tag.append(" {}=\"{}\"".format(attr_name, options["attributes"][attr_name]))
         open_tag.append(">")
         lines.append("".join(open_tag))
 
@@ -1458,8 +1457,7 @@ class PrettyTable(object):
         else:
             linebreak = "<br>"
 
-        open_tag = []
-        open_tag.append("<table")
+        open_tag = ["<table"]
         if options["border"]:
             if options["hrules"] == ALL and options["vrules"] == ALL:
                 open_tag.append(" frame=\"box\" rules=\"all\"")
@@ -1477,7 +1475,7 @@ class PrettyTable(object):
                 open_tag.append(" frame=\"vsides\" rules=\"cols\"")
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(" %s=\"%s\"" % (attr_name, options["attributes"][attr_name]))
+                open_tag.append(" {}=\"{}\"".format(attr_name, options["attributes"][attr_name]))
         open_tag.append(">")
         lines.append("".join(open_tag))
 
@@ -1659,7 +1657,7 @@ class TableHandler(HTMLParser):
                 for i in range(1,appends):
                     row[0].append("-")
 
-            if row[1] == True:
+            if row[1]:
                 self.make_fields_unique(row[0])
                 table.field_names = row[0]
             else:
