@@ -31,7 +31,8 @@ else:
 
 class BuildEquivelanceTest(unittest.TestCase):
 
-    """Make sure that building a table row-by-row and column-by-column yield the same results"""
+    """Make sure that building a table row-by-row and column-by-column yield the same
+    results"""
 
     def setUp(self):
 
@@ -624,7 +625,8 @@ if _have_sqlite:
             self.conn = sqlite3.connect(":memory:")
             self.cur = self.conn.cursor()
             self.cur.execute(
-                "CREATE TABLE cities (name TEXT, area INTEGER, population INTEGER, rainfall REAL)"
+                "CREATE TABLE cities (name TEXT, area INTEGER, population INTEGER, "
+                "rainfall REAL)"
             )
             self.cur.execute(
                 'INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)'

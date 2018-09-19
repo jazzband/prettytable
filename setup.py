@@ -18,7 +18,8 @@ setup(
         "Topic :: Text Processing",
     ],
     license="BSD (3 clause)",
-    description="A simple Python library for easily displaying tabular data in a visually appealing ASCII table format",
+    description="A simple Python library for easily displaying tabular data in a "
+    "visually appealing ASCII table format",
     author="Luke Maurits",
     author_email="luke@maurits.id.au",
     maintainer="Jazz Band",
