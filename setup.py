@@ -2,6 +2,10 @@
 from setuptools import setup
 from prettytable import __version__ as version
 
+
+with open('README.md') as f:
+    long_description = f.read()
+
 setup(
     name='prettytable',
     version=version,
@@ -19,6 +23,8 @@ setup(
     ],
     license="BSD (3 clause)",
     description='A simple Python library for easily displaying tabular data in a visually appealing ASCII table format',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Luke Maurits',
     author_email='luke@maurits.id.au',
     maintainer='Jazz Band',
