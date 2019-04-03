@@ -1459,7 +1459,7 @@ class PrettyTable(object):
         for row in self._get_rows(options):
             objects.append(dict(zip(self._field_names, row)))
 
-        return json.dumps(objects,indent=4,separators=(',', ': '))
+        return json.dumps(objects,indent=4,separators=(',', ': '),sort_keys=True)
 
     ##############################
     # HTML STRING METHODS        #

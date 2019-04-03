@@ -502,19 +502,19 @@ class JSONOutputTests(unittest.TestCase):
         "Field 3"
     ],
     {
-        "Field 3": "value3",
+        "Field 1": "value 1",
         "Field 2": "value2",
-        "Field 1": "value 1"
+        "Field 3": "value3"
     },
     {
-        "Field 3": "value6",
+        "Field 1": "value 4",
         "Field 2": "value5",
-        "Field 1": "value 4"
+        "Field 3": "value6"
     },
     {
-        "Field 3": "value9",
+        "Field 1": "value 7",
         "Field 2": "value8",
-        "Field 1": "value 7"
+        "Field 3": "value9"
     }
 ]""".strip()
 
