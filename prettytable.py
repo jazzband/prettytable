@@ -362,7 +362,7 @@ class PrettyTable(object):
             assert int(val) >= 0
         except AssertionError:
             raise Exception(
-                "Invalid value for %s: %s!" % (name, self._unicode(val)))
+                "Invalid value for {}: {}!".format(name, self._unicode(val)))
 
     def _validate_true_or_false(self, name, val):
         try:
@@ -489,7 +489,7 @@ class PrettyTable(object):
     def align(self, val):
         if not self._field_names:
             self._align = {}
-        elif val is None or (isinstance(val, dict) and len(val) is 0):
+        elif val is None or (isinstance(val, dict) and len(val) == 0):
             for field in self._field_names:
                 self._align[field] = "c"
         else:
@@ -509,7 +509,7 @@ class PrettyTable(object):
     def valign(self, val):
         if not self._field_names:
             self._valign = {}
-        elif val is None or (isinstance(val, dict) and len(val) is 0):
+        elif val is None or (isinstance(val, dict) and len(val) == 0):
             for field in self._field_names:
                 self._valign[field] = "t"
         else:
@@ -527,7 +527,7 @@ class PrettyTable(object):
 
     @max_width.setter
     def max_width(self, val):
-        if val is None or (isinstance(val, dict) and len(val) is 0):
+        if val is None or (isinstance(val, dict) and len(val) == 0):
             self._max_width = {}
         else:
             self._validate_option("max_width", val)
@@ -544,7 +544,7 @@ class PrettyTable(object):
 
     @min_width.setter
     def min_width(self, val):
-        if val is None or (isinstance(val, dict) and len(val) is 0):
+        if val is None or (isinstance(val, dict) and len(val) == 0):
             self._min_width = {}
         else:
             self._validate_option("min_width", val)
@@ -742,7 +742,7 @@ class PrettyTable(object):
 
     @int_format.setter
     def int_format(self, val):
-        if val is None or (isinstance(val, dict) and len(val) is 0):
+        if val is None or (isinstance(val, dict) and len(val) == 0):
             self._int_format = {}
         else:
             self._validate_option("int_format", val)
@@ -759,7 +759,7 @@ class PrettyTable(object):
 
     @float_format.setter
     def float_format(self, val):
-        if val is None or (isinstance(val, dict) and len(val) is 0):
+        if val is None or (isinstance(val, dict) and len(val) == 0):
             self._float_format = {}
         else:
             self._validate_option("float_format", val)
