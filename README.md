@@ -456,6 +456,12 @@ print x.get_string(border=False)
 print x
 ```
 
+### Displaying your table in JSON
+
+PrettyTable will also print your tables in JSON, as a list of fields and an array 
+of rows.  Just like in ASCII form, you can actually get a string representation - just use 
+`get_json_string()`. 
+
 ### Displaying your table in HTML form
 
 PrettyTable will also print your tables in HTML form, as `<table>`s.  Just like 

@@ -41,6 +41,7 @@ import re
 import sys
 import textwrap
 import unicodedata
+import json
 
 py3k = sys.version_info[0] >= 3
 if py3k:
@@ -1443,6 +1444,25 @@ class PrettyTable(object):
         return "\f".join(pages)
 
     ##############################
+    # JSON STRING METHODS        #
+    ##############################
+    def get_json_string(self,**kwargs):
+
+        """Return string representation of JSON formatted table in the current state
+
+        Arguments:
+
+        none yet"""
+
+        options = self._get_options(kwargs)
+
+        objects = [self.field_names]
+        for row in self._get_rows(options):
+            objects.append(dict(zip(self._field_names, row)))
+
+        return json.dumps(objects,indent=4,separators=(',', ': '),sort_keys=True)
+
+    ##############################
     # HTML STRING METHODS        #
     ##############################
 
@@ -1690,6 +1710,14 @@ def from_db_cursor(cursor, **kwargs):
             table.add_row(row)
         return table
 
+def from_json(json_string, **kwargs):
+    table = PrettyTable(**kwargs)
+    objects = json.loads(json_string)
+    table.field_names = objects[0]
+    for obj in objects[1:]:
+        row = [obj[key] for key in table.field_names]
+        table.add_row(row)
+    return table
 
 class TableHandler(HTMLParser):
 

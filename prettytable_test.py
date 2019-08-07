@@ -6,7 +6,7 @@ import unittest
 from math import e, pi, sqrt
 
 from prettytable import (ALL, MSWORD_FRIENDLY, NONE, PrettyTable, from_csv,
-                         from_db_cursor, from_html, from_html_one)
+                         from_db_cursor, from_html, from_html_one, from_json)
 
 py3k = sys.version_info[0] >= 3
 try:
@@ -487,6 +487,37 @@ class BreakLineTests(unittest.TestCase):
 """.strip()
 
 
+class JSONOutputTests(unittest.TestCase):
+
+    def testJSONOutput(self):
+        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
+        t.add_row(['value 1', 'value2', 'value3'])
+        t.add_row(['value 4', 'value5', 'value6'])
+        t.add_row(['value 7', 'value8', 'value9'])
+        result = t.get_json_string()
+        assert result.strip() == """[
+    [
+        "Field 1",
+        "Field 2",
+        "Field 3"
+    ],
+    {
+        "Field 1": "value 1",
+        "Field 2": "value2",
+        "Field 3": "value3"
+    },
+    {
+        "Field 1": "value 4",
+        "Field 2": "value5",
+        "Field 3": "value6"
+    },
+    {
+        "Field 1": "value 7",
+        "Field 2": "value8",
+        "Field 3": "value9"
+    }
+]""".strip()
+
 class HtmlOutputTests(unittest.TestCase):
 
     def testHtmlOutput(self):
@@ -589,6 +620,13 @@ if _have_sqlite:
             self.cur.execute("INSERT INTO cities VALUES (\"Adelaide\", 1295, 1158259, 600.5)")
             assert from_db_cursor(self.cur) is None
 
+
+class JSONConstructorTest(CityDataTest):
+
+    def testJSONAndBack(self):
+        json_string = self.x.get_json_string()
+        new_table = from_json(json_string)
+        assert new_table.get_string() == self.x.get_string()
 
 class HtmlConstructorTest(CityDataTest):
 
