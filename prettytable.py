@@ -457,6 +457,7 @@ class PrettyTable(object):
     def field_names(self, val):
         val = [self._unicode(x) for x in val]
         self._validate_option("field_names", val)
+        old_names = None
         if self._field_names:
             old_names = self._field_names[:]
         self._field_names = val
