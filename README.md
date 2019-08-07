@@ -356,7 +356,7 @@ you can use for your tables:
 
   * `DEFAULT` - The default look, used to undo any style changes you may have 
 made
-  * `PLAIN_COLUMN` - A borderless style that works well with command line 
+  * `PLAIN_COLUMNS` - A borderless style that works well with command line 
 programs for columnar data
 
 Other styles are likely to appear in future releases.
