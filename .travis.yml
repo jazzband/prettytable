@@ -1,15 +1,15 @@
 language: python
 cache: pip
-sudo: false
 
 # Supported CPython versions:
 # https://en.wikipedia.org/wiki/CPython#Version_history
 matrix:
   fast_finish: true
   include:
+    - python: "3.8-dev"
+      dist: xenial
     - python: "3.7"
       dist: xenial
-      sudo: required
     - python: "3.6"
     - python: "3.5"
     - python: "3.4"
