@@ -1,5 +1,9 @@
 # PrettyTable
 
+[![Jazzband](https://jazzband.co/static/img/badge.svg)](https://jazzband.co/)
+[![Build Status](https://travis-ci.org/jazzband/prettytable.svg?branch=master)](https://travis-ci.org/jazzband/prettytable)
+[![codecov](https://codecov.io/gh/jazzband/prettytable/branch/master/graph/badge.svg)](https://codecov.io/gh/jazzband/prettytable)
+
 ## Tutorial on how to use the PrettyTable 0.6+ API
 
 *This tutorial is distributed with PrettyTable and is meant to serve
