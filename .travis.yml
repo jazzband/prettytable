@@ -1,5 +1,8 @@
 language: python
-cache: pip
+cache:
+  pip: true
+  directories:
+    - $HOME/.cache/pre-commit
 
 # Supported CPython versions:
 # https://en.wikipedia.org/wiki/CPython#Version_history
@@ -7,22 +10,23 @@ matrix:
   fast_finish: true
   include:
     - python: "3.8"
+      env: TOXENV=lint
+    - python: "3.8"
     - python: "3.7"
     - python: "3.6"
     - python: "3.5"
     - python: "2.7"
 
 install:
- - pip install -U pytest pytest-cov
+ - travis_retry pip install tox-travis
 
 script:
- - pytest --cov prettytable
-
-after_script:
- - pip install -U flake8
- - flake8 . --statistics --count
+ - tox
 
 after_success:
- - coverage report
- - pip install -U codecov
- - codecov
+  - |
+    if [[ "$TOXENV" != "lint" ]]; then
+      coverage report
+      pip install -U codecov
+      codecov
+    fi

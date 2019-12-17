@@ -35,13 +35,13 @@ __version__ = "trunk"
 import copy
 import csv
 import itertools
+import json
 import math
 import random
 import re
 import sys
 import textwrap
 import unicodedata
-import json
 
 py3k = sys.version_info[0] >= 3
 if py3k:

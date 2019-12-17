@@ -5,8 +5,17 @@ import sys
 import unittest
 from math import e, pi, sqrt
 
-from prettytable import (ALL, MSWORD_FRIENDLY, NONE, PrettyTable, from_csv,
-                         from_db_cursor, from_html, from_html_one, from_json)
+from prettytable import (
+    ALL,
+    MSWORD_FRIENDLY,
+    NONE,
+    PrettyTable,
+    from_csv,
+    from_db_cursor,
+    from_html,
+    from_html_one,
+    from_json,
+)
 
 py3k = sys.version_info[0] >= 3
 try:
