@@ -24,7 +24,8 @@ setup(
         "Topic :: Text Processing",
     ],
     license="BSD (3 clause)",
-    description="A simple Python library for easily displaying tabular data in a visually appealing ASCII table format",
+    description="A simple Python library for easily displaying tabular data in a "
+    "visually appealing ASCII table format",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Luke Maurits",

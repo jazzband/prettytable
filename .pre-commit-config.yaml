@@ -10,6 +10,11 @@ repos:
       - id: black
         args: ["--target-version", "py27"]
 
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.7.9
+    hooks:
+      - id: flake8
+
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v4.3.21
     hooks:
