@@ -1,18 +1,26 @@
-# PrettyTable 0.8 - Oct XX, 2013
+# PrettyTable 1.0 - Unreleased
 
-* New "paginate" method can be used to produce strings suitable
+* Dropped support for EOL Python 2.4-2.6 and 3.0-3.4.
+* Added support for Python 3.5-3.8.
+* New `paginate` method can be used to produce strings suitable
   for piping to lp/lpr.
-* from_html now handles HTML tables with colspan, rather than
+* `from_html` now handles HTML tables with colspan, rather than
   choking on them.
-* Added "min_width", "min_table_width" and "max_table_width"
+* Added `min_width`, `min_table_width` and `max_table_width`
   attribute/options for better control of table sizing.
 * Added "title" attribute/option for table titles.
 * When slice syntax is used to create a new sub-table out of an
   existing table, the rows are sorted before, not after, the slicing.
   The old behaviour (slice then sort) can be achieved by setting
-  oldsortslice=True.
-* The from_csv table factory now accepts CSV format parameters as
-  keyword arguments (e.g. delimiter, doublequote, escapechar, etc.)
+  `oldsortslice=True`.
+* The `from_csv` table factory now accepts CSV format parameters as
+  keyword arguments (e.g. `delimiter`, `doublequote`, `escapechar`, etc.)
+* Added 0x000f to the list of special characters with width 0, to fix
+  problems with coloured strings produced by the Blessings library.
+* Fixed constructor argument `float_format` to work as intended.
+* Removed `print_html()` from README.
+* Added `from_json` and `get_json_string` to PrettyTable.
+* Fixed `PLAIN_COLUMN` to `PLAIN_COLUMNS` in README.
 
 # PrettyTable 0.7 - Feb 17, 2013
 
