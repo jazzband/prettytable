@@ -1,4 +1,4 @@
-########## PrettyTable 0.8 - Oct XX, 2013 ###########
+# PrettyTable 0.8 - Oct XX, 2013
 
 * New "paginate" method can be used to produce strings suitable
   for piping to lp/lpr.
@@ -14,7 +14,7 @@
 * The from_csv table factory now accepts CSV format parameters as
   keyword arguments (e.g. delimiter, doublequote, escapechar, etc.)
 
-########## PrettyTable 0.7 - Feb 17, 2013 ###########
+# PrettyTable 0.7 - Feb 17, 2013
 
 * Improved Python 2 and 3 compatibility (2.4-3.2).
 * Improved support for non-Latin characters.  Table widths should
@@ -41,7 +41,7 @@
   being ignored (thanks to Google Code user antonio.s.messina for
   reporting this bug).
 
-########## PrettyTable 0.6 - May 5, 2012 ##########
+# PrettyTable 0.6 - May 5, 2012
 
 * Code is now simultaneously compatible with Python 2 and 3
 * Replaced all setter methods with managed attributes
@@ -72,7 +72,7 @@
 * Fixed bug whereby changing field_names did not recompute widths
   (thanks to Google Code user denilsonsa for reporting this bug!)
 
-########## PrettyTable 0.5 - May 26, 2009 ##########
+# PrettyTable 0.5 - May 26, 2009
 
 * Fixed a bug whereby printing with headers=False and border=False 
   would introduce an extraneous newline. Thanks to Alexander Lamaison 
@@ -100,7 +100,7 @@
   the methods print a "bare bones" table, similar to the default 
   behaviour in 0.4.
 
-########## PrettyTable 0.4 - May 13, 2009 ##########
+# PrettyTable 0.4 - May 13, 2009
 
 * Added "add_column" method to enable building tables up column-by-column.
 * Added "print_HTML" and "get_HTML_string" methods to enable HTML table
@@ -119,7 +119,7 @@
 Thanks to Tim Cera, Chris Clark, Alexander Lamaison for suggesting and helping
 to test many of the new features in this release.
 
-########## PrettyTable 0.3 - May 01, 2009 ##########
+# PrettyTable 0.3 - May 01, 2009
 
 * Added "padding_width" option to control the number of spaces between the
   vertical line rules at the edges of a column and its content.  This can be
@@ -131,7 +131,7 @@ to test many of the new features in this release.
 Thanks to Chris Clark for contributing a patch against 0.2.1 to add this
 feature!
 
-########## PrettyTable 0.2.1 - April 29, 2009 ##########
+# PrettyTable 0.2.1 - April 29, 2009
 
 * Caching no longer breaks when using the "printt(fields=[...])" syntax.  The
   list of fields was not hashable and hence could not be used as a dictionary
@@ -143,7 +143,7 @@ feature!
 Thanks to Julien Koesten for reporting these bugs and testing the fixes almost
 immediately after the release of 0.2!
 
-########## PrettyTable 0.2 - April 29, 2009 ##########
+# PrettyTable 0.2 - April 29, 2009
 
 * Added "get_string" method.
 * Added "__str__" method (which just calls "get_string") to enable nice
@@ -153,6 +153,6 @@ immediately after the release of 0.2!
   cleared after a call to "add_row" or something else which invalidates the
   cache.
 
-########## PrettyTable 0.1 - February 26, 2009 #########
+# PrettyTable 0.1 - February 26, 2009
 
 * Original release

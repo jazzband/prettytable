@@ -1,4 +1,4 @@
 include COPYING
-include CHANGELOG
-include README
+include CHANGELOG.md
+include README.md
 include prettytable_test.py
