@@ -9,6 +9,7 @@ cache:
 matrix:
   fast_finish: true
   include:
+    - python: "3.9-dev"
     - python: "3.8"
       env: TOXENV=lint
     - python: "3.8"
