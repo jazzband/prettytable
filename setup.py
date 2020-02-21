@@ -8,6 +8,15 @@ with open("README.md") as f:
 
 setup(
     name="prettytable",
+    description="A simple Python library for easily displaying tabular data in a "
+    "visually appealing ASCII table format",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    author="Luke Maurits",
+    author_email="luke@maurits.id.au",
+    maintainer="Jazzband",
+    url="https://github.com/jazzband/prettytable",
+    license="BSD (3 clause)",
     version=version,
     extras_require={"tests": ["pytest", "pytest-cov"]},
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
@@ -23,15 +32,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Topic :: Text Processing",
     ],
-    license="BSD (3 clause)",
-    description="A simple Python library for easily displaying tabular data in a "
-    "visually appealing ASCII table format",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    author="Luke Maurits",
-    author_email="luke@maurits.id.au",
-    maintainer="Jazzband",
-    url="https://github.com/jazzband/prettytable",
     py_modules=["prettytable"],
     test_suite="prettytable_test",
 )
