@@ -30,8 +30,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-__version__ = "trunk"
-
 import copy
 import csv
 import itertools
@@ -43,6 +41,9 @@ import sys
 import textwrap
 import unicodedata
 
+import pkg_resources
+
+__version__ = pkg_resources.get_distribution(__name__).version
 py3k = sys.version_info[0] >= 3
 if py3k:
     unicode = str

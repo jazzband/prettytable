@@ -1,4 +1,0 @@
-include COPYING
-include CHANGELOG.md
-include README.md
-include prettytable_test.py

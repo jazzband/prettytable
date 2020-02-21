@@ -1,10 +1,14 @@
-#!/usr/bin/env python
 from setuptools import setup
-
-from prettytable import __version__ as version
 
 with open("README.md") as f:
     long_description = f.read()
+
+
+def local_scheme(version):
+    """Skip the local version (eg. +xyz of 0.6.1.dev4+gdf99fe2)
+    to be able to upload to Test PyPI"""
+    return ""
+
 
 setup(
     name="prettytable",
@@ -17,7 +21,8 @@ setup(
     maintainer="Jazzband",
     url="https://github.com/jazzband/prettytable",
     license="BSD (3 clause)",
-    version=version,
+    use_scm_version={"local_scheme": local_scheme},
+    setup_requires=["setuptools_scm"],
     extras_require={"tests": ["pytest", "pytest-cov"]},
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     classifiers=[
