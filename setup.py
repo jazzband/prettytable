@@ -20,6 +20,7 @@ setup(
     author_email="luke@maurits.id.au",
     maintainer="Jazzband",
     url="https://github.com/jazzband/prettytable",
+    project_urls={"Source": "https://github.com/jazzband/prettytable"},
     license="BSD (3 clause)",
     use_scm_version={"local_scheme": local_scheme},
     setup_requires=["setuptools_scm"],
