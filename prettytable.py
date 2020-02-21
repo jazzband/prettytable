@@ -51,15 +51,12 @@ if py3k:
     iterzip = zip
     uni_chr = chr
     from html.parser import HTMLParser
+    from html import escape
 else:
     itermap = itertools.imap
     iterzip = itertools.izip
     uni_chr = unichr  # noqa: F821
     from HTMLParser import HTMLParser
-
-if py3k and sys.version_info[1] >= 2:
-    from html import escape
-else:
     from cgi import escape
 
 # hrule styles
