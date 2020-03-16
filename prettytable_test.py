@@ -5,11 +5,10 @@ import sys
 import unittest
 from math import e, pi, sqrt
 
-
 from prettytable import (
     ALL,
-    MSWORD_FRIENDLY,
     MARKDOWN,
+    MSWORD_FRIENDLY,
     NONE,
     PrettyTable,
     from_csv,
@@ -638,19 +637,24 @@ class HtmlOutputTests(unittest.TestCase):
 """.strip()  # noqa: E501
         )
 
+
 class MarkdownStyleTest(BasicTests):
     def testMarkdownStyle(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
-        t.add_row(['value 1', 'value2', 'value3'])
-        t.add_row(['value 4', 'value5', 'value6'])
-        t.add_row(['value 7', 'value8', 'value9'])
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+        t.add_row(["value 1", "value2", "value3"])
+        t.add_row(["value 4", "value5", "value6"])
+        t.add_row(["value 7", "value8", "value9"])
         t.set_style(MARKDOWN)
         result = t.get_string()
-        assert result.strip() == """| Field 1 | Field 2 | Field 3 |
+        assert (
+            result.strip()
+            == """| Field 1 | Field 2 | Field 3 |
 |---------|---------|---------|
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |""".strip()
+        )
+
 
 class CsvConstructorTest(BasicTests):
     def setUp(self):
