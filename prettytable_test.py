@@ -648,7 +648,8 @@ class MarkdownStyleTest(BasicTests):
         result = t.get_string()
         assert (
             result.strip()
-            == """| Field 1 | Field 2 | Field 3 |
+            == """
+| Field 1 | Field 2 | Field 3 |
 |---------|---------|---------|
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
