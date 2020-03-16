@@ -5,12 +5,24 @@ import sys
 import unittest
 from math import e, pi, sqrt
 
-from prettytable import (ALL, MSWORD_FRIENDLY, MARKDOWN, NONE, PrettyTable, from_csv,
-                         from_db_cursor, from_html, from_html_one, from_json)
+
+from prettytable import (
+    ALL,
+    MSWORD_FRIENDLY,
+    MARKDOWN,
+    NONE,
+    PrettyTable,
+    from_csv,
+    from_db_cursor,
+    from_html,
+    from_html_one,
+    from_json,
+)
 
 py3k = sys.version_info[0] >= 3
 try:
     import sqlite3
+
     _have_sqlite = True
 except ImportError:
     _have_sqlite = False
@@ -21,8 +33,8 @@ else:
 
 
 class BuildEquivelanceTest(unittest.TestCase):
-
-    """Make sure that building a table row-by-row and column-by-column yield the same results"""
+    """Make sure that building a table row-by-row and column-by-column yield the same
+     results"""
 
     def setUp(self):
 
@@ -39,10 +51,25 @@ class BuildEquivelanceTest(unittest.TestCase):
 
         # Column by column...
         self.col = PrettyTable()
-        self.col.add_column("City name", ["Adelaide", "Brisbane", "Darwin", "Hobart", "Sydney", "Melbourne", "Perth"])
+        self.col.add_column(
+            "City name",
+            [
+                "Adelaide",
+                "Brisbane",
+                "Darwin",
+                "Hobart",
+                "Sydney",
+                "Melbourne",
+                "Perth",
+            ],
+        )
         self.col.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
-        self.col.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769])
-        self.col.add_column("Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4])
+        self.col.add_column(
+            "Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769]
+        )
+        self.col.add_column(
+            "Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4]
+        )
 
         # A mix of both!
         self.mix = PrettyTable()
@@ -54,8 +81,12 @@ class BuildEquivelanceTest(unittest.TestCase):
         self.mix.add_row(["Sydney", 2058])
         self.mix.add_row(["Melbourne", 1566])
         self.mix.add_row(["Perth", 5386])
-        self.mix.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769])
-        self.mix.add_column("Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4])
+        self.mix.add_column(
+            "Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769]
+        )
+        self.mix.add_column(
+            "Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4]
+        )
 
     def testRowColEquivalenceASCII(self):
 
@@ -74,7 +105,7 @@ class BuildEquivelanceTest(unittest.TestCase):
         self.assertEqual(self.row.get_html_string(), self.mix.get_html_string())
 
 
-#class FieldnamelessTableTest(unittest.TestCase):
+# class FieldnamelessTableTest(unittest.TestCase):
 #
 #    """Make sure that building and stringing a table with no fieldnames works fine"""
 #
@@ -257,11 +288,15 @@ class EmptyTableTests(CityDataTest):
 
     def testPrintEmptyTrue(self):
         assert self.y.get_string(print_empty=True) != ""
-        assert self.x.get_string(print_empty=True) != self.y.get_string(print_empty=True)
+        assert self.x.get_string(print_empty=True) != self.y.get_string(
+            print_empty=True
+        )
 
     def testPrintEmptyFalse(self):
         assert self.y.get_string(print_empty=False) == ""
-        assert self.y.get_string(print_empty=False) != self.x.get_string(print_empty=False)
+        assert self.y.get_string(print_empty=False) != self.x.get_string(
+            print_empty=False
+        )
 
     def testInteractionWithBorder(self):
         assert self.y.get_string(border=False, print_empty=True) == ""
@@ -277,7 +312,6 @@ class PresetBasicTests(BasicTests):
 
 
 class SlicingTests(CityDataTest):
-
     def setUp(self):
         CityDataTest.setUp(self)
 
@@ -305,7 +339,6 @@ class SlicingTests(CityDataTest):
 
 
 class SortingTests(CityDataTest):
-
     def setUp(self):
         CityDataTest.setUp(self)
 
@@ -334,9 +367,12 @@ class SortingTests(CityDataTest):
         def key(vals):
             vals[0] = len(vals[0])
             return vals
+
         self.x.sortby = "City name"
         self.x.sort_key = key
-        assert self.x.get_string().strip() == """+-----------+------+------------+-----------------+
+        assert (
+            self.x.get_string().strip()
+            == """+-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
 |   Perth   | 5386 |  1554769   |      869.4      |
@@ -348,6 +384,7 @@ class SortingTests(CityDataTest):
 | Melbourne | 1566 |  3806092   |      646.9      |
 +-----------+------+------------+-----------------+
 """.strip()
+        )
 
     def testSortSlice(self):
         """Make sure sorting and slicing interact in the expected way"""
@@ -381,7 +418,6 @@ class FloatFormatBasicTests(BasicTests):
 
 
 class FloatFormatTests(unittest.TestCase):
-
     def setUp(self):
         self.x = PrettyTable(["Constant", "Value"])
         self.x.add_row(["Pi", pi])
@@ -414,11 +450,13 @@ class FloatFormatTests(unittest.TestCase):
 
 class BreakLineTests(unittest.TestCase):
     def testAsciiBreakLine(self):
-        t = PrettyTable(['Field 1', 'Field 2'])
-        t.add_row(['value 1', 'value2\nsecond line'])
-        t.add_row(['value 3', 'value4'])
+        t = PrettyTable(["Field 1", "Field 2"])
+        t.add_row(["value 1", "value2\nsecond line"])
+        t.add_row(["value 3", "value4"])
         result = t.get_string(hrules=ALL)
-        assert result.strip() == """
+        assert (
+            result.strip()
+            == """
 +---------+-------------+
 | Field 1 |   Field 2   |
 +---------+-------------+
@@ -428,12 +466,15 @@ class BreakLineTests(unittest.TestCase):
 | value 3 |    value4   |
 +---------+-------------+
 """.strip()
+        )
 
-        t = PrettyTable(['Field 1', 'Field 2'])
-        t.add_row(['value 1', 'value2\nsecond line'])
-        t.add_row(['value 3\n\nother line', 'value4\n\n\nvalue5'])
+        t = PrettyTable(["Field 1", "Field 2"])
+        t.add_row(["value 1", "value2\nsecond line"])
+        t.add_row(["value 3\n\nother line", "value4\n\n\nvalue5"])
         result = t.get_string(hrules=ALL)
-        assert result.strip() == """
+        assert (
+            result.strip()
+            == """
 +------------+-------------+
 |  Field 1   |   Field 2   |
 +------------+-------------+
@@ -446,12 +487,15 @@ class BreakLineTests(unittest.TestCase):
 |            |    value5   |
 +------------+-------------+
 """.strip()
+        )
 
-        t = PrettyTable(['Field 1', 'Field 2'])
-        t.add_row(['value 1', 'value2\nsecond line'])
-        t.add_row(['value 3\n\nother line', 'value4\n\n\nvalue5'])
+        t = PrettyTable(["Field 1", "Field 2"])
+        t.add_row(["value 1", "value2\nsecond line"])
+        t.add_row(["value 3\n\nother line", "value4\n\n\nvalue5"])
         result = t.get_string()
-        assert result.strip() == """
+        assert (
+            result.strip()
+            == """
 +------------+-------------+
 |  Field 1   |   Field 2   |
 +------------+-------------+
@@ -463,13 +507,16 @@ class BreakLineTests(unittest.TestCase):
 |            |    value5   |
 +------------+-------------+
 """.strip()
+        )
 
     def testHtmlBreakLine(self):
-        t = PrettyTable(['Field 1', 'Field 2'])
-        t.add_row(['value 1', 'value2\nsecond line'])
-        t.add_row(['value 3', 'value4'])
+        t = PrettyTable(["Field 1", "Field 2"])
+        t.add_row(["value 1", "value2\nsecond line"])
+        t.add_row(["value 3", "value4"])
         result = t.get_html_string(hrules=ALL)
-        assert result.strip() == """
+        assert (
+            result.strip()
+            == """
 <table>
     <tr>
         <th>Field 1</th>
@@ -485,17 +532,19 @@ class BreakLineTests(unittest.TestCase):
     </tr>
 </table>
 """.strip()
+        )
 
 
 class JSONOutputTests(unittest.TestCase):
-
     def testJSONOutput(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
-        t.add_row(['value 1', 'value2', 'value3'])
-        t.add_row(['value 4', 'value5', 'value6'])
-        t.add_row(['value 7', 'value8', 'value9'])
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+        t.add_row(["value 1", "value2", "value3"])
+        t.add_row(["value 4", "value5", "value6"])
+        t.add_row(["value 7", "value8", "value9"])
         result = t.get_json_string()
-        assert result.strip() == """[
+        assert (
+            result.strip()
+            == """[
     [
         "Field 1",
         "Field 2",
@@ -517,16 +566,19 @@ class JSONOutputTests(unittest.TestCase):
         "Field 3": "value9"
     }
 ]""".strip()
+        )
+
 
 class HtmlOutputTests(unittest.TestCase):
-
     def testHtmlOutput(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
-        t.add_row(['value 1', 'value2', 'value3'])
-        t.add_row(['value 4', 'value5', 'value6'])
-        t.add_row(['value 7', 'value8', 'value9'])
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+        t.add_row(["value 1", "value2", "value3"])
+        t.add_row(["value 4", "value5", "value6"])
+        t.add_row(["value 7", "value8", "value9"])
         result = t.get_html_string()
-        assert result.strip() == """
+        assert (
+            result.strip()
+            == """
 <table>
     <tr>
         <th>Field 1</th>
@@ -550,14 +602,17 @@ class HtmlOutputTests(unittest.TestCase):
     </tr>
 </table>
 """.strip()
+        )
 
     def testHtmlOutputFormated(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
-        t.add_row(['value 1', 'value2', 'value3'])
-        t.add_row(['value 4', 'value5', 'value6'])
-        t.add_row(['value 7', 'value8', 'value9'])
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+        t.add_row(["value 1", "value2", "value3"])
+        t.add_row(["value 4", "value5", "value6"])
+        t.add_row(["value 7", "value8", "value9"])
         result = t.get_html_string(format=True)
-        assert result.strip() == """
+        assert (
+            result.strip()
+            == """
 <table frame="box" rules="cols">
     <tr>
         <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
@@ -580,7 +635,8 @@ class HtmlOutputTests(unittest.TestCase):
         <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value9</td>
     </tr>
 </table>
-""".strip()
+""".strip()  # noqa: E501
+        )
 
 class MarkdownStyleTest(BasicTests):
     def testMarkdownStyle(self):
@@ -597,7 +653,6 @@ class MarkdownStyleTest(BasicTests):
 | value 7 |  value8 |  value9 |""".strip()
 
 class CsvConstructorTest(BasicTests):
-
     def setUp(self):
 
         csv_string = """City name, Area , Population , Annual Rainfall
@@ -613,36 +668,54 @@ class CsvConstructorTest(BasicTests):
 
 
 if _have_sqlite:
-    class DatabaseConstructorTest(BasicTests):
 
+    class DatabaseConstructorTest(BasicTests):
         def setUp(self):
             self.conn = sqlite3.connect(":memory:")
             self.cur = self.conn.cursor()
-            self.cur.execute("CREATE TABLE cities (name TEXT, area INTEGER, population INTEGER, rainfall REAL)")
-            self.cur.execute("INSERT INTO cities VALUES (\"Adelaide\", 1295, 1158259, 600.5)")
-            self.cur.execute("INSERT INTO cities VALUES (\"Brisbane\", 5905, 1857594, 1146.4)")
-            self.cur.execute("INSERT INTO cities VALUES (\"Darwin\", 112, 120900, 1714.7)")
-            self.cur.execute("INSERT INTO cities VALUES (\"Hobart\", 1357, 205556, 619.5)")
-            self.cur.execute("INSERT INTO cities VALUES (\"Sydney\", 2058, 4336374, 1214.8)")
-            self.cur.execute("INSERT INTO cities VALUES (\"Melbourne\", 1566, 3806092, 646.9)")
-            self.cur.execute("INSERT INTO cities VALUES (\"Perth\", 5386, 1554769, 869.4)")
+            self.cur.execute(
+                "CREATE TABLE cities "
+                "(name TEXT, area INTEGER, population INTEGER, rainfall REAL)"
+            )
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)'
+            )
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Brisbane", 5905, 1857594, 1146.4)'
+            )
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Darwin", 112, 120900, 1714.7)'
+            )
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Hobart", 1357, 205556, 619.5)'
+            )
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Sydney", 2058, 4336374, 1214.8)'
+            )
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Melbourne", 1566, 3806092, 646.9)'
+            )
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Perth", 5386, 1554769, 869.4)'
+            )
             self.cur.execute("SELECT * FROM cities")
             self.x = from_db_cursor(self.cur)
 
         def testNonSelectCurosr(self):
-            self.cur.execute("INSERT INTO cities VALUES (\"Adelaide\", 1295, 1158259, 600.5)")
+            self.cur.execute(
+                'INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)'
+            )
             assert from_db_cursor(self.cur) is None
 
 
 class JSONConstructorTest(CityDataTest):
-
     def testJSONAndBack(self):
         json_string = self.x.get_json_string()
         new_table = from_json(json_string)
         assert new_table.get_string() == self.x.get_string()
 
-class HtmlConstructorTest(CityDataTest):
 
+class HtmlConstructorTest(CityDataTest):
     def testHtmlAndBack(self):
         html_string = self.x.get_html_string()
         new_table = from_html(html_string)[0]
@@ -660,14 +733,12 @@ class HtmlConstructorTest(CityDataTest):
 
 
 class PrintEnglishTest(CityDataTest):
-
     def testPrint(self):
         print()
         print(self.x)
 
 
 class PrintJapanestTest(unittest.TestCase):
-
     def setUp(self):
 
         self.x = PrettyTable(["Kanji", "Hiragana", "English"])
