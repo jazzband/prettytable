@@ -652,7 +652,8 @@ class MarkdownStyleTest(BasicTests):
 |---------|---------|---------|
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
-| value 7 |  value8 |  value9 |""".strip()
+| value 7 |  value8 |  value9 |
+""".strip()
         )
 
 
