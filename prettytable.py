@@ -974,10 +974,10 @@ class PrettyTable(object):
             self._set_msword_style()
         elif style == PLAIN_COLUMNS:
             self._set_columns_style()
-        elif style == RANDOM:
-            self._set_random_style()
         elif style == MARKDOWN:
             self._set_markdown_style()
+        elif style == RANDOM:
+            self._set_random_style()
         else:
             raise Exception("Invalid pre-set style!")
 
