@@ -21,6 +21,7 @@
 * Removed `print_html()` from README.
 * Added `from_json` and `get_json_string` to PrettyTable.
 * Fixed `PLAIN_COLUMN` to `PLAIN_COLUMNS` in README.
+* Added Markdown style
 
 # PrettyTable 0.7 - Feb 17, 2013
 
