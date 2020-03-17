@@ -70,6 +70,7 @@ HEADER = 3
 DEFAULT = 10
 MSWORD_FRIENDLY = 11
 PLAIN_COLUMNS = 12
+MARKDOWN = 13
 RANDOM = 20
 
 _re = re.compile(r"\033\[[0-9;]*m")
@@ -973,10 +974,22 @@ class PrettyTable(object):
             self._set_msword_style()
         elif style == PLAIN_COLUMNS:
             self._set_columns_style()
+        elif style == MARKDOWN:
+            self._set_markdown_style()
         elif style == RANDOM:
             self._set_random_style()
         else:
             raise Exception("Invalid pre-set style!")
+
+    def _set_markdown_style(self):
+        self.header = True
+        self.border = True
+        self._hrules = None
+        self.padding_width = 1
+        self.left_padding_width = 1
+        self.right_padding_width = 1
+        self.vertical_char = "|"
+        self.junction_char = "|"
 
     def _set_default_style(self):
 

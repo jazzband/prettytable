@@ -369,6 +369,7 @@ you can use for your tables:
 made
   * `PLAIN_COLUMNS` - A borderless style that works well with command line
 programs for columnar data
+  * `MARKDOWN` - A style that follows Markdown syntax
 
 Other styles are likely to appear in future releases.
 
