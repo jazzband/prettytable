@@ -180,6 +180,7 @@ class PrettyTable(object):
         else:
             self._reversesort = False
         self._sort_key = kwargs["sort_key"] or (lambda x: x)
+        self._strict_wrap = kwargs.get("strict_wrap", 0)
 
         # Column specific arguments, use property.setters
         self.align = kwargs["align"] or {}
@@ -216,6 +217,11 @@ class PrettyTable(object):
             value = str(value)
         if not isinstance(value, unicode):
             value = unicode(value, self.encoding, "strict")
+        return self._wrap(value)
+    
+    def _wrap(self, value):
+        if self._strict_wrap > 0 and value in sum(self._rows, []):
+            return textwrap.fill(value, self._strict_wrap)
         return value
 
     def _justify(self, text, width, align):
