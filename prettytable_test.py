@@ -104,6 +104,29 @@ class BuildEquivelanceTest(unittest.TestCase):
         self.assertEqual(self.row.get_html_string(), self.mix.get_html_string())
 
 
+class DeleteColumnTest(unittest.TestCase):
+
+    def testDeleteColumn(self):
+        with_del = PrettyTable()
+        with_del.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
+        with_del.add_column("Area", [1295, 5905, 112])
+        with_del.add_column("Population", [1158259, 1857594, 120900])
+        with_del.del_column("Area")
+
+        without_row = PrettyTable()
+        without_row.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
+        without_row.add_column("Population", [1158259, 1857594, 120900])
+
+        self.assertEqual(with_del.get_string(), without_row.get_string())
+
+    def testDeleteIllegalColumnRaisesException(self):
+        table = PrettyTable()
+        table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
+
+        with self.assertRaises(Exception):
+          table.del_column("City not-a-name")
+
+
 # class FieldnamelessTableTest(unittest.TestCase):
 #
 #    """Make sure that building and stringing a table with no fieldnames works fine"""
