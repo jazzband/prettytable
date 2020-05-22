@@ -1118,7 +1118,7 @@ class PrettyTable(object):
             raise Exception(
                 "Cant delete column %r which is not a field name of this table."
                 " Field names are: %s"
-                % (fieldname, ', '.join(map(repr, self._field_names)))
+                % (fieldname, ", ".join(map(repr, self._field_names)))
             )
 
         col_index = self._field_names.index(fieldname)

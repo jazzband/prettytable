@@ -105,7 +105,6 @@ class BuildEquivelanceTest(unittest.TestCase):
 
 
 class DeleteColumnTest(unittest.TestCase):
-
     def testDeleteColumn(self):
         with_del = PrettyTable()
         with_del.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
@@ -124,7 +123,7 @@ class DeleteColumnTest(unittest.TestCase):
         table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
 
         with self.assertRaises(Exception):
-          table.del_column("City not-a-name")
+            table.del_column("City not-a-name")
 
 
 # class FieldnamelessTableTest(unittest.TestCase):
