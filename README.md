@@ -567,3 +567,12 @@ you can use list slicing notation:
 ```python
 new_table = old_table[0:5]
 ```
+
+## Contributing
+
+After editing files, use the [black](https://github.com/psf/black) linter to auto-format changed lines.
+
+```sh
+pip install black
+black prettytable*.py
+```
