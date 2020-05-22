@@ -486,7 +486,11 @@ class PrettyTable(object):
 
     @property
     def field_names(self):
-        """List or tuple of field names"""
+        """List or tuple of field names
+
+        When setting field_names, if there are already field names the new list
+        of field names must be the same length. Columns are renamed and row data
+        remains unchanged."""
         return self._field_names
 
     @field_names.setter
@@ -1059,7 +1063,7 @@ class PrettyTable(object):
 
     def del_row(self, row_index):
 
-        """Delete a row to the table
+        """Delete a row from the table
 
         Arguments:
 
@@ -1101,6 +1105,26 @@ class PrettyTable(object):
                 "Column length %d does not match number of rows %d!"
                 % (len(column), len(self._rows))
             )
+
+    def del_column(self, fieldname):
+
+        """Delete a column from the table
+
+        Arguments:
+
+        fieldname - The field name of the column you want to delete."""
+
+        if fieldname not in self._field_names:
+            raise Exception(
+                "Cant delete column %r which is not a field name of this table."
+                " Field names are: %s"
+                % (fieldname, ', '.join(map(repr, self._field_names)))
+            )
+
+        col_index = self._field_names.index(fieldname)
+        del self._field_names[col_index]
+        for row in self._rows:
+            del row[col_index]
 
     def clear_rows(self):
 
