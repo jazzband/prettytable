@@ -60,7 +60,7 @@ else:
     uni_chr = unichr  # noqa: F821
     from HTMLParser import HTMLParser
     from cgi import escape
-    import StringIO
+    from StringIO import StringIO
 
 # hrule styles
 FRAME = 0
