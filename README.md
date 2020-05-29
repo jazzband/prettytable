@@ -9,13 +9,7 @@
 [![codecov](https://codecov.io/gh/jazzband/prettytable/branch/master/graph/badge.svg)](https://codecov.io/gh/jazzband/prettytable)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Tutorial on how to use the PrettyTable 0.6+ API
-
-*This tutorial is distributed with PrettyTable and is meant to serve
-as a "quick start" guide for the lazy or impatient.  It is not an
-exhaustive description of the whole API, and it is not guaranteed to be
-100% up to date.  For more complete and update documentation, check the
-[PrettyTable wiki](https://code.google.com/archive/p/prettytable/wikis).*
+## Tutorial on how to use the PrettyTable API
 
 ### Getting your data into (and out of) the table
 
