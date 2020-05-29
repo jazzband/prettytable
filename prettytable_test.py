@@ -680,17 +680,17 @@ class CsvOtputTests(unittest.TestCase):
         t.add_row(["value 4", "value5", "value6"])
         t.add_row(["value 7", "value8", "value9"])
         self.assertEquals(
-            t.get_csv_string(delimiter='\t', header=False),
-            'value 1\tvalue2\tvalue3\r\n'
-            'value 4\tvalue5\tvalue6\r\n'
-            'value 7\tvalue8\tvalue9\r\n'
+            t.get_csv_string(delimiter="\t", header=False),
+            "value 1\tvalue2\tvalue3\r\n"
+            "value 4\tvalue5\tvalue6\r\n"
+            "value 7\tvalue8\tvalue9\r\n",
         )
         self.assertEquals(
             t.get_csv_string(),
-            'Field 1,Field 2,Field 3\r\n'
-            'value 1,value2,value3\r\n'
-            'value 4,value5,value6\r\n'
-            'value 7,value8,value9\r\n'
+            "Field 1,Field 2,Field 3\r\n"
+            "value 1,value2,value3\r\n"
+            "value 4,value5,value6\r\n"
+            "value 7,value8,value9\r\n",
         )
 
 

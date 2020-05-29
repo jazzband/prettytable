@@ -1530,11 +1530,12 @@ class PrettyTable(object):
 
         options = self._get_options(kwargs)
         csv_options = {
-            key: value for key, value in kwargs.items() if key not in options}
+            key: value for key, value in kwargs.items() if key not in options
+        }
         csv_buffer = StringIO()
         csv_writer = csv.writer(csv_buffer, **csv_options)
 
-        if options.get('header'):
+        if options.get("header"):
             csv_writer.writerow(self._field_names)
         for row in self._get_rows(options):
             csv_writer.writerow(row)
