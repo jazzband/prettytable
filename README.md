@@ -9,6 +9,20 @@
 [![codecov](https://codecov.io/gh/jazzband/prettytable/branch/master/graph/badge.svg)](https://codecov.io/gh/jazzband/prettytable)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
+## Installation
+
+Install via pip:
+
+    pip install -U prettytable
+
+Install latest development version:
+
+    pip install -U git+https://github.com/jazzband/prettytable
+
+Or from `requirements.txt`:
+
+    -e git://github.com/jazzband/prettytable.git#egg=prettytable
+
 ## Tutorial on how to use the PrettyTable API
 
 ### Getting your data into (and out of) the table
