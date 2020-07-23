@@ -1328,7 +1328,7 @@ class PrettyTable(object):
             for line in lines:
                 tmp.extend(line.split("\n"))
             lines = ["|" + line[1:-1] + "|" for line in tmp]
-            
+
         return self._unicode("\n").join(lines)
 
     def _stringify_hrule(self, options):

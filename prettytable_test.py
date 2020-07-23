@@ -34,7 +34,7 @@ else:
 
 class BuildEquivelanceTest(unittest.TestCase):
     """Make sure that building a table row-by-row and column-by-column yield the same
-     results"""
+    results"""
 
     def setUp(self):
 
@@ -680,7 +680,7 @@ class OrgmodeStyleTest(BasicTests):
 """.strip()
         )
 
-        
+
 class CsvConstructorTest(BasicTests):
     def setUp(self):
 
