@@ -71,6 +71,7 @@ DEFAULT = 10
 MSWORD_FRIENDLY = 11
 PLAIN_COLUMNS = 12
 MARKDOWN = 13
+ORGMODE = 14
 RANDOM = 20
 
 _re = re.compile(r"\033\[[0-9;]*m")
@@ -976,10 +977,16 @@ class PrettyTable(object):
             self._set_columns_style()
         elif style == MARKDOWN:
             self._set_markdown_style()
+        elif style == ORGMODE:
+            self._set_orgmode_style()
         elif style == RANDOM:
             self._set_random_style()
         else:
             raise Exception("Invalid pre-set style!")
+
+    def _set_orgmode_style(self):
+        self._set_default_style()
+        self.orgmode = True
 
     def _set_markdown_style(self):
         self.header = True
@@ -1316,6 +1323,12 @@ class PrettyTable(object):
         if options["border"] and options["hrules"] == FRAME:
             lines.append(self._hrule)
 
+        if "orgmode" in self.__dict__ and self.orgmode is True:
+            tmp = list()
+            for line in lines:
+                tmp.extend(line.split("\n"))
+            lines = ["|" + line[1:-1] + "|" for line in tmp]
+            
         return self._unicode("\n").join(lines)
 
     def _stringify_hrule(self, options):
