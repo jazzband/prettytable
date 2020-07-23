@@ -8,9 +8,9 @@ from math import e, pi, sqrt
 from prettytable import (
     ALL,
     MARKDOWN,
-    ORGMODE,
     MSWORD_FRIENDLY,
     NONE,
+    ORGMODE,
     PrettyTable,
     from_csv,
     from_db_cursor,
