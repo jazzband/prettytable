@@ -680,6 +680,7 @@ class OrgmodeStyleTest(BasicTests):
 """.strip()
         )
 
+        
 class CsvConstructorTest(BasicTests):
     def setUp(self):
 
