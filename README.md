@@ -412,7 +412,7 @@ The options are these:
   * `int_format` - A string which controls the way integer data is printed.
     This works like: print "%<int_format>d" % data
   * `float_format` - A string which controls the way floating point data is
-     printed.  This works like: print "%<int_format>f" % data
+     printed.  This works like: print "%<float_format>f" % data
   * `padding_width` - Number of spaces on either side of column data (only used
     if left and right paddings are None).
   * `left_padding_width` - Number of spaces on left hand side of column data.
