@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2009-2014, Luke Maurits <luke@maurits.id.au>
 # All rights reserved.
@@ -6,6 +7,7 @@
 #  * Chris Clark
 #  * Klein Stephane
 #  * John Filleau
+#  * Vladimir Vrzić
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -39,9 +41,10 @@ import random
 import re
 import sys
 import textwrap
-import unicodedata
 
 import pkg_resources
+
+import wcwidth
 
 __version__ = pkg_resources.get_distribution(__name__).version
 py3k = sys.version_info[0] >= 3
@@ -1480,13 +1483,13 @@ class PrettyTable(object):
                     lines = lines + [""] * dHeight
 
             y = 0
-            for l in lines:
+            for line in lines:
                 if options["fields"] and field not in options["fields"]:
                     continue
 
                 bits[y].append(
                     " " * lpad
-                    + self._justify(l, width, self._align[field])
+                    + self._justify(line, width, self._align[field])
                     + " " * rpad
                 )
                 if options["border"]:
@@ -1731,46 +1734,12 @@ class PrettyTable(object):
 
 
 ##############################
-# UNICODE WIDTH FUNCTIONS    #
+# UNICODE WIDTH FUNCTION     #
 ##############################
 
 
-def _char_block_width(char):
-    # Basic Latin, which is probably the most common case
-    # if char in xrange(0x0021, 0x007e):
-    # if char >= 0x0021 and char <= 0x007e:
-    if 0x0021 <= char <= 0x007E:
-        return 1
-    # Chinese, Japanese, Korean (common)
-    if 0x4E00 <= char <= 0x9FFF:
-        return 2
-    # Hangul
-    if 0xAC00 <= char <= 0xD7AF:
-        return 2
-    # Combining?
-    if unicodedata.combining(uni_chr(char)):
-        return 0
-    # Hiragana and Katakana
-    if 0x3040 <= char <= 0x309F or 0x30A0 <= char <= 0x30FF:
-        return 2
-    # Full-width Latin characters
-    if 0xFF01 <= char <= 0xFF60:
-        return 2
-    # CJK punctuation
-    if 0x3000 <= char <= 0x303E:
-        return 2
-    # Backspace and delete
-    if char in (0x0008, 0x007F):
-        return -1
-    # Other control characters
-    elif char in (0x0000, 0x000F, 0x001F):
-        return 0
-    # Take a guess
-    return 1
-
-
 def _str_block_width(val):
-    return sum(itermap(_char_block_width, itermap(ord, _re.sub("", val))))
+    return wcwidth.wcswidth(_re.sub("", val))
 
 
 ##############################
