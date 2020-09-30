@@ -1,7 +1,9 @@
-# PrettyTable 1.0 - Unreleased
+# PrettyTable 1.0 - October 2, 2020
 
 * Dropped support for EOL Python 2.4-2.6 and 3.0-3.4.
 * Added support for Python 3.5-3.9.
+* Added `del_column(field_name)`.
+* Added `get_csv_string` with `delimiter` option (comma or tab) and optional `header`.
 * Use wcwidth for better wide char support.
 * New `paginate` method can be used to produce strings suitable
   for piping to lp/lpr.
@@ -22,7 +24,7 @@
 * Removed `print_html()` from README.
 * Added `from_json` and `get_json_string` to PrettyTable.
 * Fixed `PLAIN_COLUMN` to `PLAIN_COLUMNS` in README.
-* Added Markdown style
+* Added Markdown and Org mode styles.
 
 # PrettyTable 0.7 - Feb 17, 2013
 
