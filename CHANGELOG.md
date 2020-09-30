@@ -1,7 +1,7 @@
 # PrettyTable 1.0 - Unreleased
 
 * Dropped support for EOL Python 2.4-2.6 and 3.0-3.4.
-* Added support for Python 3.5-3.8.
+* Added support for Python 3.5-3.9.
 * New `paginate` method can be used to produce strings suitable
   for piping to lp/lpr.
 * `from_html` now handles HTML tables with colspan, rather than
