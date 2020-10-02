@@ -2,44 +2,37 @@ language: python
 cache:
   pip: true
   directories:
-    - $HOME/.cache/pre-commit
-
+  - "$HOME/.cache/pre-commit"
 # Supported CPython versions:
 # https://en.wikipedia.org/wiki/CPython#Version_history
-matrix:
+python:
+  - 2.7
+  - 3.5
+  - 3.6
+  - 3.7
+  - 3.8
+  - 3.9-dev
+install:
+- travis_retry pip install tox-travis codecov
+script:
+- tox -v
+jobs:
   fast_finish: true
   include:
-    - python: "3.9-dev"
-    - python: "3.8"
-      env: TOXENV=lint
-    - python: "3.8"
-    - python: "3.7"
-    - python: "3.6"
-    - python: "3.5"
-    - python: "2.7"
-
-install:
- - travis_retry pip install tox-travis
-
-script:
- - tox
-
+    - stage: deploy
+      env:
+      python: 3.7
+      script: skip
+      deploy:
+        provider: pypi
+        user: jazzband
+        server: https://jazzband.co/projects/prettytable/upload
+        distributions: sdist bdist_wheel
+        password:
+          secure: hRIzF5DnSrMqT76JCVhI4vsjlm9C7iITM1Nl1/OB8dmJMhwsTZGoXoOGgCNobN7O1JK6s93yufVoWx6VoKiFBxRcihdvjPx89fVYh+ujcDkIBemiymj3b4yw0v4rGjAX/3j3893c33QtFZZD4PxUDYOR+ZJVWTFcj5Uoj1bY74Ci+QvPgl5nkwi/OGAVY1GuHLRe2y1er1kHDMtEldCpBhl9uY5LbMhXUMWaOI8NcHnWOamIg1l9/9JCM5XO8eKtVTegS5M8lt0nHwxjUj+TeNBnCoTBgNkZkdIvvWYpLVZcF/BJQCYkSIEe9cv8kIKKN7bFARIblgorxogiGwbCGnhbLW4M5D0kkLYJoL20PyGcTfDXjnxdId9dJ35My3VQ7uVXArO/KiL5rVZnKVVNFUa/2fIRJwF/6vSiU7v9YfGd3n9e/T75gFxiRq/Ww+F1z2EXC1KAzZ91LpEAu879DvF5bwxy29V7lb6uKEYzkgTc03L1ZJxWpfavaQgWaQIydndOXgtUzKGtyYydnJBqDd1KE3+LwEDX97bPotrR2URkQCevKH8OXK+Fsc7mKh7c/kSyCzREIrLa119tqdWs7kGNxCgy7OvIq6/c6UIn/EktYWtQ48pmFdTU+qWyX1GFnL+f8+s4Sltmr5mgPoQd3W9Ue4HfvlaB/TgTzzBptMA=
+        on:
+          tags: true
+          repo: jazzband/prettytable
+          python: 3.8
 after_success:
-  - |
-    if [[ "$TOXENV" != "lint" ]]; then
-      coverage report
-      pip install -U codecov
-      codecov
-    fi
-
-deploy:
-  provider: pypi
-  user: jazzband
-  server: https://jazzband.co/projects/prettytable/upload
-  distributions: sdist bdist_wheel
-  password:
-    secure: svV4fYtodwW+iTyFOm5ISEfhVwcA+6vTskD3x6peznc40TdMV9Ek8nT3Q/NB4lCbXoUw2qR4H6uhLCjesnv/VvVk/qbitCyD8ySlgwOV5n7NzJs8lC8EYaHSjGQjatTwJAokfGVYkPawkI7HXDqtDggLUQBK+Ag8HDW+XBSbQIU=
-  on:
-    tags: true
-    repo: jazzband/prettytable
-    python: 3.8
+- codecov
