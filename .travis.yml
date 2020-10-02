@@ -3,8 +3,6 @@ cache:
   pip: true
   directories:
   - "$HOME/.cache/pre-commit"
-# Supported CPython versions:
-# https://en.wikipedia.org/wiki/CPython#Version_history
 python:
   - 2.7
   - 3.5
@@ -20,8 +18,8 @@ jobs:
   fast_finish: true
   include:
     - stage: deploy
-      env:
-      python: 3.7
+      if: tag IS present
+      python: 3.8
       script: skip
       deploy:
         provider: pypi
@@ -33,6 +31,5 @@ jobs:
         on:
           tags: true
           repo: jazzband/prettytable
-          python: 3.8
 after_success:
 - codecov
