@@ -31,3 +31,15 @@ after_success:
       pip install -U codecov
       codecov
     fi
+
+deploy:
+  provider: pypi
+  user: jazzband
+  server: https://jazzband.co/projects/prettytable/upload
+  distributions: sdist bdist_wheel
+  password:
+    secure: svV4fYtodwW+iTyFOm5ISEfhVwcA+6vTskD3x6peznc40TdMV9Ek8nT3Q/NB4lCbXoUw2qR4H6uhLCjesnv/VvVk/qbitCyD8ySlgwOV5n7NzJs8lC8EYaHSjGQjatTwJAokfGVYkPawkI7HXDqtDggLUQBK+Ag8HDW+XBSbQIU=
+  on:
+    tags: true
+    repo: jazzband/prettytable
+    python: 3.8
