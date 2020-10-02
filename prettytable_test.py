@@ -673,7 +673,7 @@ class CsvConstructorTest(BasicTests):
         self.x = from_csv(csv_fp)
 
 
-class CsvOtputTests(unittest.TestCase):
+class CsvOutputTests(unittest.TestCase):
     def testCsvOutput(self):
         t = PrettyTable(["Field 1", "Field 2", "Field 3"])
         t.add_row(["value 1", "value2", "value3"])
