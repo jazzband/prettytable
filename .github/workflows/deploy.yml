@@ -47,7 +47,8 @@ jobs:
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
-          password: ${{ secrets.pypi_password }}
+          password: ${{ secrets.jazzband_release_key }}
+          repository_url: https://jazzband.co/projects/prettytable/upload
 
       - name: Publish package to TestPyPI
         uses: pypa/gh-action-pypi-publish@master
