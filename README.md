@@ -111,6 +111,7 @@ There are three ways to get data out of a PrettyTable, in increasing order of
 completeness:
 
   * The `del_row` method takes an integer index of a single row to delete.
+  * The `del_column` method takes a field name of a single column to delete.
   * The `clear_rows` method takes no arguments and deletes all the rows in the
 table - but keeps the field names as they were so you that you can repopulate
 it with the same kind of data.
@@ -574,4 +575,13 @@ you can use list slicing notation:
 
 ```python
 new_table = old_table[0:5]
+```
+
+## Contributing
+
+After editing files, use the [black](https://github.com/psf/black) linter to auto-format changed lines.
+
+```sh
+pip install black
+black prettytable*.py
 ```
