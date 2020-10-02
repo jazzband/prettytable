@@ -785,5 +785,32 @@ class PrintJapanestTest(unittest.TestCase):
         print(self.x)
 
 
+class PrintEmojiTest(unittest.TestCase):
+    def setUp(self):
+        thunder1 = [
+            '\033[38;5;226m _`/""\033[38;5;250m.-.    \033[0m',
+            "\033[38;5;226m  ,\\_\033[38;5;250m(   ).  \033[0m",
+            "\033[38;5;226m   /\033[38;5;250m(___(__) \033[0m",
+            "\033[38;5;228;5m    ⚡\033[38;5;111;25mʻ ʻ\033[38;5;228;5m"
+            "⚡\033[38;5;111;25mʻ ʻ \033[0m",
+            "\033[38;5;111m    ʻ ʻ ʻ ʻ  \033[0m",
+        ]
+        thunder2 = [
+            "\033[38;5;240;1m     .-.     \033[0m",
+            "\033[38;5;240;1m    (   ).   \033[0m",
+            "\033[38;5;240;1m   (___(__)  \033[0m",
+            "\033[38;5;21;1m  ‚ʻ\033[38;5;228;5m⚡\033[38;5;21;25mʻ‚\033[38;5;228;5m"
+            "⚡\033[38;5;21;25m‚ʻ   \033[0m",
+            "\033[38;5;21;1m  ‚ʻ‚ʻ\033[38;5;228;5m⚡\033[38;5;21;25mʻ‚ʻ   \033[0m",
+        ]
+        self.x = PrettyTable(["Thunderbolt", "Lightning"])
+        for i in range(len(thunder1)):
+            self.x.add_row([thunder1[i], thunder2[i]])
+
+    def testPrint(self):
+        print()
+        print(self.x)
+
+
 if __name__ == "__main__":
     unittest.main()
