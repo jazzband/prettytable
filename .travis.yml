@@ -4,12 +4,12 @@ cache:
   directories:
   - "$HOME/.cache/pre-commit"
 python:
-  - 2.7
-  - 3.5
-  - 3.6
-  - 3.7
-  - 3.8
-  - 3.9-dev
+- 2.7
+- 3.5
+- 3.6
+- 3.7
+- 3.8
+- 3.9-dev
 install:
 - travis_retry pip install tox-travis codecov
 script:
@@ -17,19 +17,19 @@ script:
 jobs:
   fast_finish: true
   include:
-    - stage: deploy
-      if: tag IS present
-      python: 3.8
-      script: skip
-      deploy:
-        provider: pypi
-        user: jazzband
-        server: https://jazzband.co/projects/prettytable/upload
-        distributions: sdist bdist_wheel
-        password:
-          secure: hRIzF5DnSrMqT76JCVhI4vsjlm9C7iITM1Nl1/OB8dmJMhwsTZGoXoOGgCNobN7O1JK6s93yufVoWx6VoKiFBxRcihdvjPx89fVYh+ujcDkIBemiymj3b4yw0v4rGjAX/3j3893c33QtFZZD4PxUDYOR+ZJVWTFcj5Uoj1bY74Ci+QvPgl5nkwi/OGAVY1GuHLRe2y1er1kHDMtEldCpBhl9uY5LbMhXUMWaOI8NcHnWOamIg1l9/9JCM5XO8eKtVTegS5M8lt0nHwxjUj+TeNBnCoTBgNkZkdIvvWYpLVZcF/BJQCYkSIEe9cv8kIKKN7bFARIblgorxogiGwbCGnhbLW4M5D0kkLYJoL20PyGcTfDXjnxdId9dJ35My3VQ7uVXArO/KiL5rVZnKVVNFUa/2fIRJwF/6vSiU7v9YfGd3n9e/T75gFxiRq/Ww+F1z2EXC1KAzZ91LpEAu879DvF5bwxy29V7lb6uKEYzkgTc03L1ZJxWpfavaQgWaQIydndOXgtUzKGtyYydnJBqDd1KE3+LwEDX97bPotrR2URkQCevKH8OXK+Fsc7mKh7c/kSyCzREIrLa119tqdWs7kGNxCgy7OvIq6/c6UIn/EktYWtQ48pmFdTU+qWyX1GFnL+f8+s4Sltmr5mgPoQd3W9Ue4HfvlaB/TgTzzBptMA=
-        on:
-          tags: true
-          repo: jazzband/prettytable
+  - stage: deploy
+    if: tag IS present
+    python: 3.8
+    script: skip
+    deploy:
+      provider: pypi
+      user: jazzband
+      server: https://jazzband.co/projects/prettytable/upload
+      distributions: sdist bdist_wheel
+      password:
+        secure: sf1NovYo7asxb/z7TidjQA+Xjn8h/ubaFqE/rN/xmKHMBOjL0F5VQqQteHDxL8pSWYdCcv4tIsjsbXzsMrg4phdEhj0++4uMuZzNT3NR+gniRkH31U+csP+YtvKa7ssW/Pg3+MW95X4FxORuPkJlTuoinTQmGX+A7nPtpAAXVau7mq9SCXbJiOkSHAr/LbnvjUG8OgsWdCwUzEk4ssjSj9GBJ7+vjsVVI+Fap3C8PhHMj0W6u+H9kAGRUfe/2msW0g/oCJtiWHKDBucNhcAEWamxRZTk9KQmdHKDNwQmMSOkvEcEjDwgnWwlVNGlLMamG9/T3y2mYOo7IvFFStriqmTFq6W+afuFEIShPLgwgw3S0oiNze42LzjjTZKsVN/FwyL+LLQqJnTkVSv7Uuzwbp/YPH2+/hjonPq8Vf84ttLjf/tQktOqlR8JB9gQF77fFDoPRze80XmpxLa5IxYzhzNR6QF24l1+jj2VEURQWMZf8OXWLqExOF0DR1SuBH9pzIoSG+UhBhwVMB/a6GHxDqCCVU87fzISxKaZJz7hb+91c3DPksp0ritd5ASEP7UwM+HkbzsTiKOotIjp7oXKhbn6F/NfXCe4tIDLWd3xv16sD0My+1HGcKwVVxPa/ZoM8/tEDW+EeL4SY/f7gzA1YurBJ9WYYe/bY8L09fijLaM=
+      on:
+        tags: true
+        repo: jazzband/prettytable
 after_success:
 - codecov
