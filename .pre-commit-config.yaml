@@ -10,7 +10,6 @@ repos:
       - id: black
         args: ["--target-version", "py27"]
 
-
   - repo: https://github.com/PyCQA/isort
     rev: 5.5.4
     hooks:
@@ -32,3 +31,9 @@ repos:
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
+
+  - repo: https://github.com/prettier/prettier
+    rev: 2.1.2
+    hooks:
+      - id: prettier
+        args: [--prose-wrap=always, --print-width=88]
