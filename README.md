@@ -44,8 +44,8 @@ using the `add_row` method:
 
 ```python
 x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-x.add_row(["Adelaide",1295, 1158259, 600.5])
-x.add_row(["Brisbane",5905, 1857594, 1146.4])
+x.add_row(["Adelaide", 1295, 1158259, 600.5])
+x.add_row(["Brisbane", 5905, 1857594, 1146.4])
 x.add_row(["Darwin", 112, 120900, 1714.7])
 x.add_row(["Hobart", 1357, 205556, 619.5])
 x.add_row(["Sydney", 2058, 4336374, 1214.8])
@@ -58,7 +58,7 @@ x.add_row(["Perth", 5386, 1554769, 869.4])
 You can add data one column at a time as well.  To do this you use the
 `add_column` method, which takes two arguments - a string which is the name for
 the field the column you are adding corresponds to, and a list or tuple which
-contains the column data"
+contains the column data:
 
 ```python
 x.add_column("City name",
@@ -73,27 +73,26 @@ x.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9,
 #### Mixing and matching
 
 If you really want to, you can even mix and match `add_row` and `add_column`
-and build some of your table in one way and some of it in the other.  There's a
-unit test which makes sure that doing things this way will always work out
-nicely as if you'd done it using just one of the two approaches.  Tables built
+and build some of your table in one way and some of it in the other. Tables built
 this way are kind of confusing for other people to read, though, so don't do
 this unless you have a good reason.
 
 #### Importing data from a CSV file
 
-If you have your table data in a comma separated values file (.csv), you can
+If you have your table data in a comma-separated values file (.csv), you can
 read this data into a PrettyTable like this:
 
 ```python
 from prettytable import from_csv
-fp = open("myfile.csv", "r")
-mytable = from_csv(fp)
-fp.close()
+with open("myfile.csv") as fp:
+    mytable = from_csv(fp)
 ```
 
 #### Importing data from a database cursor
 
-If you have your table data in a database which you can access using a library which confirms to the Python DB-API (e.g. an SQLite database accessible using the sqlite module), then you can build a PrettyTable using a cursor object, like this:
+If you have your table data in a database which you can access using a library which
+confirms to the Python DB-API (e.g. an SQLite database accessible using the `sqlite`
+module), then you can build a PrettyTable using a cursor object, like this:
 
 ```python
 import sqlite3
@@ -215,7 +214,7 @@ is row 0, so the second is row 1) and set `end` to 4 (the index of the 4th row,
 plus 1):
 
 ```python
-print(x.get_string(start=1,end=4))
+print(x.get_string(start=1, end=4))
 ```
 
 prints:
@@ -237,8 +236,8 @@ By default, all columns in a table are centre aligned.
 ##### All columns at once
 
 You can change the alignment of all the columns in a table at once by assigning
-a one character string to the `align` attribute.  The allowed strings are "l",
-"r" and "c" for left, right and centre alignment, respectively:
+a one character string to the `align` attribute.  The allowed strings are `"l"`,
+`"r"` and `"c"` for left, right and centre alignment, respectively:
 
 ```python
 x.align = "r"
@@ -304,7 +303,7 @@ city data, so that the most populated city comes last, we can do this:
 print(x.get_string(sortby="Population"))
 ```
 
-to get
+to get:
 
 ```
 +-----------+------+------------+-----------------+
@@ -324,7 +323,7 @@ If we want the most populated city to come _first_, we can also give a
 `reversesort=True` argument.
 
 If you _always_ want your tables to be sorted in a certain way, you can make
-the setting long term like this:
+the setting long-term like this:
 
 ```python
 x.sortby = "Population"
@@ -355,7 +354,7 @@ instance of the data in the `sort_by` column.
 
 By default, PrettyTable produces ASCII tables that look like the ones used in
 SQL database shells.  But if can print them in a variety of other formats as
-well.  If the format you want to use is common, PrettyTable makes this very
+well. If the format you want to use is common, PrettyTable makes this
 easy for you to do using the `set_style` method.  If you want to produce an
 uncommon table, you'll have to do things slightly harder (see later).
 
@@ -404,18 +403,18 @@ The options are these:
   * `header` - A boolean option (must be `True` or `False`).  Controls whether
     or not the first row of the table is a header showing the names of all the
     fields.
-  * `hrules` - Controls printing of horizontal rules after rows.  Allowed
-    values: FRAME, HEADER, ALL, NONE - note that these are variables defined
+  * `hrules` - Controls printing of horizontal rules after rows. Allowed
+    values: `FRAME`, `HEADER`, `ALL`, `NONE` - note that these are variables defined
     inside the `prettytable` module so make sure you import them or use
     `prettytable.FRAME` etc.
   * `vrules` - Controls printing of vertical rules between columns.  Allowed
-    values: FRAME, ALL, NONE.
+    values: `FRAME`, `ALL`, `NONE`.
   * `int_format` - A string which controls the way integer data is printed.
     This works like: `print("%<int_format>d" % data)`
   * `float_format` - A string which controls the way floating point data is
      printed.  This works like: `print("%<float_format>f" % data)`
   * `padding_width` - Number of spaces on either side of column data (only used
-    if left and right paddings are None).
+    if left and right paddings are `None`).
   * `left_padding_width` - Number of spaces on left hand side of column data.
   * `right_padding_width` - Number of spaces on right hand side of column data.
   * `vertical_char` - Single character string used to draw vertical lines.
@@ -430,7 +429,7 @@ You can set the style options to your own settings in two ways:
 #### Setting style options for the long term
 
 If you want to print your table with a different style several times, you can
-set your option for the "long term" just by changing the appropriate
+set your option for the long term just by changing the appropriate
 attributes.  If you never want your tables to have borders you can do this:
 
 ```python
@@ -448,7 +447,7 @@ you do:
 x.border = True
 ```
 
-to turn them on again.  This sort of long term setting is exactly how
+to turn them on again.  This sort of long-term setting is exactly how
 `set_style` works.  `set_style` just sets a bunch of attributes to pre-set
 values for you.
 
@@ -467,7 +466,7 @@ x = PrettyTable(border=False, header=False, padding_width=5)
 
 #### Changing style options just once
 
-If you don't want to make long term style changes by changing an attribute like
+If you don't want to make long-term style changes by changing an attribute like
 in the previous section, you can make changes that last for just one
 ``get_string`` by giving those methods keyword arguments.  To print two
 "normal" tables with one borderless table between them, you could do this:
@@ -514,8 +513,6 @@ quite simple.  It looks like this:
         <td>5905</td>
         <td>1857594</td>
         <td>1146.4</td>
-    ...
-    ...
     ...
 </table>
 ```
@@ -579,7 +576,7 @@ new_table = old_table[0:5]
 
 ## Contributing
 
-After editing files, use the [black](https://github.com/psf/black) linter to auto-format changed lines.
+After editing files, use the [Black](https://github.com/psf/black) linter to auto-format changed lines.
 
 ```sh
 python -m pip install black
