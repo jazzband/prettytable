@@ -41,7 +41,7 @@ jobs:
           python setup.py sdist --format=gztar bdist_wheel
           twine check dist/*
 
-      - name: Publish package to PyPI
+      - name: Publish package to Jazzband
         if: github.event.action == 'published'
         uses: pypa/gh-action-pypi-publish@master
 
