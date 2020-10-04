@@ -1,4 +1,4 @@
-# PrettyTable 1.0 - October 2, 2020
+# PrettyTable 1.0 - October 4, 2020
 
 * Dropped support for EOL Python 2.4-2.6 and 3.0-3.4.
 * Added support for Python 3.5-3.9.
