@@ -86,7 +86,7 @@ def _get_size(text):
     lines = text.split("\n")
     height = len(lines)
     width = max(_str_block_width(line) for line in lines)
-    return (width, height)
+    return width, height
 
 
 class PrettyTable(object):
