@@ -13,11 +13,11 @@
 
 Install via pip:
 
-    pip install -U prettytable
+    python -m pip install -U prettytable
 
 Install latest development version:
 
-    pip install -U git+https://github.com/jazzband/prettytable
+    python -m pip install -U git+https://github.com/jazzband/prettytable
 
 Or from `requirements.txt`:
 
@@ -582,6 +582,6 @@ new_table = old_table[0:5]
 After editing files, use the [black](https://github.com/psf/black) linter to auto-format changed lines.
 
 ```sh
-pip install black
+python -m pip install black
 black prettytable*.py
 ```
