@@ -1495,18 +1495,18 @@ class PrettyTable(object):
 
             valign = self._valign[field]
             lines = value.split("\n")
-            dHeight = row_height - len(lines)
-            if dHeight:
+            d_height = row_height - len(lines)
+            if d_height:
                 if valign == "m":
                     lines = (
-                        [""] * int(dHeight / 2)
+                        [""] * int(d_height / 2)
                         + lines
-                        + [""] * (dHeight - int(dHeight / 2))
+                        + [""] * (d_height - int(d_height / 2))
                     )
                 elif valign == "b":
-                    lines = [""] * dHeight + lines
+                    lines = [""] * d_height + lines
                 else:
-                    lines = lines + [""] * dHeight
+                    lines = lines + [""] * d_height
 
             y = 0
             for line in lines:
