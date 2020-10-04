@@ -673,7 +673,7 @@ class HtmlOutputTests(unittest.TestCase):
 @pytest.mark.parametrize(
     "test_style, expected",
     [
-        (
+        pytest.param(
             DEFAULT,
             """
 +---------+---------+---------+
@@ -684,8 +684,9 @@ class HtmlOutputTests(unittest.TestCase):
 | value 7 |  value8 |  value9 |
 +---------+---------+---------+
 """,
+            id="DEFAULT",
         ),
-        (
+        pytest.param(
             MARKDOWN,
             """
 | Field 1 | Field 2 | Field 3 |
@@ -694,8 +695,9 @@ class HtmlOutputTests(unittest.TestCase):
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
 """,
+            id="MARKDOWN",
         ),
-        (
+        pytest.param(
             MSWORD_FRIENDLY,
             """
 | Field 1 | Field 2 | Field 3 |
@@ -703,8 +705,9 @@ class HtmlOutputTests(unittest.TestCase):
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
 """,
+            id="MSWORD_FRIENDLY",
         ),
-        (
+        pytest.param(
             ORGMODE,
             """
 |---------+---------+---------|
@@ -715,8 +718,9 @@ class HtmlOutputTests(unittest.TestCase):
 | value 7 |  value8 |  value9 |
 |---------+---------+---------|
 """,
+            id="ORGMODE",
         ),
-        (
+        pytest.param(
             PLAIN_COLUMNS,
             """
 Field 1        Field 2        Field 3        
@@ -724,8 +728,9 @@ value 1         value2         value3
 value 4         value5         value6        
 value 7         value8         value9
 """,  # noqa: W291
+            id="PLAIN_COLUMNS",
         ),
-        (
+        pytest.param(
             RANDOM,
             """
 '^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
@@ -736,6 +741,7 @@ value 7         value8         value9
 %    value 7%    value8%    value9%
 '^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
 """,
+            id="RANDOM",
         ),
     ],
 )
