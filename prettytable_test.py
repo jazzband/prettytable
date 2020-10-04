@@ -5,6 +5,8 @@ import sys
 import unittest
 from math import e, pi, sqrt
 
+import pytest
+
 from prettytable import (
     ALL,
     MARKDOWN,
@@ -90,19 +92,19 @@ class BuildEquivalenceTest(unittest.TestCase):
 
     def testRowColEquivalenceASCII(self):
 
-        self.assertEqual(self.row.get_string(), self.col.get_string())
+        assert self.row.get_string() == self.col.get_string()
 
     def testRowMixEquivalenceASCII(self):
 
-        self.assertEqual(self.row.get_string(), self.mix.get_string())
+        assert self.row.get_string() == self.mix.get_string()
 
     def testRowColEquivalenceHTML(self):
 
-        self.assertEqual(self.row.get_html_string(), self.col.get_html_string())
+        assert self.row.get_html_string() == self.col.get_html_string()
 
     def testRowMixEquivalenceHTML(self):
 
-        self.assertEqual(self.row.get_html_string(), self.mix.get_html_string())
+        assert self.row.get_html_string() == self.mix.get_html_string()
 
 
 class DeleteColumnTest(unittest.TestCase):
@@ -117,13 +119,13 @@ class DeleteColumnTest(unittest.TestCase):
         without_row.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
         without_row.add_column("Population", [1158259, 1857594, 120900])
 
-        self.assertEqual(with_del.get_string(), without_row.get_string())
+        assert with_del.get_string() == without_row.get_string()
 
     def testDeleteIllegalColumnRaisesException(self):
         table = PrettyTable()
         table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
 
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             table.del_column("City not-a-name")
 
 
@@ -175,23 +177,23 @@ class OptionOverrideTests(CityDataTest):
     def testBorder(self):
         default = self.x.get_string()
         override = self.x.get_string(border=False)
-        self.assertNotEqual(default, override)
+        assert default != override
 
     def testHeader(self):
         default = self.x.get_string()
         override = self.x.get_string(header=False)
-        self.assertNotEqual(default, override)
+        assert default != override
 
     def testHrulesAll(self):
         default = self.x.get_string()
         override = self.x.get_string(hrules=ALL)
-        self.assertNotEqual(default, override)
+        assert default != override
 
     def testHrulesNone(self):
 
         default = self.x.get_string()
         override = self.x.get_string(hrules=NONE)
-        self.assertNotEqual(default, override)
+        assert default != override
 
 
 class OptionAttributeTests(CityDataTest):
@@ -241,7 +243,7 @@ class BasicTests(CityDataTest):
 
         string = self.x.get_string()
         lines = string.split("\n")
-        self.assertNotIn("", lines)
+        assert "" not in lines
 
     def testAllLengthsEqual(self):
 
@@ -251,7 +253,7 @@ class BasicTests(CityDataTest):
         lines = string.split("\n")
         lengths = [len(line) for line in lines]
         lengths = set(lengths)
-        self.assertEqual(len(lengths), 1)
+        assert len(lengths) == 1
 
 
 class TitleBasicTests(BasicTests):
@@ -724,18 +726,16 @@ class CsvOutputTests(unittest.TestCase):
         t.add_row(["value 1", "value2", "value3"])
         t.add_row(["value 4", "value5", "value6"])
         t.add_row(["value 7", "value8", "value9"])
-        self.assertEqual(
-            t.get_csv_string(delimiter="\t", header=False),
+        assert t.get_csv_string(delimiter="\t", header=False) == (
             "value 1\tvalue2\tvalue3\r\n"
             "value 4\tvalue5\tvalue6\r\n"
-            "value 7\tvalue8\tvalue9\r\n",
+            "value 7\tvalue8\tvalue9\r\n"
         )
-        self.assertEqual(
-            t.get_csv_string(),
+        assert t.get_csv_string() == (
             "Field 1,Field 2,Field 3\r\n"
             "value 1,value2,value3\r\n"
             "value 4,value5,value6\r\n"
-            "value 7,value8,value9\r\n",
+            "value 7,value8,value9\r\n"
         )
 
 
@@ -801,7 +801,8 @@ class HtmlConstructorTest(CityDataTest):
     def testHtmlOneFailOnMany(self):
         html_string = self.x.get_html_string()
         html_string += self.x.get_html_string()
-        self.assertRaises(Exception, from_html_one, html_string)
+        with pytest.raises(Exception):
+            from_html_one(html_string)
 
 
 class PrintEnglishTest(CityDataTest):
