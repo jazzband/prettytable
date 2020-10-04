@@ -1979,7 +1979,7 @@ def main():
     x.add_row(["Perth", 5386, 1554769, 869.4])
     print(x)
 
-    print
+    print()
 
     print("Generated using constructor arguments:")
 

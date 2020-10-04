@@ -163,13 +163,13 @@ To pass options changing the look of the table, use the `get_string()` method
 documented below:
 
 ```python
-print x.get_string()
+print(x.get_string())
 ```
 
 #### Stringing
 
 If you don't want to actually print your table in ASCII form but just get a
-string containing what _would_ be printed if you use `print x`, you can use
+string containing what _would_ be printed if you use `print(x)`, you can use
 the `get_string` method:
 
 ```python
@@ -177,19 +177,19 @@ mystring = x.get_string()
 ```
 
 This string is guaranteed to look exactly the same as what would be printed by
-doing `print x`.  You can now do all the usual things you can do with a
+doing `print(x)`.  You can now do all the usual things you can do with a
 string, like write your table to a file or insert it into a GUI.
 
 #### Controlling which data gets displayed
 
-If you like, you can restrict the output of `print x` or `x.get_string` to
+If you like, you can restrict the output of `print(x)` or `x.get_string` to
 only the fields or rows you like.
 
 The `fields` argument to these methods takes a list of field names to be
 printed:
 
 ```python
-print x.get_string(fields=["City name", "Population"])
+print(x.get_string(fields=["City name", "Population"]))
 ```
 
 gives:
@@ -215,7 +215,7 @@ is row 0, so the second is row 1) and set `end` to 4 (the index of the 4th row,
 plus 1):
 
 ```python
-print x.get_string(start=1,end=4)
+print(x.get_string(start=1,end=4))
 ```
 
 prints:
@@ -242,7 +242,7 @@ a one character string to the `align` attribute.  The allowed strings are "l",
 
 ```python
 x.align = "r"
-print x
+print(x)
 ```
 
 gives:
@@ -272,7 +272,7 @@ x.align["City name"] = "l"
 x.align["Area"] = "c"
 x.align["Population"] = "r"
 x.align["Annual Rainfall"] = "c"
-print x
+print(x)
 ```
 
 gives:
@@ -301,7 +301,7 @@ For example, to print the example table we built earlier of Australian capital
 city data, so that the most populated city comes last, we can do this:
 
 ```python
-print x.get_string(sortby="Population")
+print(x.get_string(sortby="Population"))
 ```
 
 to get
@@ -328,9 +328,9 @@ the setting long term like this:
 
 ```python
 x.sortby = "Population"
-print x
-print x
-print x
+print(x)
+print(x)
+print(x)
 ```
 
 All three tables printed by this code will be sorted by population (you could
@@ -368,7 +368,7 @@ which works nicely with Microsoft Word's "Convert to table" feature:
 ```python
 from prettytable import MSWORD_FRIENDLY
 x.set_style(MSWORD_FRIENDLY)
-print x
+print(x)
 ```
 
 In addition to `MSWORD_FRIENDLY` there are currently two other in-built styles
@@ -411,9 +411,9 @@ The options are these:
   * `vrules` - Controls printing of vertical rules between columns.  Allowed
     values: FRAME, ALL, NONE.
   * `int_format` - A string which controls the way integer data is printed.
-    This works like: print "%<int_format>d" % data
+    This works like: `print("%<int_format>d" % data)`
   * `float_format` - A string which controls the way floating point data is
-     printed.  This works like: print "%<float_format>f" % data
+     printed.  This works like: `print("%<float_format>f" % data)`
   * `padding_width` - Number of spaces on either side of column data (only used
     if left and right paddings are None).
   * `left_padding_width` - Number of spaces on left hand side of column data.
@@ -435,9 +435,9 @@ attributes.  If you never want your tables to have borders you can do this:
 
 ```python
 x.border = False
-print x
-print x
-print x
+print(x)
+print(x)
+print(x)
 ```
 
 Neither of the 3 tables printed by this will have borders, even if you do
@@ -473,9 +473,9 @@ in the previous section, you can make changes that last for just one
 "normal" tables with one borderless table between them, you could do this:
 
 ```python
-print x
-print x.get_string(border=False)
-print x
+print(x)
+print(x.get_string(border=False))
+print(x)
 ```
 
 ### Displaying your table in JSON
