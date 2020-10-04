@@ -43,7 +43,6 @@ import sys
 import textwrap
 
 import pkg_resources
-
 import wcwidth
 
 __version__ = pkg_resources.get_distribution(__name__).version
@@ -54,15 +53,16 @@ if py3k:
     itermap = map
     iterzip = zip
     uni_chr = chr
-    from html.parser import HTMLParser
     from html import escape
+    from html.parser import HTMLParser
     from io import StringIO
 else:
     itermap = itertools.imap
     iterzip = itertools.izip
     uni_chr = unichr  # noqa: F821
-    from HTMLParser import HTMLParser
     from cgi import escape
+
+    from HTMLParser import HTMLParser
     from StringIO import StringIO
 
 # hrule styles
@@ -1312,7 +1312,7 @@ class PrettyTable(object):
         sort_key - sorting key function, applied to data points before sorting
         reversesort - True or False to sort in descending or ascending order
         print empty - if True, stringify just the header for an empty table,
-            if False return an empty string """
+            if False return an empty string"""
 
         options = self._get_options(kwargs)
 
@@ -1426,7 +1426,7 @@ class PrettyTable(object):
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
-        for field, width, in zip(self._field_names, self._widths):
+        for (field, width) in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
             if self._header_style == "cap":
@@ -1461,7 +1461,7 @@ class PrettyTable(object):
 
     def _stringify_row(self, row, options):
 
-        for index, field, value, width, in zip(
+        for (index, field, value, width) in zip(
             range(0, len(row)), self._field_names, row, self._widths
         ):
             # Enforce max widths
@@ -1491,7 +1491,7 @@ class PrettyTable(object):
                 else:
                     bits[y].append(" ")
 
-        for field, value, width, in zip(self._field_names, row, self._widths):
+        for (field, value, width) in zip(self._field_names, row, self._widths):
 
             valign = self._valign[field]
             lines = value.split("\n")
