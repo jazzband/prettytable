@@ -304,7 +304,7 @@ class PrettyTable(object):
     # persistent settings
 
     def _validate_option(self, option, val):
-        if option in ("field_names"):
+        if option == "field_names":
             self._validate_field_names(val)
         elif option in (
             "start",
@@ -319,15 +319,15 @@ class PrettyTable(object):
             "format",
         ):
             self._validate_nonnegative_int(option, val)
-        elif option in ("sortby"):
+        elif option == "sortby":
             self._validate_field_name(option, val)
-        elif option in ("sort_key"):
+        elif option == "sort_key":
             self._validate_function(option, val)
-        elif option in ("hrules"):
+        elif option == "hrules":
             self._validate_hrules(option, val)
-        elif option in ("vrules"):
+        elif option == "vrules":
             self._validate_vrules(option, val)
-        elif option in ("fields"):
+        elif option == "fields":
             self._validate_all_field_names(option, val)
         elif option in (
             "header",
@@ -338,15 +338,15 @@ class PrettyTable(object):
             "oldsortslice",
         ):
             self._validate_true_or_false(option, val)
-        elif option in ("header_style"):
+        elif option == "header_style":
             self._validate_header_style(val)
-        elif option in ("int_format"):
+        elif option == "int_format":
             self._validate_int_format(option, val)
-        elif option in ("float_format"):
+        elif option == "float_format":
             self._validate_float_format(option, val)
         elif option in ("vertical_char", "horizontal_char", "junction_char"):
             self._validate_single_char(option, val)
-        elif option in ("attributes"):
+        elif option == "attributes":
             self._validate_attributes(option, val)
 
     def _validate_field_names(self, val):
