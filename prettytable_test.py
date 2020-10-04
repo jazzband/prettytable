@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
+import random
 import sys
 import unittest
 from math import e, pi, sqrt
@@ -9,10 +10,13 @@ import pytest
 
 from prettytable import (
     ALL,
+    DEFAULT,
     MARKDOWN,
     MSWORD_FRIENDLY,
     NONE,
     ORGMODE,
+    PLAIN_COLUMNS,
+    RANDOM,
     PrettyTable,
     from_csv,
     from_db_cursor,
@@ -32,6 +36,14 @@ if py3k:
     import io as StringIO
 else:
     import StringIO
+
+
+def helper_9_value_table():
+    t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+    t.add_row(["value 1", "value2", "value3"])
+    t.add_row(["value 4", "value5", "value6"])
+    t.add_row(["value 7", "value8", "value9"])
+    return t
 
 
 class BuildEquivalenceTest(unittest.TestCase):
@@ -565,10 +577,7 @@ class BreakLineTests(unittest.TestCase):
 
 class JSONOutputTests(unittest.TestCase):
     def testJSONOutput(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
+        t = helper_9_value_table()
         result = t.get_json_string()
         assert (
             result.strip()
@@ -599,10 +608,7 @@ class JSONOutputTests(unittest.TestCase):
 
 class HtmlOutputTests(unittest.TestCase):
     def testHtmlOutput(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
+        t = helper_9_value_table()
         result = t.get_html_string()
         assert (
             result.strip()
@@ -633,10 +639,7 @@ class HtmlOutputTests(unittest.TestCase):
         )
 
     def testHtmlOutputFormated(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
+        t = helper_9_value_table()
         result = t.get_html_string(format=True)
         assert (
             result.strip()
@@ -667,37 +670,43 @@ class HtmlOutputTests(unittest.TestCase):
         )
 
 
-class MarkdownStyleTest(BasicTests):
-    def testMarkdownStyle(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
-        t.set_style(MARKDOWN)
-        result = t.get_string()
-        assert (
-            result.strip()
-            == """
+@pytest.mark.parametrize(
+    "test_style, expected",
+    [
+        (
+            DEFAULT,
+            """
++---------+---------+---------+
+| Field 1 | Field 2 | Field 3 |
++---------+---------+---------+
+| value 1 |  value2 |  value3 |
+| value 4 |  value5 |  value6 |
+| value 7 |  value8 |  value9 |
++---------+---------+---------+
+""",
+        ),
+        (
+            MARKDOWN,
+            """
 | Field 1 | Field 2 | Field 3 |
 |---------|---------|---------|
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
-""".strip()
-        )
-
-
-class OrgmodeStyleTest(BasicTests):
-    def testOrgmodeStyle(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
-        t.set_style(ORGMODE)
-        result = t.get_string()
-        assert (
-            result.strip()
-            == """
+""",
+        ),
+        (
+            MSWORD_FRIENDLY,
+            """
+| Field 1 | Field 2 | Field 3 |
+| value 1 |  value2 |  value3 |
+| value 4 |  value5 |  value6 |
+| value 7 |  value8 |  value9 |
+""",
+        ),
+        (
+            ORGMODE,
+            """
 |---------+---------+---------|
 | Field 1 | Field 2 | Field 3 |
 |---------+---------+---------|
@@ -705,8 +714,52 @@ class OrgmodeStyleTest(BasicTests):
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
 |---------+---------+---------|
-""".strip()
-        )
+""",
+        ),
+        (
+            PLAIN_COLUMNS,
+            """
+Field 1        Field 2        Field 3        
+value 1         value2         value3        
+value 4         value5         value6        
+value 7         value8         value9
+""",  # noqa: W291
+        ),
+        (
+            RANDOM,
+            """
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+%    value 1%    value2%    value3%
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+%    value 4%    value5%    value6%
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+%    value 7%    value8%    value9%
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+""",
+        ),
+    ],
+)
+def test_style(test_style, expected):
+    # Arrange
+    t = helper_9_value_table()
+    random.seed(1234)
+
+    # Act
+    t.set_style(test_style)
+
+    # Assert
+    result = t.get_string()
+    assert result.strip() == expected.strip()
+
+
+def test_style_invalid():
+    # Arrange
+    t = helper_9_value_table()
+
+    # Act / Assert
+    # This is an hrule style, not a table style
+    with pytest.raises(Exception):
+        t.set_style(ALL)
 
 
 class CsvConstructorTest(BasicTests):
@@ -726,10 +779,7 @@ class CsvConstructorTest(BasicTests):
 
 class CsvOutputTests(unittest.TestCase):
     def testCsvOutput(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
+        t = helper_9_value_table()
         assert t.get_csv_string(delimiter="\t", header=False) == (
             "value 1\tvalue2\tvalue3\r\n"
             "value 4\tvalue5\tvalue6\r\n"
