@@ -344,7 +344,7 @@ x.sortby = None
 If you want to specify a custom sorting function, you can use the `sort_key`
 keyword argument.  Pass this a function which accepts two lists of values
 and returns a negative or positive value depending on whether the first list
-should appeare before or after the second one.  If your table has n columns,
+should appear before or after the second one.  If your table has n columns,
 each list will have n+1 elements.  Each list corresponds to one row of the
 table.  The first element will be whatever data is in the relevant row, in
 the column specified by the `sort_by` argument.  The remaining n elements
@@ -441,7 +441,7 @@ print x
 ```
 
 Neither of the 3 tables printed by this will have borders, even if you do
-things like add extra rows inbetween them.  The lack of borders will last until
+things like add extra rows in between them.  The lack of borders will last until
 you do:
 
 ```python
@@ -520,7 +520,7 @@ quite simple.  It looks like this:
 </table>
 ```
 
-If you like, you can ask PrettyTable to do its best to mimick the style options
+If you like, you can ask PrettyTable to do its best to mimic the style options
 that your table has set using inline CSS.  This is done by giving a
 `format=True` keyword argument to `get_html_string` method.  Note that if you
 _always_ want to print formatted HTML you can do:

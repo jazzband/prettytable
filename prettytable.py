@@ -860,7 +860,7 @@ class PrettyTable(object):
 
     @property
     def vertical_char(self):
-        """The charcter used when printing table borders to draw vertical lines
+        """The character used when printing table borders to draw vertical lines
 
         Arguments:
 
@@ -875,7 +875,7 @@ class PrettyTable(object):
 
     @property
     def horizontal_char(self):
-        """The charcter used when printing table borders to draw horizontal lines
+        """The character used when printing table borders to draw horizontal lines
 
         Arguments:
 
@@ -890,7 +890,7 @@ class PrettyTable(object):
 
     @property
     def junction_char(self):
-        """The charcter used when printing table borders to draw line junctions
+        """The character used when printing table borders to draw line junctions
 
         Arguments:
 
@@ -1083,7 +1083,7 @@ class PrettyTable(object):
 
         if row_index > len(self._rows) - 1:
             raise Exception(
-                "Cant delete row at index %d, table only has %d rows!"
+                "Can't delete row at index %d, table only has %d rows!"
                 % (row_index, len(self._rows))
             )
         del self._rows[row_index]
@@ -1128,7 +1128,7 @@ class PrettyTable(object):
 
         if fieldname not in self._field_names:
             raise Exception(
-                "Cant delete column %r which is not a field name of this table."
+                "Can't delete column %r which is not a field name of this table."
                 " Field names are: %s"
                 % (fieldname, ", ".join(map(repr, self._field_names)))
             )
