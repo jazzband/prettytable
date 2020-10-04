@@ -16,20 +16,5 @@ script:
 - tox -v
 jobs:
   fast_finish: true
-  include:
-  - stage: deploy
-    if: tag IS present
-    python: 3.8
-    script: skip
-    deploy:
-      provider: pypi
-      user: jazzband
-      server: https://jazzband.co/projects/prettytable/upload
-      distributions: sdist bdist_wheel
-      password:
-        secure: sf1NovYo7asxb/z7TidjQA+Xjn8h/ubaFqE/rN/xmKHMBOjL0F5VQqQteHDxL8pSWYdCcv4tIsjsbXzsMrg4phdEhj0++4uMuZzNT3NR+gniRkH31U+csP+YtvKa7ssW/Pg3+MW95X4FxORuPkJlTuoinTQmGX+A7nPtpAAXVau7mq9SCXbJiOkSHAr/LbnvjUG8OgsWdCwUzEk4ssjSj9GBJ7+vjsVVI+Fap3C8PhHMj0W6u+H9kAGRUfe/2msW0g/oCJtiWHKDBucNhcAEWamxRZTk9KQmdHKDNwQmMSOkvEcEjDwgnWwlVNGlLMamG9/T3y2mYOo7IvFFStriqmTFq6W+afuFEIShPLgwgw3S0oiNze42LzjjTZKsVN/FwyL+LLQqJnTkVSv7Uuzwbp/YPH2+/hjonPq8Vf84ttLjf/tQktOqlR8JB9gQF77fFDoPRze80XmpxLa5IxYzhzNR6QF24l1+jj2VEURQWMZf8OXWLqExOF0DR1SuBH9pzIoSG+UhBhwVMB/a6GHxDqCCVU87fzISxKaZJz7hb+91c3DPksp0ritd5ASEP7UwM+HkbzsTiKOotIjp7oXKhbn6F/NfXCe4tIDLWd3xv16sD0My+1HGcKwVVxPa/ZoM8/tEDW+EeL4SY/f7gzA1YurBJ9WYYe/bY8L09fijLaM=
-      on:
-        tags: true
-        repo: jazzband/prettytable
 after_success:
 - codecov
