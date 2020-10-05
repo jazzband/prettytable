@@ -43,7 +43,6 @@ import sys
 import textwrap
 
 import pkg_resources
-
 import wcwidth
 
 __version__ = pkg_resources.get_distribution(__name__).version
@@ -54,15 +53,16 @@ if py3k:
     itermap = map
     iterzip = zip
     uni_chr = chr
-    from html.parser import HTMLParser
     from html import escape
+    from html.parser import HTMLParser
     from io import StringIO
 else:
     itermap = itertools.imap
     iterzip = itertools.izip
     uni_chr = unichr  # noqa: F821
-    from HTMLParser import HTMLParser
     from cgi import escape
+
+    from HTMLParser import HTMLParser
     from StringIO import StringIO
 
 # hrule styles
@@ -86,7 +86,7 @@ def _get_size(text):
     lines = text.split("\n")
     height = len(lines)
     width = max(_str_block_width(line) for line in lines)
-    return (width, height)
+    return width, height
 
 
 class PrettyTable(object):
@@ -304,7 +304,7 @@ class PrettyTable(object):
     # persistent settings
 
     def _validate_option(self, option, val):
-        if option in ("field_names"):
+        if option == "field_names":
             self._validate_field_names(val)
         elif option in (
             "start",
@@ -319,15 +319,15 @@ class PrettyTable(object):
             "format",
         ):
             self._validate_nonnegative_int(option, val)
-        elif option in ("sortby"):
+        elif option == "sortby":
             self._validate_field_name(option, val)
-        elif option in ("sort_key"):
+        elif option == "sort_key":
             self._validate_function(option, val)
-        elif option in ("hrules"):
+        elif option == "hrules":
             self._validate_hrules(option, val)
-        elif option in ("vrules"):
+        elif option == "vrules":
             self._validate_vrules(option, val)
-        elif option in ("fields"):
+        elif option == "fields":
             self._validate_all_field_names(option, val)
         elif option in (
             "header",
@@ -338,15 +338,15 @@ class PrettyTable(object):
             "oldsortslice",
         ):
             self._validate_true_or_false(option, val)
-        elif option in ("header_style"):
+        elif option == "header_style":
             self._validate_header_style(val)
-        elif option in ("int_format"):
+        elif option == "int_format":
             self._validate_int_format(option, val)
-        elif option in ("float_format"):
+        elif option == "float_format":
             self._validate_float_format(option, val)
         elif option in ("vertical_char", "horizontal_char", "junction_char"):
             self._validate_single_char(option, val)
-        elif option in ("attributes"):
+        elif option == "attributes":
             self._validate_attributes(option, val)
 
     def _validate_field_names(self, val):
@@ -860,7 +860,7 @@ class PrettyTable(object):
 
     @property
     def vertical_char(self):
-        """The charcter used when printing table borders to draw vertical lines
+        """The character used when printing table borders to draw vertical lines
 
         Arguments:
 
@@ -875,7 +875,7 @@ class PrettyTable(object):
 
     @property
     def horizontal_char(self):
-        """The charcter used when printing table borders to draw horizontal lines
+        """The character used when printing table borders to draw horizontal lines
 
         Arguments:
 
@@ -890,7 +890,7 @@ class PrettyTable(object):
 
     @property
     def junction_char(self):
-        """The charcter used when printing table borders to draw line junctions
+        """The character used when printing table borders to draw line junctions
 
         Arguments:
 
@@ -1083,7 +1083,7 @@ class PrettyTable(object):
 
         if row_index > len(self._rows) - 1:
             raise Exception(
-                "Cant delete row at index %d, table only has %d rows!"
+                "Can't delete row at index %d, table only has %d rows!"
                 % (row_index, len(self._rows))
             )
         del self._rows[row_index]
@@ -1128,7 +1128,7 @@ class PrettyTable(object):
 
         if fieldname not in self._field_names:
             raise Exception(
-                "Cant delete column %r which is not a field name of this table."
+                "Can't delete column %r which is not a field name of this table."
                 " Field names are: %s"
                 % (fieldname, ", ".join(map(repr, self._field_names)))
             )
@@ -1312,7 +1312,7 @@ class PrettyTable(object):
         sort_key - sorting key function, applied to data points before sorting
         reversesort - True or False to sort in descending or ascending order
         print empty - if True, stringify just the header for an empty table,
-            if False return an empty string """
+            if False return an empty string"""
 
         options = self._get_options(kwargs)
 
@@ -1426,7 +1426,7 @@ class PrettyTable(object):
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
-        for field, width, in zip(self._field_names, self._widths):
+        for (field, width) in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
             if self._header_style == "cap":
@@ -1461,7 +1461,7 @@ class PrettyTable(object):
 
     def _stringify_row(self, row, options):
 
-        for index, field, value, width, in zip(
+        for (index, field, value, width) in zip(
             range(0, len(row)), self._field_names, row, self._widths
         ):
             # Enforce max widths
@@ -1491,22 +1491,22 @@ class PrettyTable(object):
                 else:
                     bits[y].append(" ")
 
-        for field, value, width, in zip(self._field_names, row, self._widths):
+        for (field, value, width) in zip(self._field_names, row, self._widths):
 
             valign = self._valign[field]
             lines = value.split("\n")
-            dHeight = row_height - len(lines)
-            if dHeight:
+            d_height = row_height - len(lines)
+            if d_height:
                 if valign == "m":
                     lines = (
-                        [""] * int(dHeight / 2)
+                        [""] * int(d_height / 2)
                         + lines
-                        + [""] * (dHeight - int(dHeight / 2))
+                        + [""] * (d_height - int(d_height / 2))
                     )
                 elif valign == "b":
-                    lines = [""] * dHeight + lines
+                    lines = [""] * d_height + lines
                 else:
-                    lines = lines + [""] * dHeight
+                    lines = lines + [""] * d_height
 
             y = 0
             for line in lines:
@@ -1979,7 +1979,7 @@ def main():
     x.add_row(["Perth", 5386, 1554769, 869.4])
     print(x)
 
-    print
+    print()
 
     print("Generated using constructor arguments:")
 

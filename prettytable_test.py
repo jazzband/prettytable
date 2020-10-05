@@ -32,7 +32,7 @@ else:
     import StringIO
 
 
-class BuildEquivelanceTest(unittest.TestCase):
+class BuildEquivalenceTest(unittest.TestCase):
     """Make sure that building a table row-by-row and column-by-column yield the same
     results"""
 
@@ -724,13 +724,13 @@ class CsvOutputTests(unittest.TestCase):
         t.add_row(["value 1", "value2", "value3"])
         t.add_row(["value 4", "value5", "value6"])
         t.add_row(["value 7", "value8", "value9"])
-        self.assertEquals(
+        self.assertEqual(
             t.get_csv_string(delimiter="\t", header=False),
             "value 1\tvalue2\tvalue3\r\n"
             "value 4\tvalue5\tvalue6\r\n"
             "value 7\tvalue8\tvalue9\r\n",
         )
-        self.assertEquals(
+        self.assertEqual(
             t.get_csv_string(),
             "Field 1,Field 2,Field 3\r\n"
             "value 1,value2,value3\r\n"
@@ -773,7 +773,7 @@ if _have_sqlite:
             self.cur.execute("SELECT * FROM cities")
             self.x = from_db_cursor(self.cur)
 
-        def testNonSelectCurosr(self):
+        def testNonSelectCursor(self):
             self.cur.execute(
                 'INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)'
             )
@@ -810,7 +810,7 @@ class PrintEnglishTest(CityDataTest):
         print(self.x)
 
 
-class PrintJapanestTest(unittest.TestCase):
+class PrintJapaneseTest(unittest.TestCase):
     def setUp(self):
 
         self.x = PrettyTable(["Kanji", "Hiragana", "English"])
