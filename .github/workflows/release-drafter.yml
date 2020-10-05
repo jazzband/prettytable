@@ -8,7 +8,7 @@ on:
 
 jobs:
   update_release_draft:
-    if: github.repository == 'hugovk/tinytext'
+    if: github.repository == 'jazzband/prettytable'
     runs-on: ubuntu-latest
     steps:
       # Drafts your next release notes as pull requests are merged into "master"
