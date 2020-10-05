@@ -38,11 +38,13 @@ else:
     import StringIO
 
 
-def helper_9_value_table():
+def helper_table(rows=3):
     t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-    t.add_row(["value 1", "value2", "value3"])
-    t.add_row(["value 4", "value5", "value6"])
-    t.add_row(["value 7", "value8", "value9"])
+    v = 1
+    for row in range(rows):
+        # Some have spaces, some not, to help test padding columns of different widths
+        t.add_row([f"value {v}", f"value{v+1}", f"value{v+2}"])
+        v += 3
     return t
 
 
@@ -412,7 +414,8 @@ class SortingTests(CityDataTest):
         self.x.sort_key = key
         assert (
             self.x.get_string().strip()
-            == """+-----------+------+------------+-----------------+
+            == """
++-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
 |   Perth   | 5386 |  1554769   |      869.4      |
@@ -577,11 +580,12 @@ class BreakLineTests(unittest.TestCase):
 
 class JSONOutputTests(unittest.TestCase):
     def testJSONOutput(self):
-        t = helper_9_value_table()
+        t = helper_table()
         result = t.get_json_string()
         assert (
             result.strip()
-            == """[
+            == """
+[
     [
         "Field 1",
         "Field 2",
@@ -608,7 +612,7 @@ class JSONOutputTests(unittest.TestCase):
 
 class HtmlOutputTests(unittest.TestCase):
     def testHtmlOutput(self):
-        t = helper_9_value_table()
+        t = helper_table()
         result = t.get_html_string()
         assert (
             result.strip()
@@ -639,7 +643,7 @@ class HtmlOutputTests(unittest.TestCase):
         )
 
     def testHtmlOutputFormated(self):
-        t = helper_9_value_table()
+        t = helper_table()
         result = t.get_html_string(format=True)
         assert (
             result.strip()
@@ -747,7 +751,7 @@ value 7         value8         value9
 )
 def test_style(test_style, expected):
     # Arrange
-    t = helper_9_value_table()
+    t = helper_table()
     random.seed(1234)
 
     # Act
@@ -760,7 +764,7 @@ def test_style(test_style, expected):
 
 def test_style_invalid():
     # Arrange
-    t = helper_9_value_table()
+    t = helper_table()
 
     # Act / Assert
     # This is an hrule style, not a table style
@@ -785,7 +789,7 @@ class CsvConstructorTest(BasicTests):
 
 class CsvOutputTests(unittest.TestCase):
     def testCsvOutput(self):
-        t = helper_9_value_table()
+        t = helper_table()
         assert t.get_csv_string(delimiter="\t", header=False) == (
             "value 1\tvalue2\tvalue3\r\n"
             "value 4\tvalue5\tvalue6\r\n"
@@ -914,3 +918,36 @@ class PrintEmojiTest(unittest.TestCase):
     def testPrint(self):
         print()
         print(self.x)
+
+
+def test_paginate():
+    # Arrange
+    t = helper_table(rows=7)
+    expected_page_1 = """
++----------+---------+---------+
+| Field 1  | Field 2 | Field 3 |
++----------+---------+---------+
+| value 1  |  value2 |  value3 |
+| value 4  |  value5 |  value6 |
+| value 7  |  value8 |  value9 |
+| value 10 | value11 | value12 |
++----------+---------+---------+
+    """.strip()
+    expected_page_2 = """
++----------+---------+---------+
+| Field 1  | Field 2 | Field 3 |
++----------+---------+---------+
+| value 13 | value14 | value15 |
+| value 16 | value17 | value18 |
+| value 19 | value20 | value21 |
++----------+---------+---------+
+""".strip()
+
+    # Act
+    paginated = t.paginate(page_length=4)
+
+    # Assert
+    paginated = paginated.strip()
+    assert paginated.startswith(expected_page_1)
+    assert "\f" in paginated
+    assert paginated.endswith(expected_page_2)
