@@ -1250,9 +1250,9 @@ class PrettyTable(object):
         options - dictionary of option settings."""
 
         if options["oldsortslice"]:
-            rows = copy.deepcopy(self._rows[options["start"] : options["end"]])
+            rows = self._rows[options["start"] : options["end"]]
         else:
-            rows = copy.deepcopy(self._rows)
+            rows = self._rows
 
         # Sort
         if options["sortby"]:
