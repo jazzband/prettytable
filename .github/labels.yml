@@ -61,6 +61,9 @@
 - color: f4660e
   description: ""
   name: Hacktoberfest
+- color: f4660e
+  description: "To credit accepted Hacktoberfest PRs"
+  name: hacktoberfest-accepted
 - color: d65e88
   description: "Deploy and release"
   name: release
