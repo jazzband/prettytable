@@ -1,3 +1,9 @@
+# PrettyTable 1.0.1 and newer
+
+See GitHub Releases:
+
+* https://github.com/jazzband/prettytable/releases
+
 # PrettyTable 1.0 - October 4, 2020
 
 * Dropped support for EOL Python 2.4-2.6 and 3.0-3.4.
