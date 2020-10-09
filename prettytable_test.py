@@ -1,16 +1,22 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
+import random
 import sys
 import unittest
 from math import e, pi, sqrt
 
+import pytest
+
 from prettytable import (
     ALL,
+    DEFAULT,
     MARKDOWN,
     MSWORD_FRIENDLY,
     NONE,
     ORGMODE,
+    PLAIN_COLUMNS,
+    RANDOM,
     PrettyTable,
     from_csv,
     from_db_cursor,
@@ -30,6 +36,16 @@ if py3k:
     import io as StringIO
 else:
     import StringIO
+
+
+def helper_table(rows=3):
+    t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+    v = 1
+    for row in range(rows):
+        # Some have spaces, some not, to help test padding columns of different widths
+        t.add_row([f"value {v}", f"value{v+1}", f"value{v+2}"])
+        v += 3
+    return t
 
 
 class BuildEquivalenceTest(unittest.TestCase):
@@ -90,19 +106,19 @@ class BuildEquivalenceTest(unittest.TestCase):
 
     def testRowColEquivalenceASCII(self):
 
-        self.assertEqual(self.row.get_string(), self.col.get_string())
+        assert self.row.get_string() == self.col.get_string()
 
     def testRowMixEquivalenceASCII(self):
 
-        self.assertEqual(self.row.get_string(), self.mix.get_string())
+        assert self.row.get_string() == self.mix.get_string()
 
     def testRowColEquivalenceHTML(self):
 
-        self.assertEqual(self.row.get_html_string(), self.col.get_html_string())
+        assert self.row.get_html_string() == self.col.get_html_string()
 
     def testRowMixEquivalenceHTML(self):
 
-        self.assertEqual(self.row.get_html_string(), self.mix.get_html_string())
+        assert self.row.get_html_string() == self.mix.get_html_string()
 
 
 class DeleteColumnTest(unittest.TestCase):
@@ -117,39 +133,43 @@ class DeleteColumnTest(unittest.TestCase):
         without_row.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
         without_row.add_column("Population", [1158259, 1857594, 120900])
 
-        self.assertEqual(with_del.get_string(), without_row.get_string())
+        assert with_del.get_string() == without_row.get_string()
 
     def testDeleteIllegalColumnRaisesException(self):
         table = PrettyTable()
         table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
 
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             table.del_column("City not-a-name")
 
 
-# class FieldnamelessTableTest(unittest.TestCase):
-#
-#    """Make sure that building and stringing a table with no fieldnames works fine"""
-#
-#    def setUp(self):
-#        self.x = PrettyTable()
-#        self.x.add_row(["Adelaide",1295, 1158259, 600.5])
-#        self.x.add_row(["Brisbane",5905, 1857594, 1146.4])
-#        self.x.add_row(["Darwin", 112, 120900, 1714.7])
-#        self.x.add_row(["Hobart", 1357, 205556, 619.5])
-#        self.x.add_row(["Sydney", 2058, 4336374, 1214.8])
-#        self.x.add_row(["Melbourne", 1566, 3806092, 646.9])
-#        self.x.add_row(["Perth", 5386, 1554769, 869.4])
-#
-#    def testCanStringASCII(self):
-#        self.x.get_string()
-#
-#    def testCanStringHTML(self):
-#        self.x.get_html_string()
-#
-#    def testAddFieldnamesLater(self):
-#        self.x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-#        self.x.get_string()
+class FieldnamelessTableTest(unittest.TestCase):
+
+    """Make sure that building and stringing a table with no fieldnames works fine"""
+
+    def setUp(self):
+        self.x = PrettyTable()
+        self.x.add_row(["Adelaide", 1295, 1158259, 600.5])
+        self.x.add_row(["Brisbane", 5905, 1857594, 1146.4])
+        self.x.add_row(["Darwin", 112, 120900, 1714.7])
+        self.x.add_row(["Hobart", 1357, 205556, 619.5])
+        self.x.add_row(["Sydney", 2058, 4336374, 1214.8])
+        self.x.add_row(["Melbourne", 1566, 3806092, 646.9])
+        self.x.add_row(["Perth", 5386, 1554769, 869.4])
+
+    def testCanStringASCII(self):
+        output = self.x.get_string()
+        assert "|  Field 1  | Field 2 | Field 3 | Field 4 |" in output
+        assert "|  Adelaide |   1295  | 1158259 |  600.5  |" in output
+
+    def testCanStringHTML(self):
+        output = self.x.get_html_string()
+        assert "<th>Field 1</th>" in output
+        assert "<td>Adelaide</td>" in output
+
+    def testAddFieldNamesLater(self):
+        self.x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+        assert "City name | Area | Population | Annual Rainfall" in self.x.get_string()
 
 
 class CityDataTest(unittest.TestCase):
@@ -175,23 +195,23 @@ class OptionOverrideTests(CityDataTest):
     def testBorder(self):
         default = self.x.get_string()
         override = self.x.get_string(border=False)
-        self.assertNotEqual(default, override)
+        assert default != override
 
     def testHeader(self):
         default = self.x.get_string()
         override = self.x.get_string(header=False)
-        self.assertNotEqual(default, override)
+        assert default != override
 
     def testHrulesAll(self):
         default = self.x.get_string()
         override = self.x.get_string(hrules=ALL)
-        self.assertNotEqual(default, override)
+        assert default != override
 
     def testHrulesNone(self):
 
         default = self.x.get_string()
         override = self.x.get_string(hrules=NONE)
-        self.assertNotEqual(default, override)
+        assert default != override
 
 
 class OptionAttributeTests(CityDataTest):
@@ -241,7 +261,7 @@ class BasicTests(CityDataTest):
 
         string = self.x.get_string()
         lines = string.split("\n")
-        self.assertNotIn("", lines)
+        assert "" not in lines
 
     def testAllLengthsEqual(self):
 
@@ -251,7 +271,7 @@ class BasicTests(CityDataTest):
         lines = string.split("\n")
         lengths = [len(line) for line in lines]
         lengths = set(lengths)
-        self.assertEqual(len(lengths), 1)
+        assert len(lengths) == 1
 
 
 class TitleBasicTests(BasicTests):
@@ -394,7 +414,8 @@ class SortingTests(CityDataTest):
         self.x.sort_key = key
         assert (
             self.x.get_string().strip()
-            == """+-----------+------+------------+-----------------+
+            == """
++-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
 |   Perth   | 5386 |  1554769   |      869.4      |
@@ -559,14 +580,12 @@ class BreakLineTests(unittest.TestCase):
 
 class JSONOutputTests(unittest.TestCase):
     def testJSONOutput(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
+        t = helper_table()
         result = t.get_json_string()
         assert (
             result.strip()
-            == """[
+            == """
+[
     [
         "Field 1",
         "Field 2",
@@ -593,10 +612,7 @@ class JSONOutputTests(unittest.TestCase):
 
 class HtmlOutputTests(unittest.TestCase):
     def testHtmlOutput(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
+        t = helper_table()
         result = t.get_html_string()
         assert (
             result.strip()
@@ -627,10 +643,7 @@ class HtmlOutputTests(unittest.TestCase):
         )
 
     def testHtmlOutputFormated(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
+        t = helper_table()
         result = t.get_html_string(format=True)
         assert (
             result.strip()
@@ -661,37 +674,46 @@ class HtmlOutputTests(unittest.TestCase):
         )
 
 
-class MarkdownStyleTest(BasicTests):
-    def testMarkdownStyle(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
-        t.set_style(MARKDOWN)
-        result = t.get_string()
-        assert (
-            result.strip()
-            == """
+@pytest.mark.parametrize(
+    "test_style, expected",
+    [
+        pytest.param(
+            DEFAULT,
+            """
++---------+---------+---------+
+| Field 1 | Field 2 | Field 3 |
++---------+---------+---------+
+| value 1 |  value2 |  value3 |
+| value 4 |  value5 |  value6 |
+| value 7 |  value8 |  value9 |
++---------+---------+---------+
+""",
+            id="DEFAULT",
+        ),
+        pytest.param(
+            MARKDOWN,
+            """
 | Field 1 | Field 2 | Field 3 |
 |---------|---------|---------|
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
-""".strip()
-        )
-
-
-class OrgmodeStyleTest(BasicTests):
-    def testOrgmodeStyle(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
-        t.set_style(ORGMODE)
-        result = t.get_string()
-        assert (
-            result.strip()
-            == """
+""",
+            id="MARKDOWN",
+        ),
+        pytest.param(
+            MSWORD_FRIENDLY,
+            """
+| Field 1 | Field 2 | Field 3 |
+| value 1 |  value2 |  value3 |
+| value 4 |  value5 |  value6 |
+| value 7 |  value8 |  value9 |
+""",
+            id="MSWORD_FRIENDLY",
+        ),
+        pytest.param(
+            ORGMODE,
+            """
 |---------+---------+---------|
 | Field 1 | Field 2 | Field 3 |
 |---------+---------+---------|
@@ -699,8 +721,55 @@ class OrgmodeStyleTest(BasicTests):
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
 |---------+---------+---------|
-""".strip()
-        )
+""",
+            id="ORGMODE",
+        ),
+        pytest.param(
+            PLAIN_COLUMNS,
+            """
+Field 1        Field 2        Field 3        
+value 1         value2         value3        
+value 4         value5         value6        
+value 7         value8         value9
+""",  # noqa: W291
+            id="PLAIN_COLUMNS",
+        ),
+        pytest.param(
+            RANDOM,
+            """
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+%    value 1%    value2%    value3%
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+%    value 4%    value5%    value6%
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+%    value 7%    value8%    value9%
+'^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
+""",
+            id="RANDOM",
+        ),
+    ],
+)
+def test_style(test_style, expected):
+    # Arrange
+    t = helper_table()
+    random.seed(1234)
+
+    # Act
+    t.set_style(test_style)
+
+    # Assert
+    result = t.get_string()
+    assert result.strip() == expected.strip()
+
+
+def test_style_invalid():
+    # Arrange
+    t = helper_table()
+
+    # Act / Assert
+    # This is an hrule style, not a table style
+    with pytest.raises(Exception):
+        t.set_style(ALL)
 
 
 class CsvConstructorTest(BasicTests):
@@ -720,22 +789,17 @@ class CsvConstructorTest(BasicTests):
 
 class CsvOutputTests(unittest.TestCase):
     def testCsvOutput(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
-        t.add_row(["value 1", "value2", "value3"])
-        t.add_row(["value 4", "value5", "value6"])
-        t.add_row(["value 7", "value8", "value9"])
-        self.assertEqual(
-            t.get_csv_string(delimiter="\t", header=False),
+        t = helper_table()
+        assert t.get_csv_string(delimiter="\t", header=False) == (
             "value 1\tvalue2\tvalue3\r\n"
             "value 4\tvalue5\tvalue6\r\n"
-            "value 7\tvalue8\tvalue9\r\n",
+            "value 7\tvalue8\tvalue9\r\n"
         )
-        self.assertEqual(
-            t.get_csv_string(),
+        assert t.get_csv_string() == (
             "Field 1,Field 2,Field 3\r\n"
             "value 1,value2,value3\r\n"
             "value 4,value5,value6\r\n"
-            "value 7,value8,value9\r\n",
+            "value 7,value8,value9\r\n"
         )
 
 
@@ -801,7 +865,8 @@ class HtmlConstructorTest(CityDataTest):
     def testHtmlOneFailOnMany(self):
         html_string = self.x.get_html_string()
         html_string += self.x.get_html_string()
-        self.assertRaises(Exception, from_html_one, html_string)
+        with pytest.raises(Exception):
+            from_html_one(html_string)
 
 
 class PrintEnglishTest(CityDataTest):
@@ -855,5 +920,34 @@ class PrintEmojiTest(unittest.TestCase):
         print(self.x)
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_paginate():
+    # Arrange
+    t = helper_table(rows=7)
+    expected_page_1 = """
++----------+---------+---------+
+| Field 1  | Field 2 | Field 3 |
++----------+---------+---------+
+| value 1  |  value2 |  value3 |
+| value 4  |  value5 |  value6 |
+| value 7  |  value8 |  value9 |
+| value 10 | value11 | value12 |
++----------+---------+---------+
+    """.strip()
+    expected_page_2 = """
++----------+---------+---------+
+| Field 1  | Field 2 | Field 3 |
++----------+---------+---------+
+| value 13 | value14 | value15 |
+| value 16 | value17 | value18 |
+| value 19 | value20 | value21 |
++----------+---------+---------+
+""".strip()
+
+    # Act
+    paginated = t.paginate(page_length=4)
+
+    # Assert
+    paginated = paginated.strip()
+    assert paginated.startswith(expected_page_1)
+    assert "\f" in paginated
+    assert paginated.endswith(expected_page_2)
