@@ -9,20 +9,12 @@ Jazzband guidelines: https://jazzband.co/about/releases
       [![Travis CI Status](https://img.shields.io/travis/jazzband/prettytable/master?label=Travis%20CI&logo=travis)](https://travis-ci.org/jazzband/prettytable)
       [![GitHub Actions status](https://github.com/jazzband/prettytable/workflows/Test/badge.svg)](https://github.com/jazzband/prettytable/actions)
 
-- [ ] Check
-      [CHANGELOG.md](https://github.com/jazzband/prettytable/blob/master/CHANGELOG.md),
-      update version number and release date
+- [ ] Edit release draft, adjust text if needed:
+      https://github.com/jazzband/prettytable/releases
 
-- [ ] Tag with version number and push tag, for example:
+- [ ] Check next tag is correct, amend if needed
 
-```bash
-git tag -a 1.0.0 -m "Release 1.0.0"
-git push --tags
-```
-
-- [ ] Create new GitHub release: https://github.com/jazzband/prettytable/releases/new
-
-  - Tag: Pick existing tag "1.0.0"
+- [ ] Publish release
 
 - [ ] Once
       [GitHub Actions](https://github.com/jazzband/prettytable/actions?query=workflow%3ADeploy)
