@@ -2,7 +2,7 @@
 
 See GitHub Releases:
 
-* https://github.com/jazzband/prettytable/releases
+- https://github.com/jazzband/prettytable/releases
 
 # PrettyTable 1.0 - October 4, 2020
 
