@@ -34,36 +34,19 @@
 
 import copy
 import csv
-import itertools
+import io
 import json
 import math
 import random
 import re
-import sys
 import textwrap
+from html import escape
+from html.parser import HTMLParser
 
 import pkg_resources
 import wcwidth
 
 __version__ = pkg_resources.get_distribution(__name__).version
-py3k = sys.version_info[0] >= 3
-if py3k:
-    unicode = str
-    basestring = str
-    itermap = map
-    iterzip = zip
-    uni_chr = chr
-    from html import escape
-    from html.parser import HTMLParser
-    from io import StringIO
-else:
-    itermap = itertools.imap
-    iterzip = itertools.izip
-    uni_chr = unichr  # noqa: F821
-    from cgi import escape
-
-    from HTMLParser import HTMLParser
-    from StringIO import StringIO
 
 # hrule styles
 FRAME = 0
@@ -218,10 +201,8 @@ class PrettyTable(object):
         self._attributes = kwargs["attributes"] or {}
 
     def _unicode(self, value):
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             value = str(value)
-        if not isinstance(value, unicode):
-            value = unicode(value, self.encoding, "strict")
         return value
 
     def _justify(self, text, width, align):
@@ -277,15 +258,8 @@ class PrettyTable(object):
             )
         return new
 
-    if py3k:
-
-        def __str__(self):
-            return self.__unicode__()
-
-    else:
-
-        def __str__(self):
-            return self.__unicode__().encode(self.encoding)
+    def __str__(self):
+        return self.__unicode__()
 
     def __unicode__(self):
         return self.get_string()
@@ -411,7 +385,7 @@ class PrettyTable(object):
         if val == "":
             return
         try:
-            assert type(val) in (str, unicode)
+            assert isinstance(val, str)
             assert val.isdigit()
         except AssertionError:
             raise Exception(
@@ -422,7 +396,7 @@ class PrettyTable(object):
         if val == "":
             return
         try:
-            assert type(val) in (str, unicode)
+            assert isinstance(val, str)
             assert "." in val
             bits = val.split(".")
             assert len(bits) <= 2
@@ -1572,7 +1546,7 @@ class PrettyTable(object):
         csv_options = {
             key: value for key, value in kwargs.items() if key not in options
         }
-        csv_buffer = StringIO()
+        csv_buffer = io.StringIO()
         csv_writer = csv.writer(csv_buffer, **csv_options)
 
         if options.get("header"):
@@ -1826,10 +1800,7 @@ def from_csv(fp, field_names=None, **kwargs):
     if field_names:
         table.field_names = field_names
     else:
-        if py3k:
-            table.field_names = [x.strip() for x in next(reader)]
-        else:
-            table.field_names = [x.strip() for x in reader.next()]
+        table.field_names = [x.strip() for x in next(reader)]
 
     for row in reader:
         table.add_row([x.strip() for x in row])

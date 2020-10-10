@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
+import io
 import random
-import sys
 import unittest
 from math import e, pi, sqrt
 
@@ -25,17 +25,12 @@ from prettytable import (
     from_json,
 )
 
-py3k = sys.version_info[0] >= 3
 try:
     import sqlite3
 
     _have_sqlite = True
 except ImportError:
     _have_sqlite = False
-if py3k:
-    import io as StringIO
-else:
-    import StringIO
 
 
 def helper_table(rows=3):
@@ -783,7 +778,7 @@ class CsvConstructorTest(BasicTests):
         Adelaide, 1295 ,  1158259   ,       600.5
         Hobart, 1357 ,   205556   ,       619.5
         Darwin, 0112 ,   120900   ,      1714.7"""
-        csv_fp = StringIO.StringIO(csv_string)
+        csv_fp = io.StringIO(csv_string)
         self.x = from_csv(csv_fp)
 
 
