@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2009-2014, Luke Maurits <luke@maurits.id.au>
 # All rights reserved.
@@ -72,7 +71,7 @@ def _get_size(text):
     return width, height
 
 
-class PrettyTable(object):
+class PrettyTable:
     def __init__(self, field_names=None, **kwargs):
 
         """Return a new PrettyTable instance
