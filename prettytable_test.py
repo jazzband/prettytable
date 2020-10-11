@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# coding=UTF-8
 
+import io
 import random
-import sys
+import sqlite3
 import unittest
 from math import e, pi, sqrt
 
@@ -24,18 +24,6 @@ from prettytable import (
     from_html_one,
     from_json,
 )
-
-py3k = sys.version_info[0] >= 3
-try:
-    import sqlite3
-
-    _have_sqlite = True
-except ImportError:
-    _have_sqlite = False
-if py3k:
-    import io as StringIO
-else:
-    import StringIO
 
 
 def helper_table(rows=3):
@@ -783,7 +771,7 @@ class CsvConstructorTest(BasicTests):
         Adelaide, 1295 ,  1158259   ,       600.5
         Hobart, 1357 ,   205556   ,       619.5
         Darwin, 0112 ,   120900   ,      1714.7"""
-        csv_fp = StringIO.StringIO(csv_string)
+        csv_fp = io.StringIO(csv_string)
         self.x = from_csv(csv_fp)
 
 
@@ -803,45 +791,31 @@ class CsvOutputTests(unittest.TestCase):
         )
 
 
-if _have_sqlite:
+class DatabaseConstructorTest(BasicTests):
+    def setUp(self):
+        self.conn = sqlite3.connect(":memory:")
+        self.cur = self.conn.cursor()
+        self.cur.execute(
+            "CREATE TABLE cities "
+            "(name TEXT, area INTEGER, population INTEGER, rainfall REAL)"
+        )
+        self.cur.execute('INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)')
+        self.cur.execute(
+            'INSERT INTO cities VALUES ("Brisbane", 5905, 1857594, 1146.4)'
+        )
+        self.cur.execute('INSERT INTO cities VALUES ("Darwin", 112, 120900, 1714.7)')
+        self.cur.execute('INSERT INTO cities VALUES ("Hobart", 1357, 205556, 619.5)')
+        self.cur.execute('INSERT INTO cities VALUES ("Sydney", 2058, 4336374, 1214.8)')
+        self.cur.execute(
+            'INSERT INTO cities VALUES ("Melbourne", 1566, 3806092, 646.9)'
+        )
+        self.cur.execute('INSERT INTO cities VALUES ("Perth", 5386, 1554769, 869.4)')
+        self.cur.execute("SELECT * FROM cities")
+        self.x = from_db_cursor(self.cur)
 
-    class DatabaseConstructorTest(BasicTests):
-        def setUp(self):
-            self.conn = sqlite3.connect(":memory:")
-            self.cur = self.conn.cursor()
-            self.cur.execute(
-                "CREATE TABLE cities "
-                "(name TEXT, area INTEGER, population INTEGER, rainfall REAL)"
-            )
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)'
-            )
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Brisbane", 5905, 1857594, 1146.4)'
-            )
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Darwin", 112, 120900, 1714.7)'
-            )
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Hobart", 1357, 205556, 619.5)'
-            )
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Sydney", 2058, 4336374, 1214.8)'
-            )
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Melbourne", 1566, 3806092, 646.9)'
-            )
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Perth", 5386, 1554769, 869.4)'
-            )
-            self.cur.execute("SELECT * FROM cities")
-            self.x = from_db_cursor(self.cur)
-
-        def testNonSelectCursor(self):
-            self.cur.execute(
-                'INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)'
-            )
-            assert from_db_cursor(self.cur) is None
+    def testNonSelectCursor(self):
+        self.cur.execute('INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)')
+        assert from_db_cursor(self.cur) is None
 
 
 class JSONConstructorTest(CityDataTest):
