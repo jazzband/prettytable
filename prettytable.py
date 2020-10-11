@@ -183,9 +183,9 @@ class PrettyTable:
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
 
-        self._vertical_char = kwargs["vertical_char"] or self._unicode("|")
-        self._horizontal_char = kwargs["horizontal_char"] or self._unicode("-")
-        self._junction_char = kwargs["junction_char"] or self._unicode("+")
+        self._vertical_char = kwargs["vertical_char"] or "|"
+        self._horizontal_char = kwargs["horizontal_char"] or "-"
+        self._junction_char = kwargs["junction_char"] or "+"
 
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
@@ -198,11 +198,6 @@ class PrettyTable:
         self._format = kwargs["format"] or False
         self._xhtml = kwargs["xhtml"] or False
         self._attributes = kwargs["attributes"] or {}
-
-    def _unicode(self, value):
-        if not isinstance(value, str):
-            value = str(value)
-        return value
 
     def _justify(self, text, width, align):
         excess = width - _str_block_width(text)
@@ -256,9 +251,6 @@ class PrettyTable:
         return new
 
     def __str__(self):
-        return self.__unicode__()
-
-    def __unicode__(self):
         return self.get_string()
 
     ##############################
@@ -368,9 +360,7 @@ class PrettyTable:
         try:
             assert int(val) >= 0
         except AssertionError:
-            raise Exception(
-                "Invalid value for {}: {}!".format(name, self._unicode(val))
-            )
+            raise Exception(f"Invalid value for {name}: {val}!")
 
     def _validate_true_or_false(self, name, val):
         try:
@@ -466,7 +456,7 @@ class PrettyTable:
 
     @field_names.setter
     def field_names(self, val):
-        val = [self._unicode(x) for x in val]
+        val = [str(x) for x in val]
         self._validate_option("field_names", val)
         old_names = None
         if self._field_names:
@@ -602,7 +592,7 @@ class PrettyTable:
 
     @title.setter
     def title(self, val):
-        self._title = self._unicode(val)
+        self._title = str(val)
 
     @property
     def start(self):
@@ -834,7 +824,7 @@ class PrettyTable:
 
     @vertical_char.setter
     def vertical_char(self, val):
-        val = self._unicode(val)
+        val = str(val)
         self._validate_option("vertical_char", val)
         self._vertical_char = val
 
@@ -849,7 +839,7 @@ class PrettyTable:
 
     @horizontal_char.setter
     def horizontal_char(self, val):
-        val = self._unicode(val)
+        val = str(val)
         self._validate_option("horizontal_char", val)
         self._horizontal_char = val
 
@@ -864,7 +854,7 @@ class PrettyTable:
 
     @junction_char.setter
     def junction_char(self, val):
-        val = self._unicode(val)
+        val = str(val)
         self._validate_option("vertical_char", val)
         self._junction_char = val
 
@@ -1131,10 +1121,10 @@ class PrettyTable:
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            value = self._unicode(("%%%sd" % self._int_format[field]) % value)
+            value = ("%%%sd" % self._int_format[field]) % value
         elif isinstance(value, float) and field in self._float_format:
-            value = self._unicode(("%%%sf" % self._float_format[field]) % value)
-        return self._unicode(value)
+            value = ("%%%sf" % self._float_format[field]) % value
+        return str(value)
 
     def _compute_table_width(self, options):
         table_width = 2 if options["vrules"] in (FRAME, ALL) else 0
@@ -1323,7 +1313,7 @@ class PrettyTable:
                 tmp.extend(line.split("\n"))
             lines = ["|" + line[1:-1] + "|" for line in tmp]
 
-        return self._unicode("\n").join(lines)
+        return "\n".join(lines)
 
     def _stringify_hrule(self, options):
 
@@ -1660,7 +1650,7 @@ class PrettyTable:
 
         lines.append("</table>")
 
-        return self._unicode("\n").join(lines)
+        return "\n".join(lines)
 
     def _get_formatted_html_string(self, options):
 
@@ -1749,7 +1739,7 @@ class PrettyTable:
             lines.append("    </tr>")
         lines.append("</table>")
 
-        return self._unicode("\n").join(lines)
+        return "\n".join(lines)
 
 
 ##############################
