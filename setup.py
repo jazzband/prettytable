@@ -40,5 +40,4 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Topic :: Text Processing",
     ],
-    test_suite="prettytable_test",
 )
