@@ -252,9 +252,7 @@ class PrettyTable:
         elif isinstance(index, int):
             new.add_row(self._rows[index])
         else:
-            raise Exception(
-                "Index %s is invalid, must be an integer or slice" % str(index)
-            )
+            raise Exception(f"Index {index} is invalid, must be an integer or slice")
         return new
 
     def __str__(self):
@@ -330,7 +328,7 @@ class PrettyTable:
             except AssertionError:
                 raise Exception(
                     "Field name list has incorrect number of values, "
-                    "(actual) %d!=%d (expected)" % (len(val), len(self._field_names))
+                    f"(actual) {len(val)}!={len(self._field_names)} (expected)"
                 )
         if self._rows:
             try:
@@ -338,7 +336,7 @@ class PrettyTable:
             except AssertionError:
                 raise Exception(
                     "Field name list has incorrect number of values, "
-                    "(actual) %d!=%d (expected)" % (len(val), len(self._rows[0]))
+                    f"(actual) {len(val)}!={len(self._rows[0])} (expected)"
                 )
         # Check for uniqueness
         try:
@@ -358,13 +356,13 @@ class PrettyTable:
         try:
             assert val in ["l", "c", "r"]
         except AssertionError:
-            raise Exception("Alignment %s is invalid, use l, c or r!" % val)
+            raise Exception(f"Alignment {val} is invalid, use l, c or r!")
 
     def _validate_valign(self, val):
         try:
             assert val in ["t", "m", "b", None]
         except AssertionError:
-            raise Exception("Alignment %s is invalid, use t, m, b or None!" % val)
+            raise Exception(f"Alignment {val} is invalid, use t, m, b or None!")
 
     def _validate_nonnegative_int(self, name, val):
         try:
@@ -378,7 +376,7 @@ class PrettyTable:
         try:
             assert val in (True, False)
         except AssertionError:
-            raise Exception("Invalid value for %s!  Must be True or False." % name)
+            raise Exception(f"Invalid value for {name}! Must be True or False.")
 
     def _validate_int_format(self, name, val):
         if val == "":
@@ -388,7 +386,7 @@ class PrettyTable:
             assert val.isdigit()
         except AssertionError:
             raise Exception(
-                "Invalid value for %s!  Must be an integer format string." % name
+                f"Invalid value for {name}! Must be an integer format string."
             )
 
     def _validate_float_format(self, name, val):
@@ -406,37 +404,33 @@ class PrettyTable:
                 or (bits[1][-1] == "f" and bits[1].rstrip("f").isdigit())
             )
         except AssertionError:
-            raise Exception(
-                "Invalid value for %s!  Must be a float format string." % name
-            )
+            raise Exception(f"Invalid value for {name}! Must be a float format string.")
 
     def _validate_function(self, name, val):
         try:
             assert hasattr(val, "__call__")
         except AssertionError:
-            raise Exception("Invalid value for %s!  Must be a function." % name)
+            raise Exception(f"Invalid value for {name}! Must be a function.")
 
     def _validate_hrules(self, name, val):
         try:
             assert val in (ALL, FRAME, HEADER, NONE)
         except AssertionError:
             raise Exception(
-                "Invalid value for %s!  Must be ALL, FRAME, HEADER or NONE." % name
+                f"Invalid value for {name}! Must be ALL, FRAME, HEADER or NONE."
             )
 
     def _validate_vrules(self, name, val):
         try:
             assert val in (ALL, FRAME, NONE)
         except AssertionError:
-            raise Exception(
-                "Invalid value for %s!  Must be ALL, FRAME, or NONE." % name
-            )
+            raise Exception(f"Invalid value for {name}! Must be ALL, FRAME, or NONE.")
 
     def _validate_field_name(self, name, val):
         try:
             assert (val in self._field_names) or (val is None)
         except AssertionError:
-            raise Exception("Invalid field name: %s!" % val)
+            raise Exception(f"Invalid field name: {val}!")
 
     def _validate_all_field_names(self, name, val):
         try:
@@ -449,9 +443,7 @@ class PrettyTable:
         try:
             assert _str_block_width(val) == 1
         except AssertionError:
-            raise Exception(
-                "Invalid value for %s!  Must be a string of length 1." % name
-            )
+            raise Exception(f"Invalid value for {name}! Must be a string of length 1.")
 
     def _validate_attributes(self, name, val):
         try:
@@ -1039,11 +1031,11 @@ class PrettyTable:
 
         if self._field_names and len(row) != len(self._field_names):
             raise Exception(
-                "Row has incorrect number of values, (actual) %d!=%d (expected)"
-                % (len(row), len(self._field_names))
+                "Row has incorrect number of values, "
+                f"(actual) {len(row)}!={len(self._field_names)} (expected)"
             )
         if not self._field_names:
-            self.field_names = [("Field %d" % (n + 1)) for n in range(0, len(row))]
+            self.field_names = [f"Field {n + 1}" for n in range(0, len(row))]
         self._rows.append(list(row))
 
     def del_row(self, row_index):
@@ -1056,8 +1048,8 @@ class PrettyTable:
 
         if row_index > len(self._rows) - 1:
             raise Exception(
-                "Can't delete row at index %d, table only has %d rows!"
-                % (row_index, len(self._rows))
+                f"Can't delete row at index {row_index}, "
+                f"table only has {len(self._rows)} rows!"
             )
         del self._rows[row_index]
 
@@ -1087,8 +1079,8 @@ class PrettyTable:
                 self._rows[i].append(column[i])
         else:
             raise Exception(
-                "Column length %d does not match number of rows %d!"
-                % (len(column), len(self._rows))
+                f"Column length {len(column)} does not match number of rows "
+                f"{len(self._rows)}!"
             )
 
     def del_column(self, fieldname):
@@ -1639,7 +1631,7 @@ class PrettyTable:
                 len(options["fields"]) if options["fields"] else len(self.field_names)
             )
             lines.append("    <tr>")
-            lines.append("        <td colspan=%d>%s</td>" % (cols, title))
+            lines.append(f"        <td colspan={cols}>{title}</td>")
             lines.append("    </tr>")
 
         # Headers
@@ -1710,7 +1702,7 @@ class PrettyTable:
                 len(options["fields"]) if options["fields"] else len(self.field_names)
             )
             lines.append("    <tr>")
-            lines.append("        <td colspan=%d>%s</td>" % (cols, title))
+            lines.append(f"        <td colspan={cols}>{title}</td>")
             lines.append("    </tr>")
 
         # Headers
