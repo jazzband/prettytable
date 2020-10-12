@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with open("README.md") as f:
     long_description = f.read()
@@ -22,6 +22,8 @@ setup(
     url="https://github.com/jazzband/prettytable",
     project_urls={"Source": "https://github.com/jazzband/prettytable"},
     license="BSD (3 clause)",
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     use_scm_version={"local_scheme": local_scheme},
     setup_requires=["setuptools_scm"],
     install_requires=["setuptools", "wcwidth"],
@@ -38,6 +40,4 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Topic :: Text Processing",
     ],
-    py_modules=["prettytable"],
-    test_suite="prettytable_test",
 )

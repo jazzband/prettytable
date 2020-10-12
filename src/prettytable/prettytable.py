@@ -42,10 +42,7 @@ import textwrap
 from html import escape
 from html.parser import HTMLParser
 
-import pkg_resources
 import wcwidth
-
-__version__ = pkg_resources.get_distribution(__name__).version
 
 # hrule styles
 FRAME = 0
