@@ -925,3 +925,24 @@ def test_paginate():
     assert paginated.startswith(expected_page_1)
     assert "\f" in paginated
     assert paginated.endswith(expected_page_2)
+
+
+def test_add_rows():
+    """A table created with multiple add_row calls
+    is the same as one created with a single add_rows
+    """
+    # Arrange
+    t1 = PrettyTable(["A", "B", "C"])
+    t2 = PrettyTable(["A", "B", "C"])
+    t1.add_row([1, 2, 3])
+    t1.add_row([4, 5, 6])
+    rows = [
+        [1, 2, 3],
+        [4, 5, 6],
+    ]
+
+    # Act
+    t2.add_rows(rows)
+
+    # Assert
+    assert str(t1) == str(t2)
