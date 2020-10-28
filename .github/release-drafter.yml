@@ -1,5 +1,5 @@
-name-template: "Release $NEXT_PATCH_VERSION"
-tag-template: "$NEXT_PATCH_VERSION"
+name-template: "Release $RESOLVED_VERSION"
+tag-template: "$RESOLVED_VERSION"
 
 categories:
   - title: "Added"
@@ -26,3 +26,20 @@ template: |
   ## Changes
 
   $CHANGES
+
+version-resolver:
+  major:
+    labels:
+      - "changelog: Removed"
+  minor:
+    labels:
+      - "changelog: Added"
+      - "changelog: Changed"
+      - "changelog: Deprecated"
+      - "enhancement"
+
+  patch:
+    labels:
+      - "changelog: Fixed"
+      - "bug"
+  default: minor
