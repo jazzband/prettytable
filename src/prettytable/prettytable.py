@@ -1007,6 +1007,17 @@ class PrettyTable:
     # DATA INPUT METHODS         #
     ##############################
 
+    def add_rows(self, rows):
+
+        """Add rows to the table
+
+        Arguments:
+
+        rows - rows of data, should be an iterable of lists, each list with as many
+        elements as the table has fields"""
+        for row in rows:
+            self.add_row(row)
+
     def add_row(self, row):
 
         """Add a row to the table
