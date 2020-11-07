@@ -1634,28 +1634,31 @@ class PrettyTable:
 
         # Headers
         if options["header"]:
-            lines.append("    <tr>")
+            lines.append("    <thead>")
+            lines.append("        <tr>")
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
-                    "        <th>%s</th>" % escape(field).replace("\n", linebreak)
+                    "            <th>%s</th>" % escape(field).replace("\n", linebreak)
                 )
-            lines.append("    </tr>")
+            lines.append("        </tr>")
+            lines.append("    </thead>")
 
         # Data
+        lines.append("    <tbody>")
         rows = self._get_rows(options)
         formatted_rows = self._format_rows(rows, options)
         for row in formatted_rows:
-            lines.append("    <tr>")
+            lines.append("        <tr>")
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
-                    "        <td>%s</td>" % escape(datum).replace("\n", linebreak)
+                    "            <td>%s</td>" % escape(datum).replace("\n", linebreak)
                 )
-            lines.append("    </tr>")
-
+            lines.append("        </tr>")
+        lines.append("    </tbody>")
         lines.append("</table>")
 
         return "\n".join(lines)
@@ -1705,17 +1708,20 @@ class PrettyTable:
 
         # Headers
         if options["header"]:
-            lines.append("    <tr>")
+            lines.append("    <thead>")
+            lines.append("        <tr>")
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
-                    '        <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
+                    '            <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
                     % (lpad, rpad, escape(field).replace("\n", linebreak))
                 )
-            lines.append("    </tr>")
+            lines.append("        </tr>")
+            lines.append("    </thead>")
 
         # Data
+        lines.append("    <tbody>")
         rows = self._get_rows(options)
         formatted_rows = self._format_rows(rows, options)
         aligns = []
@@ -1728,14 +1734,14 @@ class PrettyTable:
                 {"t": "top", "m": "middle", "b": "bottom"}[self._valign[field]]
             )
         for row in formatted_rows:
-            lines.append("    <tr>")
+            lines.append("        <tr>")
             for field, datum, align, valign in zip(
                 self._field_names, row, aligns, valigns
             ):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
-                    '        <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
+                    '            <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
                     % (
                         lpad,
                         rpad,
@@ -1744,7 +1750,8 @@ class PrettyTable:
                         escape(datum).replace("\n", linebreak),
                     )
                 )
-            lines.append("    </tr>")
+            lines.append("        </tr>")
+        lines.append("    </tbody>")
         lines.append("</table>")
 
         return "\n".join(lines)
