@@ -946,3 +946,33 @@ def test_add_rows():
 
     # Assert
     assert str(t1) == str(t2)
+
+
+class UnpaddedTableTest(unittest.TestCase):
+    def setUp(self):
+        self.x = PrettyTable(header=False, padding_width=0)
+        self.x.add_row("abc")
+        self.x.add_row("def")
+        self.x.add_row("g..")
+
+    def testUnbordered(self):
+        self.x.border = False
+        result = self.x.get_string()
+        expected = """
+abc
+def
+g..
+"""
+        assert result.strip() == expected.strip()
+
+    def testBordered(self):
+        self.x.border = True
+        result = self.x.get_string()
+        expected = """
++-+-+-+
+|a|b|c|
+|d|e|f|
+|g|.|.|
++-+-+-+
+"""
+        assert result.strip() == expected.strip()
