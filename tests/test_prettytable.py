@@ -549,18 +549,22 @@ class BreakLineTests(unittest.TestCase):
             result.strip()
             == """
 <table>
-    <tr>
-        <th>Field 1</th>
-        <th>Field 2</th>
-    </tr>
-    <tr>
-        <td>value 1</td>
-        <td>value2<br>second line</td>
-    </tr>
-    <tr>
-        <td>value 3</td>
-        <td>value4</td>
-    </tr>
+    <thead>
+        <tr>
+            <th>Field 1</th>
+            <th>Field 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>value 1</td>
+            <td>value2<br>second line</td>
+        </tr>
+        <tr>
+            <td>value 3</td>
+            <td>value4</td>
+        </tr>
+    </tbody>
 </table>
 """.strip()
         )
@@ -606,57 +610,65 @@ class HtmlOutputTests(unittest.TestCase):
             result.strip()
             == """
 <table>
-    <tr>
-        <th>Field 1</th>
-        <th>Field 2</th>
-        <th>Field 3</th>
-    </tr>
-    <tr>
-        <td>value 1</td>
-        <td>value2</td>
-        <td>value3</td>
-    </tr>
-    <tr>
-        <td>value 4</td>
-        <td>value5</td>
-        <td>value6</td>
-    </tr>
-    <tr>
-        <td>value 7</td>
-        <td>value8</td>
-        <td>value9</td>
-    </tr>
+    <thead>
+        <tr>
+            <th>Field 1</th>
+            <th>Field 2</th>
+            <th>Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>value 1</td>
+            <td>value2</td>
+            <td>value3</td>
+        </tr>
+        <tr>
+            <td>value 4</td>
+            <td>value5</td>
+            <td>value6</td>
+        </tr>
+        <tr>
+            <td>value 7</td>
+            <td>value8</td>
+            <td>value9</td>
+        </tr>
+    </tbody>
 </table>
 """.strip()
         )
 
-    def testHtmlOutputFormated(self):
+    def testHtmlOutputFormatted(self):
         t = helper_table()
         result = t.get_html_string(format=True)
         assert (
             result.strip()
             == """
 <table frame="box" rules="cols">
-    <tr>
-        <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
-        <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
-        <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
-    </tr>
-    <tr>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 1</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value2</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value3</td>
-    </tr>
-    <tr>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 4</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value5</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value6</td>
-    </tr>
-    <tr>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 7</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value8</td>
-        <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value9</td>
-    </tr>
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 1</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value2</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value3</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 4</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value5</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value6</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 7</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value8</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value9</td>
+        </tr>
+    </tbody>
 </table>
 """.strip()  # noqa: E501
         )
