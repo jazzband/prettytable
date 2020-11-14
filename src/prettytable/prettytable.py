@@ -176,7 +176,10 @@ class PrettyTable:
 
         self._min_table_width = kwargs["min_table_width"] or None
         self._max_table_width = kwargs["max_table_width"] or None
-        self._padding_width = kwargs["padding_width"] or 1
+        if kwargs["padding_width"] is None:
+            self._padding_width = 1
+        else:
+            self._padding_width = kwargs["padding_width"]
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
 
