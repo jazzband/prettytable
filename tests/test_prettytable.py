@@ -601,6 +601,16 @@ class JSONOutputTests(unittest.TestCase):
 ]""".strip()
         )
 
+    def testJSONOutputOptions(self):
+        t = helper_table()
+        result = t.get_json_string(header=False, indent=None, separators=(",", ":"))
+        assert (
+            result
+            == """[{"Field 1":"value 1","Field 2":"value2","Field 3":"value3"},"""
+            """{"Field 1":"value 4","Field 2":"value5","Field 3":"value6"},"""
+            """{"Field 1":"value 7","Field 2":"value8","Field 3":"value9"}]"""
+        )
+
 
 class HtmlOutputTests(unittest.TestCase):
     def testHtmlOutput(self):
