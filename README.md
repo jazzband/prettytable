@@ -501,26 +501,29 @@ simple. It looks like this:
 
 ```html
 <table>
-  <tr>
-    <th>City name</th>
-    <th>Area</th>
-    <th>Population</th>
-    <th>Annual Rainfall</th>
-  </tr>
-  <tr>
-    <td>Adelaide</td>
-    <td>1295</td>
-    <td>1158259</td>
-    <td>600.5</td>
-  </tr>
-
-  <tr>
-    <td>Brisbane</td>
-    <td>5905</td>
-    <td>1857594</td>
-    <td>1146.4</td>
-    ...
-  </tr>
+  <thead>
+    <tr>
+      <th>City name</th>
+      <th>Area</th>
+      <th>Population</th>
+      <th>Annual Rainfall</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Adelaide</td>
+      <td>1295</td>
+      <td>1158259</td>
+      <td>600.5</td>
+    </tr>
+    <tr>
+      <td>Brisbane</td>
+      <td>5905</td>
+      <td>1857594</td>
+      <td>1146.4</td>
+      ...
+    </tr>
+  </tbody>
 </table>
 ```
 
@@ -554,13 +557,19 @@ will print:
 
 ```html
 <table name="my_table" class="red_table">
-  <tr>
-    <th>City name</th>
-    <th>Area</th>
-    <th>Population</th>
-    <th>Annual Rainfall</th>
-  </tr>
-  ... ... ...
+  <thead>
+    <tr>
+      <th>City name</th>
+      <th>Area</th>
+      <th>Population</th>
+      <th>Annual Rainfall</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      ... ... ...
+    </tr>
+  </tbody>
 </table>
 ```
 
