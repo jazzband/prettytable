@@ -1787,6 +1787,9 @@ class PrettyTable:
         lines.append("</table>")
 
         return "\n".join(lines)
+    
+    def set_theme(self, theme):
+      self._theme = theme
 
 
 ##############################
@@ -1926,9 +1929,6 @@ class TableHandler(HTMLParser):
             for j in range(i + 1, len(fields)):
                 if fields[i] == fields[j]:
                     fields[j] += "'"
-    
-    def set_theme(self, theme):
-      self._theme = theme
 
 
 def from_html(html_code, **kwargs):
