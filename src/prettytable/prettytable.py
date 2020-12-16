@@ -45,7 +45,7 @@ from html.parser import HTMLParser
 import wcwidth
 
 # Basic color formatting
-from colorama import FORE, BACK, STYLE
+from colorama import Fore, Back, Style
 # Everything else
 import colorama
 colorama.init()
@@ -144,7 +144,7 @@ class PrettyTable:
         # Options
         self._options = (
             "title start end fields header border sortby reversesort "
-            "sort_key attributes format hrules vrules".split()
+            "sort_key attributes format hrules vrules theme".split()
         )
         self._options.extend(
             "int_format float_format min_table_width max_table_width padding_width "
@@ -1298,7 +1298,8 @@ class PrettyTable:
         sort_key - sorting key function, applied to data points before sorting
         reversesort - True or False to sort in descending or ascending order
         print empty - if True, stringify just the header for an empty table,
-            if False return an empty string"""
+            if False return an empty string
+        theme - the current theme"""
 
         options = self._get_options(kwargs)
 
