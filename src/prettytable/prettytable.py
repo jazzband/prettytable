@@ -44,6 +44,12 @@ from html.parser import HTMLParser
 
 import wcwidth
 
+# Basic color formatting
+from colorama import FORE, BACK, STYLE
+# Everything else
+import colorama
+colorama.init()
+
 # hrule styles
 FRAME = 0
 ALL = 1
@@ -67,6 +73,18 @@ def _get_size(text):
     width = max(_str_block_width(line) for line in lines)
     return width, height
 
+class THEME:
+  DEFAULT = {
+    "base": FORE.RESET,
+    "border": FORE.RESET,
+    "decor": FORE.RESET
+  }
+
+  OCEAN = {
+    "base": FORE.LIGHTCYAN_EX,
+    "border": FORE.BLUE,
+    "decor": FORE.CYAN
+  }
 
 class PrettyTable:
     def __init__(self, field_names=None, **kwargs):
@@ -104,7 +122,8 @@ class PrettyTable:
         sort_key - sorting key function, applied to data points before sorting
         valign - default valign for each row (None, "t", "m" or "b")
         reversesort - True or False to sort in descending or ascending order
-        oldsortslice - Slice rows before sorting in the "old style" """
+        oldsortslice - Slice rows before sorting in the "old style"
+        theme - String on which theme to use """
 
         self.encoding = kwargs.get("encoding", "UTF-8")
 
@@ -198,6 +217,7 @@ class PrettyTable:
         self._format = kwargs["format"] or False
         self._xhtml = kwargs["xhtml"] or False
         self._attributes = kwargs["attributes"] or {}
+        self._theme = kwargs["theme"] or THEME.DEFAULT
 
     def _justify(self, text, width, align):
         excess = width - _str_block_width(text)
@@ -1906,6 +1926,9 @@ class TableHandler(HTMLParser):
             for j in range(i + 1, len(fields)):
                 if fields[i] == fields[j]:
                     fields[j] += "'"
+    
+    def set_theme(self, theme):
+      self._theme = theme
 
 
 def from_html(html_code, **kwargs):
