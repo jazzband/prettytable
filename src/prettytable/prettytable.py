@@ -7,6 +7,7 @@
 #  * Klein Stephane
 #  * John Filleau
 #  * Vladimir Vrzić
+#  * BD103
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -75,15 +76,15 @@ def _get_size(text):
 
 class THEME:
   DEFAULT = {
-    "base": Fore.RESET,
-    "border": Fore.RESET,
-    "decor": Fore.RESET
+    "base": str(Fore.RESET),
+    "border": str(Fore.RESET),
+    "decor": str(Fore.RESET)
   }
 
   OCEAN = {
-    "base": Fore.LIGHTCYAN_EX,
-    "border": Fore.BLUE,
-    "decor": Fore.CYAN
+    "base": str(Fore.LIGHTCYAN_EX),
+    "border": str(Fore.BLUE),
+    "decor": str(Fore.CYAN)
   }
 
 class PrettyTable:
@@ -202,9 +203,13 @@ class PrettyTable:
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
 
-        self._vertical_char = kwargs["vertical_char"] or "|"
-        self._horizontal_char = kwargs["horizontal_char"] or "-"
-        self._junction_char = kwargs["junction_char"] or "+"
+        # color codes to theme color, then back to base
+        # _theme["border"] + kwargs["char"] + _theme["base"]
+        self._theme = kwargs["theme"] or THEME.DEFAULT
+
+        self._vertical_char = self._theme["border"] + kwargs["vertical_char"] + self._theme["base"] or self._theme["border"] + "|" + self._theme["base"]
+        self._horizontal_char = self._theme["border"] + kwargs["horizontal_char"] + self._theme["base"] or self._theme["border"] + "-" + self._theme["base"]
+        self._junction_char = self._theme["decor"] + kwargs["junction_char"] + self._theme["base"] or self._theme["decor"] + "+" + self._theme["base"]
 
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
@@ -217,7 +222,6 @@ class PrettyTable:
         self._format = kwargs["format"] or False
         self._xhtml = kwargs["xhtml"] or False
         self._attributes = kwargs["attributes"] or {}
-        self._theme = kwargs["theme"] or THEME.DEFAULT
 
     def _justify(self, text, width, align):
         excess = width - _str_block_width(text)
@@ -1345,7 +1349,9 @@ class PrettyTable:
                 tmp.extend(line.split("\n"))
             lines = ["|" + line[1:-1] + "|" for line in tmp]
 
-        return "\n".join(lines)
+        # added reset color code so that it doesn't overflow into other print statements
+
+        return "\n".join(lines) + "\033[0m"
 
     def _stringify_hrule(self, options):
 
