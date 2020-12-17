@@ -89,7 +89,32 @@ class THEME:
   LAKE_GOLD = {
     "base": "\033[37m",
     "border": "\033[34;2m",
-    "decor": "\033[43m"
+    "decor": "\033[93m"
+  }
+
+  FESTIVE = {
+    "base": "\033[94m",
+    "border": "\033[32m",
+    "decor": "\033[91m"
+  }
+
+  MAGMA = {
+    "base": "\033[91m",
+    "border": "\033[33m",
+    "decor": "\033[93m"
+  }
+
+  CALM = {
+    "base": "\033[95m",
+    "border": "\033[34m",
+    "decor": "\033[92m"
+  }
+
+  # Not recommended, but cool anyways!
+  DARK = {
+    "base": "\033[30m",
+    "border": "\033[90m",
+    "decor": "\033[34m"
   }
 
 class PrettyTable:
@@ -1459,7 +1484,6 @@ class PrettyTable:
         return "".join(bits)
 
     def _stringify_row(self, row, options):
-
         for (index, field, value, width) in zip(
             range(0, len(row)), self._field_names, row, self._widths
         ):
