@@ -215,7 +215,7 @@ class PrettyTable:
         self._raw_vertical_char = kwargs["vertical_char"] or "|"
         self._raw_horizontal_char = kwargs["horizontal_char"] or "-"
         self._raw_junction_char = kwargs["junction_char"] or "+"
-        self.set_theme(THEME.DEFAULT)
+        self.set_theme(kwargs["theme"] or THEME.DEFAULT)
 
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
