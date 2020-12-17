@@ -208,14 +208,11 @@ class PrettyTable:
         self._left_padding_width = kwargs["left_padding_width"] or None
         self._right_padding_width = kwargs["right_padding_width"] or None
 
-        # color codes to theme color, then back to base
-        # _theme["border"] + kwargs["char"] + _theme["base"]
         self._theme = kwargs["theme"] or THEME.DEFAULT
-        # Converted to try except switch because the "or" keyword wasn't working
         self._raw_vertical_char = kwargs["vertical_char"] or "|"
         self._raw_horizontal_char = kwargs["horizontal_char"] or "-"
         self._raw_junction_char = kwargs["junction_char"] or "+"
-        self.set_theme(kwargs["theme"] or THEME.DEFAULT)
+        self.set_theme(kwargs["theme"] or None)
 
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
@@ -1801,6 +1798,13 @@ class PrettyTable:
         return "\n".join(lines)
 
     def set_theme(self, theme):
+        # Escapes if there is no theme
+        if theme == None:
+          self._vertical_char = self._raw_vertical_char
+          self._horizontal_char = self._raw_horizontal_char
+          self.junction_char = self._raw_junction_char
+          return ""
+
         self._theme = theme
         try:
             self._vertical_char = (
