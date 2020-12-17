@@ -8,7 +8,7 @@ from math import e, pi, sqrt
 
 import pytest
 
-from src.prettytable import (
+from prettytable import (
     ALL,
     DEFAULT,
     MARKDOWN,
