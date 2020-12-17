@@ -587,6 +587,57 @@ list slicing notation:
 new_table = old_table[0:5]
 ```
 
+## Themes
+
+### Getting Themes
+
+If you want your tables to be even fancier (if that's possible) then you can use color themes. All you have to do is import it.
+
+```python
+from prettytable import PrettyTable, THEME
+```
+
+### Using Themes
+
+After you are certain that you've imported the theme, you can quickly apply it. Now, printing the theme will include color.
+
+```python
+x = PrettyTable()
+x.set_theme(THEME.OCEAN)
+print(x)
+```
+
+You can also set theme on import.
+
+```python
+x = PrettyTable(theme = THEME.OCEAN)
+print(x)
+```
+
+### Custom Themes
+
+If you don't want any of the themes supplied, you can make your own. Create a custom dictionary with the following keys:
+
+```python
+my_theme = {
+  "base": "\033[31m",
+  "border": "\033[33m",
+  "decor": "\033[0m"
+}
+x.set_theme(my_theme)
+print(x)
+```
+
+This would print something like the following:
+
+![Theme Sample](https://user-images.githubusercontent.com/59022059/102506142-d0d34480-4050-11eb-8b2e-4a5ee7ab391f.png)
+
+Replace the sample color codes with your own colors.
+
+### List of Themes
+
+![Table](https://user-images.githubusercontent.com/59022059/102505462-03307200-4050-11eb-9181-9cc6c1268572.jpeg)
+
 ## Contributing
 
 After editing files, use the [Black](https://github.com/psf/black) linter to auto-format
@@ -596,3 +647,5 @@ changed lines.
 python -m pip install black
 black prettytable*.py
 ```
+
+Adding themes are pretty easy. Just add a dictionary just like in the custom theme tutorial under the `THEME` class. :D
