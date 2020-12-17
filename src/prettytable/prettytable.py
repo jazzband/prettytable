@@ -75,15 +75,15 @@ def _get_size(text):
 
 class THEME:
   DEFAULT = {
-    "base": FORE.RESET,
-    "border": FORE.RESET,
-    "decor": FORE.RESET
+    "base": Fore.RESET,
+    "border": Fore.RESET,
+    "decor": Fore.RESET
   }
 
   OCEAN = {
-    "base": FORE.LIGHTCYAN_EX,
-    "border": FORE.BLUE,
-    "decor": FORE.CYAN
+    "base": Fore.LIGHTCYAN_EX,
+    "border": Fore.BLUE,
+    "decor": Fore.CYAN
   }
 
 class PrettyTable:
