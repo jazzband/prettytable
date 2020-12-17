@@ -1828,17 +1828,17 @@ class PrettyTable:
     def set_theme(self, theme):
       self._theme = theme
       try:
-          self._vertical_char = self._theme["border"] + self._raw_vertical_char + self._theme["base"] 
+          self._vertical_char = self._theme["border"] + self._raw_vertical_char + "\033[0m" + self._theme["base"] 
       except TypeError:
-          self._vertical_char = self._theme["border"] + "|" + self._theme["base"]
+          self._vertical_char = self._theme["border"] + "|" + "\033[0m" + self._theme["base"]
       try:
-          self._horizontal_char = self._theme["border"] + self._raw_horizontal_char + self._theme["base"]
+          self._horizontal_char = self._theme["border"] + self._raw_horizontal_char + "\033[0m" + self._theme["base"]
       except TypeError:
-          self._horizontal_char = self._theme["border"] + "-" + self._theme["base"]
+          self._horizontal_char = self._theme["border"] + "-" + "\033[0m" + self._theme["base"]
       try:
-          self._junction_char = self._theme["decor"] + self._raw_junction_char + self._theme["base"]
+          self._junction_char = self._theme["decor"] + self._raw_junction_char + "\033[0m" + self._theme["base"]
       except TypeError:
-          self._junction_char = self._theme["decor"] + "+" + self._theme["base"]
+          self._junction_char = self._theme["decor"] + "+" + "\033[0m" + self._theme["base"]
 
 
 ##############################
