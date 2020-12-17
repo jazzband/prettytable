@@ -47,6 +47,7 @@ import wcwidth
 
 # Converts color codes to system default (for windows)
 from colorama import init as colorinit
+
 # Changed to colorinit in case function init() is ever necessary
 colorinit()
 
@@ -73,49 +74,23 @@ def _get_size(text):
     width = max(_str_block_width(line) for line in lines)
     return width, height
 
+
 class THEME:
-  DEFAULT = {
-    "base": "",
-    "border": "",
-    "decor": ""
-  }
+    DEFAULT = {"base": "", "border": "", "decor": ""}
 
-  OCEAN = {
-    "base": "\033[96m",
-    "border": "\033[34m",
-    "decor": "\033[36m"
-  }
+    OCEAN = {"base": "\033[96m", "border": "\033[34m", "decor": "\033[36m"}
 
-  LAKE_GOLD = {
-    "base": "\033[37m",
-    "border": "\033[34;2m",
-    "decor": "\033[93m"
-  }
+    LAKE_GOLD = {"base": "\033[37m", "border": "\033[34;2m", "decor": "\033[93m"}
 
-  FESTIVE = {
-    "base": "\033[94m",
-    "border": "\033[32m",
-    "decor": "\033[91m"
-  }
+    FESTIVE = {"base": "\033[94m", "border": "\033[32m", "decor": "\033[91m"}
 
-  MAGMA = {
-    "base": "\033[91m",
-    "border": "\033[33m",
-    "decor": "\033[93m"
-  }
+    MAGMA = {"base": "\033[91m", "border": "\033[33m", "decor": "\033[93m"}
 
-  CALM = {
-    "base": "\033[95m",
-    "border": "\033[34m",
-    "decor": "\033[92m"
-  }
+    CALM = {"base": "\033[95m", "border": "\033[34m", "decor": "\033[92m"}
 
-  # Not recommended, but cool anyways!
-  DARK = {
-    "base": "\033[30m",
-    "border": "\033[90m",
-    "decor": "\033[34m"
-  }
+    # Not recommended, but cool anyways!
+    DARK = {"base": "\033[30m", "border": "\033[90m", "decor": "\033[34m"}
+
 
 class PrettyTable:
     def __init__(self, field_names=None, **kwargs):
@@ -154,7 +129,7 @@ class PrettyTable:
         valign - default valign for each row (None, "t", "m" or "b")
         reversesort - True or False to sort in descending or ascending order
         oldsortslice - Slice rows before sorting in the "old style"
-        theme - String on which theme to use """
+        theme - String on which theme to use"""
 
         self.encoding = kwargs.get("encoding", "UTF-8")
 
@@ -241,7 +216,7 @@ class PrettyTable:
         self._raw_horizontal_char = kwargs["horizontal_char"] or "-"
         self._raw_junction_char = kwargs["junction_char"] or "+"
         self.set_theme(THEME.DEFAULT)
-        
+
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
         else:
@@ -1824,21 +1799,42 @@ class PrettyTable:
         lines.append("</table>")
 
         return "\n".join(lines)
-    
+
     def set_theme(self, theme):
-      self._theme = theme
-      try:
-          self._vertical_char = self._theme["border"] + self._raw_vertical_char + "\033[0m" + self._theme["base"] 
-      except TypeError:
-          self._vertical_char = self._theme["border"] + "|" + "\033[0m" + self._theme["base"]
-      try:
-          self._horizontal_char = self._theme["border"] + self._raw_horizontal_char + "\033[0m" + self._theme["base"]
-      except TypeError:
-          self._horizontal_char = self._theme["border"] + "-" + "\033[0m" + self._theme["base"]
-      try:
-          self._junction_char = self._theme["decor"] + self._raw_junction_char + "\033[0m" + self._theme["base"]
-      except TypeError:
-          self._junction_char = self._theme["decor"] + "+" + "\033[0m" + self._theme["base"]
+        self._theme = theme
+        try:
+            self._vertical_char = (
+                self._theme["border"]
+                + self._raw_vertical_char
+                + "\033[0m"
+                + self._theme["base"]
+            )
+        except TypeError:
+            self._vertical_char = (
+                self._theme["border"] + "|" + "\033[0m" + self._theme["base"]
+            )
+        try:
+            self._horizontal_char = (
+                self._theme["border"]
+                + self._raw_horizontal_char
+                + "\033[0m"
+                + self._theme["base"]
+            )
+        except TypeError:
+            self._horizontal_char = (
+                self._theme["border"] + "-" + "\033[0m" + self._theme["base"]
+            )
+        try:
+            self._junction_char = (
+                self._theme["decor"]
+                + self._raw_junction_char
+                + "\033[0m"
+                + self._theme["base"]
+            )
+        except TypeError:
+            self._junction_char = (
+                self._theme["decor"] + "+" + "\033[0m" + self._theme["base"]
+            )
 
 
 ##############################
