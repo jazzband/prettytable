@@ -45,11 +45,10 @@ from html.parser import HTMLParser
 
 import wcwidth
 
-# Basic color formatting
-from colorama import Fore, Back, Style
-# Everything else
-import colorama
-colorama.init()
+# Converts color codes to system default (for windows)
+from colorama import init as colorinit
+# Changed to colorinit in case function init() is ever necessary
+colorinit()
 
 # hrule styles
 FRAME = 0
@@ -76,15 +75,15 @@ def _get_size(text):
 
 class THEME:
   DEFAULT = {
-    "base": str(Fore.RESET),
-    "border": str(Fore.RESET),
-    "decor": str(Fore.RESET)
+    "base": "",
+    "border": "",
+    "decor": ""
   }
 
   OCEAN = {
-    "base": str(Fore.LIGHTCYAN_EX),
-    "border": str(Fore.BLUE),
-    "decor": str(Fore.CYAN)
+    "base": "\033[96m",
+    "border": "\033[34m",
+    "decor": "\033[36m"
   }
 
 class PrettyTable:
@@ -206,11 +205,12 @@ class PrettyTable:
         # color codes to theme color, then back to base
         # _theme["border"] + kwargs["char"] + _theme["base"]
         self._theme = kwargs["theme"] or THEME.DEFAULT
-
-        self._vertical_char = self._theme["border"] + kwargs["vertical_char"] + self._theme["base"] or self._theme["border"] + "|" + self._theme["base"]
-        self._horizontal_char = self._theme["border"] + kwargs["horizontal_char"] + self._theme["base"] or self._theme["border"] + "-" + self._theme["base"]
-        self._junction_char = self._theme["decor"] + kwargs["junction_char"] + self._theme["base"] or self._theme["decor"] + "+" + self._theme["base"]
-
+        # Converted to try except switch because the "or" keyword wasn't working
+        self._raw_vertical_char = kwargs["vertical_char"] or "|"
+        self._raw_horizontal_char = kwargs["horizontal_char"] or "-"
+        self._raw_junction_char = kwargs["junction_char"] or "+"
+        self.set_theme(THEME.DEFAULT)
+        
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
         else:
@@ -1797,6 +1797,18 @@ class PrettyTable:
     
     def set_theme(self, theme):
       self._theme = theme
+      try:
+          self._vertical_char = self._theme["border"] + self._raw_vertical_char + self._theme["base"] 
+      except TypeError:
+          self._vertical_char = self._theme["border"] + "|" + self._theme["base"]
+      try:
+          self._horizontal_char = self._theme["border"] + self._raw_horizontal_char + self._theme["base"]
+      except TypeError:
+          self._horizontal_char = self._theme["border"] + "-" + self._theme["base"]
+      try:
+          self._junction_char = self._theme["decor"] + self._raw_junction_char + self._theme["base"]
+      except TypeError:
+          self._junction_char = self._theme["decor"] + "+" + self._theme["base"]
 
 
 ##############################
