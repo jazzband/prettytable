@@ -86,6 +86,12 @@ class THEME:
     "decor": "\033[36m"
   }
 
+  LAKE_GOLD = {
+    "base": "\033[37m",
+    "border": "\033[34;2m",
+    "decor": "\033[43m"
+  }
+
 class PrettyTable:
     def __init__(self, field_names=None, **kwargs):
 
