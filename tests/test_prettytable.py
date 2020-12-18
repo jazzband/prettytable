@@ -18,6 +18,7 @@ from prettytable import (
     ORGMODE,
     PLAIN_COLUMNS,
     RANDOM,
+    THEME,
     PrettyTable,
     from_csv,
     from_db_cursor,
@@ -1008,3 +1009,16 @@ g..
 +-+-+-+
 """
         assert result.strip() == expected.strip()
+
+class ThemeTests:
+  def testNoneTheme(self):
+    x = PrettyTable()
+    x.set_theme(None)
+    result = x.get_string()
+    expected = '''
+++
+||
+++
+++
+'''
+    assert result.strip() == expected.strip()
