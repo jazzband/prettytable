@@ -213,8 +213,8 @@ class PrettyTable:
         self._raw_vertical_char = kwargs["vertical_char"] or "|"
         self._raw_horizontal_char = kwargs["horizontal_char"] or "-"
         self._raw_junction_char = kwargs["junction_char"] or "+"
-        self.theme = kwargs["theme"] or None
-        self.set_theme(self.theme)
+        self._theme = kwargs["theme"] or None
+        self.set_theme(self._theme)
 
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
@@ -1355,7 +1355,7 @@ class PrettyTable:
             lines = ["|" + line[1:-1] + "|" for line in tmp]
 
         # added reset color code so that it doesn't overflow into other print statements
-        if self.theme is None:
+        if self._theme is None:
             return "\n".join(lines)
         else:
             return "\n".join(lines) + "\033[0m"
@@ -1804,7 +1804,7 @@ class PrettyTable:
     def set_theme(self, theme):
         # Escapes if there is no theme
         if theme is None:
-            self.theme = None
+            self._theme = None
             self._vertical_char = self._raw_vertical_char
             self._horizontal_char = self._raw_horizontal_char
             self.junction_char = self._raw_junction_char
