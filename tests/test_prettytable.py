@@ -1023,6 +1023,55 @@ class ThemeTests(unittest.TestCase):
 ++
 """
         assert result.strip() == expected.strip()
-    
+
+    def testDefaultTheme(self):
+        x = PrettyTable()
+        x.set_theme(THEME.DEFAULT)
+        result = x.get_string()
+        expected = """
+++
+||
+++
+++
+"""
+        assert result.strip() == expected.strip()
+
     def testOceanTheme(self):
-      pass
+        x = PrettyTable()
+        x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+        x.add_row(["Adelaide", 1295, 1158259, 600.5])
+        x.add_row(["Brisbane", 5905, 1857594, 1146.4])
+        x.set_theme(THEME.OCEAN)
+        result = x.get_string()
+        expected = """
+\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\n\x1b[34m|\x1b[0m\x1b[96m City name \x1b[34m|\x1b[0m\x1b[96m Area \x1b[34m|\x1b[0m\x1b[96m Population \x1b[34m|\x1b[0m\x1b[96m Annual Rainfall \x1b[34m|\x1b[0m\x1b[96m\n\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\n\x1b[34m|\x1b[0m\x1b[96m  Adelaide \x1b[34m|\x1b[0m\x1b[96m 1295 \x1b[34m|\x1b[0m\x1b[96m  1158259   \x1b[34m|\x1b[0m\x1b[96m      600.5      \x1b[34m|\x1b[0m\x1b[96m\n\x1b[34m|\x1b[0m\x1b[96m  Brisbane \x1b[34m|\x1b[0m\x1b[96m 5905 \x1b[34m|\x1b[0m\x1b[96m  1857594   \x1b[34m|\x1b[0m\x1b[96m      1146.4     \x1b[34m|\x1b[0m\x1b[96m\n\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[34m-\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[0m
+"""
+        assert result.strip() == expected.strip()
+
+    def testThemeOnInit(self):
+        x = PrettyTable(theme=THEME.OCEAN)
+        result = x.get_string()
+        expected = """
+\x1b[36m+\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\n\x1b[34m|\x1b[0m\x1b[96m\x1b[34m|\x1b[0m\x1b[96m\n\x1b[36m+\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\n\x1b[36m+\x1b[0m\x1b[96m\x1b[36m+\x1b[0m\x1b[96m\x1b[0m
+"""
+        assert result.strip() == expected.strip()
+
+    def testCustomThemes(self):
+        x = PrettyTable()
+        my_theme = {"base": "\033[31m", "border": "\033[33m", "decor": "\033[0m"}
+        x.set_theme(my_theme)
+        result = x.get_string()
+        expected = """
+\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\n\x1b[33m|\x1b[0m\x1b[31m\x1b[33m|\x1b[0m\x1b[31m\n\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\n\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\x1b[0m        
+"""
+        assert result.strip() == expected.strip()
+
+    def testNewThemToClass(self):
+      x = PrettyTable()
+      THEME.NEW_THEME = {"base": "\033[31m", "border": "\033[33m", "decor": "\033[0m"}
+      x.set_theme(THEME.NEW_THEME)
+      result = x.get_string()
+      expected = """
+\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\n\x1b[33m|\x1b[0m\x1b[31m\x1b[33m|\x1b[0m\x1b[31m\n\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\n\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\x1b[0m   
+"""
+      assert result.strip() == expected.strip()
