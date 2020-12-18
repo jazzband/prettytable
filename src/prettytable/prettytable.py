@@ -32,6 +32,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+import platform
 import copy
 import csv
 import io
@@ -45,11 +46,10 @@ from html.parser import HTMLParser
 
 import wcwidth
 
-# Converts color codes to system default (for windows)
-from colorama import init as colorinit
-
-# Changed to colorinit in case function init() is ever necessary
-colorinit()
+# Detects if running Windows OS, then uses colorama to rephrase color codes
+if platform.system() == "Windows":
+    from colorama import init as colorinit
+    colorinit()
 
 # hrule styles
 FRAME = 0
