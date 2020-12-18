@@ -1803,7 +1803,7 @@ class PrettyTable:
 
     def set_theme(self, theme):
         # Escapes if there is no theme
-        if theme == None:
+        if theme is None:
             self.theme = None
             self._vertical_char = self._raw_vertical_char
             self._horizontal_char = self._raw_horizontal_char
