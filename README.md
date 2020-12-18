@@ -598,7 +598,9 @@ themes. All you have to do is import it.
 from prettytable import PrettyTable, THEME
 ```
 
-> Note, if you are using Windows, type `pip install prettytable[windows]`, so the color codes get reformatted to your OS. If color does not show for other operating systems, you can still do this and that may fix your problem.
+> Note, if you are using Windows, type `pip install prettytable[windows]`, so the color
+> codes get reformatted to your OS. If color does not show for other operating systems,
+> you can still do this and that may fix your problem.
 
 ### Using Themes
 
