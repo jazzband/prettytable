@@ -1067,11 +1067,11 @@ class ThemeTests(unittest.TestCase):
         assert result.strip() == expected.strip()
 
     def testNewThemToClass(self):
-      x = PrettyTable()
-      THEME.NEW_THEME = {"base": "\033[31m", "border": "\033[33m", "decor": "\033[0m"}
-      x.set_theme(THEME.NEW_THEME)
-      result = x.get_string()
-      expected = """
+        x = PrettyTable()
+        THEME.NEW_THEME = {"base": "\033[31m", "border": "\033[33m", "decor": "\033[0m"}
+        x.set_theme(THEME.NEW_THEME)
+        result = x.get_string()
+        expected = """
 \x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\n\x1b[33m|\x1b[0m\x1b[31m\x1b[33m|\x1b[0m\x1b[31m\n\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\n\x1b[0m+\x1b[0m\x1b[31m\x1b[0m+\x1b[0m\x1b[31m\x1b[0m   
 """
-      assert result.strip() == expected.strip()
+        assert result.strip() == expected.strip()
