@@ -1355,7 +1355,7 @@ class PrettyTable:
             lines = ["|" + line[1:-1] + "|" for line in tmp]
 
         # added reset color code so that it doesn't overflow into other print statements
-        if self.theme == None:
+        if self.theme is None:
             return "\n".join(lines)
         else:
             return "\n".join(lines) + "\033[0m"
