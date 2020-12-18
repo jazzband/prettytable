@@ -1010,15 +1010,19 @@ g..
 """
         assert result.strip() == expected.strip()
 
-class ThemeTests:
-  def testNoneTheme(self):
-    x = PrettyTable()
-    x.set_theme(None)
-    result = x.get_string()
-    expected = '''
+
+class ThemeTests(unittest.TestCase):
+    def testNoneTheme(self):
+        x = PrettyTable()
+        x.set_theme(None)
+        result = x.get_string()
+        expected = """
 ++
 ||
 ++
 ++
-'''
-    assert result.strip() == expected.strip()
+"""
+        assert result.strip() == expected.strip()
+    
+    def testOceanTheme(self):
+      pass
