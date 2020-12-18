@@ -591,7 +591,8 @@ new_table = old_table[0:5]
 
 ### Getting Themes
 
-If you want your tables to be even fancier (if that's possible) then you can use color themes. All you have to do is import it.
+If you want your tables to be even fancier (if that's possible) then you can use color
+themes. All you have to do is import it.
 
 ```python
 from prettytable import PrettyTable, THEME
@@ -599,7 +600,8 @@ from prettytable import PrettyTable, THEME
 
 ### Using Themes
 
-After you are certain that you've imported the theme, you can quickly apply it. Now, printing the theme will include color.
+After you are certain that you've imported the theme, you can quickly apply it. Now,
+printing the theme will include color.
 
 ```python
 x = PrettyTable()
@@ -616,7 +618,8 @@ print(x)
 
 ### Custom Themes
 
-If you don't want any of the themes supplied, you can make your own. Create a custom dictionary with the following keys:
+If you don't want any of the themes supplied, you can make your own. Create a custom
+dictionary with the following keys:
 
 ```python
 my_theme = {
@@ -648,4 +651,5 @@ python -m pip install black
 black prettytable*.py
 ```
 
-Adding themes are pretty easy. Just add a dictionary just like in the custom theme tutorial under the `THEME` class. :D
+Adding themes are pretty easy. Just add a dictionary just like in the custom theme
+tutorial under the `THEME` class. :D

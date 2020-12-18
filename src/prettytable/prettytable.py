@@ -32,12 +32,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import platform
 import copy
 import csv
 import io
 import json
 import math
+import platform
 import random
 import re
 import textwrap
@@ -49,6 +49,7 @@ import wcwidth
 # Detects if running Windows OS, then uses colorama to rephrase color codes
 if platform.system() == "Windows":
     from colorama import init as colorinit
+
     colorinit()
 
 # hrule styles

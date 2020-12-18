@@ -2,10 +2,10 @@
 
 import io
 import random
+import re
 import sqlite3
 import unittest
 from math import e, pi, sqrt
-import re
 
 import pytest
 
