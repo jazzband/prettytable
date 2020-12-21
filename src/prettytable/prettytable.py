@@ -77,9 +77,6 @@ def _get_size(text):
 
 
 class THEME:
-    #   Old Default
-    #   DEFAULT = {"base": "", "border": "", "decor": ""}
-
     DEFAULT = None
 
     OCEAN = {"base": "\033[96m", "border": "\033[34m", "decor": "\033[36m"}
