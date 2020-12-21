@@ -653,6 +653,3 @@ changed lines.
 python -m pip install black
 black prettytable*.py
 ```
-
-Adding themes are pretty easy. Just add a dictionary just like in the custom theme
-tutorial under the `THEME` class. :D
