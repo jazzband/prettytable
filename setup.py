@@ -27,7 +27,7 @@ setup(
     use_scm_version={"local_scheme": local_scheme},
     setup_requires=["setuptools_scm"],
     install_requires=["setuptools", "wcwidth"],
-    extras_require={"tests": ["pytest", "pytest-cov"], "windows": ["colorama"]},
+    extras_require={"tests": ["pytest", "pytest-cov"], "color": ["colorama"]},
     python_requires=">=3.6",
     classifiers=[
         "Programming Language :: Python",
