@@ -619,7 +619,7 @@ x = PrettyTable(theme = THEME.OCEAN)
 print(x)
 ```
 
-### Custom Themes
+### Custom themes
 
 If you don't want any of the themes supplied, you can make your own. Create a custom
 dictionary with the following keys:
