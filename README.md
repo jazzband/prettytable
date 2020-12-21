@@ -628,7 +628,7 @@ dictionary with the following keys:
 my_theme = {
   "base": "\033[31m",
   "border": "\033[33m",
-  "decor": "\033[0m"
+  "junction": "\033[0m"
 }
 x.set_theme(my_theme)
 print(x)
