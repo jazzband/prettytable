@@ -602,7 +602,7 @@ from prettytable import PrettyTable, THEME
 > codes get reformatted to your OS. If color does not show for other operating systems,
 > you can still do this and that may fix your problem.
 
-### Using Themes
+### Using themes
 
 After you are certain that you've imported the theme, you can quickly apply it. Now,
 printing the theme will include color.
