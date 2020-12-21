@@ -591,8 +591,7 @@ new_table = old_table[0:5]
 
 ### Getting Themes
 
-If you want your tables to be even fancier (if that's possible) then you can use color
-themes. All you have to do is import it.
+Import a theme to add color to your tables.
 
 ```python
 from prettytable import PrettyTable, THEME
