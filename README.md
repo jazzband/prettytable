@@ -640,7 +640,7 @@ This would print something like the following:
 
 Replace the sample color codes with your own colors.
 
-### List of Themes
+### List of themes
 
 ![Table](https://user-images.githubusercontent.com/59022059/102505462-03307200-4050-11eb-9181-9cc6c1268572.jpeg)
 
