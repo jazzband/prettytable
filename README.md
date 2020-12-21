@@ -634,7 +634,7 @@ x.set_theme(my_theme)
 print(x)
 ```
 
-This would print something like the following:
+This prints something like this:
 
 ![Theme Sample](https://user-images.githubusercontent.com/59022059/102506142-d0d34480-4050-11eb-8b2e-4a5ee7ab391f.png)
 
