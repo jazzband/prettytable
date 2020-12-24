@@ -589,7 +589,7 @@ new_table = old_table[0:5]
 
 ## Themes
 
-### Getting Themes
+### Importing themes
 
 Import a theme to add color to your tables.
 
