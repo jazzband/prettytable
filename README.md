@@ -633,7 +633,8 @@ x.set_theme(my_theme)
 print(x)
 ```
 
-The base color is the color of all the text and data. The border is all the "|" and "-". The junction is the "+".
+The base color is the color of all the text and data. The border is all the "|" and "-".
+The junction is the "+".
 
 This prints something like this:
 
