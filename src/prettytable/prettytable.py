@@ -73,18 +73,18 @@ def _get_size(text):
 class THEME:
     DEFAULT = None
 
-    OCEAN = {"base": "\033[96m", "border": "\033[34m", "decor": "\033[36m"}
+    OCEAN = {"base": "\033[96m", "border": "\033[34m", "junction": "\033[36m"}
 
-    LAKE_GOLD = {"base": "\033[37m", "border": "\033[34;2m", "decor": "\033[93m"}
+    LAKE_GOLD = {"base": "\033[37m", "border": "\033[34;2m", "junction": "\033[93m"}
 
-    FESTIVE = {"base": "\033[94m", "border": "\033[32m", "decor": "\033[91m"}
+    FESTIVE = {"base": "\033[94m", "border": "\033[32m", "junction": "\033[91m"}
 
-    MAGMA = {"base": "\033[91m", "border": "\033[33m", "decor": "\033[93m"}
+    MAGMA = {"base": "\033[91m", "border": "\033[33m", "junction": "\033[93m"}
 
-    CALM = {"base": "\033[95m", "border": "\033[34m", "decor": "\033[92m"}
+    CALM = {"base": "\033[95m", "border": "\033[34m", "junction": "\033[92m"}
 
     # Not recommended, but cool anyways!
-    DARK = {"base": "\033[30m", "border": "\033[90m", "decor": "\033[34m"}
+    DARK = {"base": "\033[30m", "border": "\033[90m", "junction": "\033[34m"}
 
 
 class PrettyTable:
@@ -1829,14 +1829,14 @@ class PrettyTable:
             )
         try:
             self._junction_char = (
-                self._theme["decor"]
+                self._theme["junction"]
                 + self._raw_junction_char
                 + "\033[0m"
                 + self._theme["base"]
             )
         except TypeError:
             self._junction_char = (
-                self._theme["decor"] + "+" + "\033[0m" + self._theme["base"]
+                self._theme["junction"] + "+" + "\033[0m" + self._theme["base"]
             )
 
 
