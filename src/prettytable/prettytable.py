@@ -46,12 +46,6 @@ from html.parser import HTMLParser
 
 import wcwidth
 
-# Detects if running Windows OS, then uses colorama to rephrase color codes
-if platform.system() == "Windows":
-    from colorama import init as colorinit
-
-    colorinit()
-
 # hrule styles
 FRAME = 0
 ALL = 1

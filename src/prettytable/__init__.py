@@ -1,4 +1,5 @@
 import pkg_resources
+import platform
 
 from .prettytable import (
     ALL,
@@ -43,3 +44,8 @@ __all__ = [
 ]
 
 __version__ = pkg_resources.get_distribution(__name__).version
+
+# Detects if running Windows OS, then uses colorama to rephrase color codes
+if platform.system() == "Windows":
+  from colorama import init as colorinit
+  colorinit()

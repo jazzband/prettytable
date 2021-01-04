@@ -26,8 +26,12 @@ setup(
     package_dir={"": "src"},
     use_scm_version={"local_scheme": local_scheme},
     setup_requires=["setuptools_scm"],
-    install_requires=["setuptools", "wcwidth"],
-    extras_require={"tests": ["pytest", "pytest-cov"], "color": ["colorama; sys_platform == "win32"]},
+    install_requires=[
+        "setuptools",
+        "wcwidth",
+        "colorama ; platform_system == 'Windows'",
+    ],
+    extras_require={"tests": ["pytest", "pytest-cov"]},
     python_requires=">=3.6",
     classifiers=[
         "Programming Language :: Python",
