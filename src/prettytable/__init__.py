@@ -1,5 +1,6 @@
-import pkg_resources
 import platform
+
+import pkg_resources
 
 from .prettytable import (
     ALL,

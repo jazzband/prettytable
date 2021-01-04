@@ -603,8 +603,7 @@ from prettytable import PrettyTable, THEME
 
 ### Using themes
 
-After you've imported the theme, apply it. Now
-printing the theme will include color.
+After you've imported the theme, apply it. Now printing the theme will include color.
 
 ```python
 x = PrettyTable()
