@@ -37,7 +37,6 @@ import csv
 import io
 import json
 import math
-import platform
 import random
 import re
 import textwrap
