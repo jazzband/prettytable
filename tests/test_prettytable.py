@@ -1063,7 +1063,7 @@ class ThemeTests(unittest.TestCase):
 
     def testCustomThemes(self):
         x = PrettyTable()
-        my_theme = {"base": "\033[31m", "border": "\033[33m", "decor": "\033[0m"}
+        my_theme = {"base": "\033[31m", "border": "\033[33m", "junction": "\033[0m"}
         x.set_theme(my_theme)
         result = x.get_string()
         expected = """
@@ -1073,7 +1073,7 @@ class ThemeTests(unittest.TestCase):
 
     def testNewThemToClass(self):
         x = PrettyTable()
-        THEME.NEW_THEME = {"base": "\033[31m", "border": "\033[33m", "decor": "\033[0m"}
+        THEME.NEW_THEME = {"base": "\033[31m", "border": "\033[33m", "junction": "\033[0m"}
         x.set_theme(THEME.NEW_THEME)
         result = x.get_string()
         expected = """
