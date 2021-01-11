@@ -640,7 +640,7 @@ This prints something like this:
 
 ![Theme Sample](https://user-images.githubusercontent.com/59022059/102506142-d0d34480-4050-11eb-8b2e-4a5ee7ab391f.png)
 
-Replace the sample color codes with your own colors.
+You can find an extremely helpful tutorial on Python color codes [here](https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html).
 
 ### List of themes
 
