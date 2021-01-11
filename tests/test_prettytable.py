@@ -28,15 +28,6 @@ from prettytable import (
 )
 
 
-def escape_ansi(line):
-    ansi_escape = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
-    return ansi_escape.sub("", line)
-
-
-def test_escape_ansi():
-    assert escape_ansi("\033[31mhithere uwu\033[0m") == "hithere uwu"
-
-
 def helper_table(rows=3):
     t = PrettyTable(["Field 1", "Field 2", "Field 3"])
     v = 1
