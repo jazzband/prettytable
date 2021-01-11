@@ -1801,7 +1801,7 @@ class PrettyTable:
             self._vertical_char = self._raw_vertical_char
             self._horizontal_char = self._raw_horizontal_char
             self.junction_char = self._raw_junction_char
-            return ""
+            return
 
         self._theme = theme
         try:
