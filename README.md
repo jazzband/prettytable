@@ -161,16 +161,8 @@ You can print tables like this to `stdout` or get string representations of them
 To print a table in ASCII form, you can just do this:
 
 ```python
-print x
-```
-
-in Python 2.x or:
-
-```python
 print(x)
 ```
-
-in Python 3.x.
 
 The old `x.printt()` method from versions 0.5 and earlier has been removed.
 
