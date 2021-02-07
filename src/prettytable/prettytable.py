@@ -93,6 +93,8 @@ class PrettyTable:
         float_format - controls formatting of floating point data
         min_table_width - minimum desired table width, in characters
         max_table_width - maximum desired table width, in characters
+        min_width - minimum desired field width, in characters
+        max_width - maximum desired field width, in characters
         padding_width - number of spaces on either side of column data
             (only used if left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
@@ -102,6 +104,7 @@ class PrettyTable:
         junction_char - single character string used to draw line junctions
         sortby - name of field to sort rows by
         sort_key - sorting key function, applied to data points before sorting
+        align - default align for each column (None, "l", "c" or "r")
         valign - default valign for each row (None, "t", "m" or "b")
         reversesort - True or False to sort in descending or ascending order
         oldsortslice - Slice rows before sorting in the "old style" """
@@ -1606,6 +1609,8 @@ class PrettyTable:
         sort_key - sorting key function, applied to data points before sorting
         attributes - dictionary of name/value pairs to include as HTML attributes in the
             <table> tag
+        format - Controls whether or not HTML tables are formatted to match
+            styling options (True or False)
         xhtml - print <br/> tags if True, <br> tags if false"""
 
         options = self._get_options(kwargs)
