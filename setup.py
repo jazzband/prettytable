@@ -26,7 +26,10 @@ setup(
     package_dir={"": "src"},
     use_scm_version={"local_scheme": local_scheme},
     setup_requires=["setuptools_scm"],
-    install_requires=["setuptools", "wcwidth"],
+    install_requires=[
+        "importlib-metadata; python_version < '3.8'",
+        "wcwidth",
+    ],
     extras_require={"tests": ["pytest", "pytest-cov"]},
     python_requires=">=3.6",
     classifiers=[
