@@ -16,6 +16,7 @@ from prettytable import (
     NONE,
     ORGMODE,
     PLAIN_COLUMNS,
+    FANCY,
     RANDOM,
     PrettyTable,
     from_csv,
@@ -227,6 +228,14 @@ class OptionAttributeTests(CityDataTest):
         self.x.vertical_char = "!"
         self.x.horizontal_char = "~"
         self.x.junction_char = "*"
+        self.x.top_junction_char = "@"
+        self.x.bottom_junction_char = "#"
+        self.x.right_junction_char = "$"
+        self.x.left_junction_char = "%"
+        self.x.top_right_junction_char = "^"
+        self.x.top_left_junction_char = "&"
+        self.x.bottom_right_junction_char = "("
+        self.x.bottom_left_junction_char = ")"
         self.x.format = True
         self.x.attributes = {"class": "prettytable"}
         assert self.x.get_string() == self.x[:].get_string()
@@ -756,6 +765,18 @@ value 7         value8         value9
 '^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
 """,
             id="RANDOM",
+        ),
+        pytest.param(
+            FANCY,
+            """
+╔═════════╦═════════╦═════════╗
+║ Field 1 ║ Field 2 ║ Field 3 ║
+╠═════════╬═════════╬═════════╣
+║ value 1 ║  value2 ║  value3 ║
+║ value 4 ║  value5 ║  value6 ║
+║ value 7 ║  value8 ║  value9 ║
+╚═════════╩═════════╩═════════╝
+""",
         ),
     ],
 )
