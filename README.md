@@ -422,14 +422,18 @@ The options are these:
 - `horizontal_char` - Single character string used to draw horizontal lines. Default is
   `-`.
 - `junction_char` - Single character string used to draw line junctions. Default is `+`.
-  `top_junction_char` - single character string used to draw top line junctions. Default is junction_char.
-  `bottom_junction_char` - single character string used to draw bottom line junctions. Default is junction_char.
-  `right_junction_char` - single character string used to draw right line junctions. Default is junction_char.
-  `left_junction_char` - single character string used to draw left line junctions. Default is junction_char.
-  `top_right_junction_char` - single character string used to draw top-right line junctions. Default is junction_char.
-  `top_left_junction_char` - single character string used to draw top-left line junctions. Default is junction_char.
-  `bottom_right_junction_char` - single character string used to draw bottom-right line junctions. Default is junction_char.
-  `bottom_left_junction_char` - single character string used to draw bottom-left line junctions. Default is junction_char.
+  `top_junction_char` - single character string used to draw top line junctions. Default
+  is junction_char. `bottom_junction_char` - single character string used to draw bottom
+  line junctions. Default is junction_char. `right_junction_char` - single character
+  string used to draw right line junctions. Default is junction_char.
+  `left_junction_char` - single character string used to draw left line junctions.
+  Default is junction_char. `top_right_junction_char` - single character string used to
+  draw top-right line junctions. Default is junction_char. `top_left_junction_char` -
+  single character string used to draw top-left line junctions. Default is
+  junction_char. `bottom_right_junction_char` - single character string used to draw
+  bottom-right line junctions. Default is junction_char. `bottom_left_junction_char` -
+  single character string used to draw bottom-left line junctions. Default is
+  junction_char.
 
 You can set the style options to your own settings in two ways:
 
