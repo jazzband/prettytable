@@ -11,12 +11,12 @@ import pytest
 from prettytable import (
     ALL,
     DEFAULT,
+    FANCY,
     MARKDOWN,
     MSWORD_FRIENDLY,
     NONE,
     ORGMODE,
     PLAIN_COLUMNS,
-    FANCY,
     RANDOM,
     PrettyTable,
     from_csv,

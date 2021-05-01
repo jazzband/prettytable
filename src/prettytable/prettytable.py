@@ -104,13 +104,18 @@ class PrettyTable:
         horizontal_char - single character string used to draw horizontal lines
         junction_char - single character string used to draw line junctions
         top_junction_char - single character string used to draw top line junctions
-        bottom_junction_char - single character string used to draw bottom line junctions
+        bottom_junction_char -
+            single character string used to draw bottom line junctions
         right_junction_char - single character string used to draw right line junctions
         left_junction_char - single character string used to draw left line junctions
-        top_right_junction_char - single character string used to draw top-right line junctions
-        top_left_junction_char - single character string used to draw top-left line junctions
-        bottom_right_junction_char - single character string used to draw bottom-right line junctions
-        bottom_left_junction_char - single character string used to draw bottom-left line junctions
+        top_right_junction_char -
+            single character string used to draw top-right line junctions
+        top_left_junction_char -
+            single character string used to draw top-left line junctions
+        bottom_right_junction_char -
+            single character string used to draw bottom-right line junctions
+        bottom_left_junction_char -
+            single character string used to draw bottom-left line junctions
         sortby - name of field to sort rows by
         sort_key - sorting key function, applied to data points before sorting
         align - default align for each column (None, "l", "c" or "r")
@@ -926,7 +931,8 @@ class PrettyTable:
 
         Arguments:
 
-        bottom_junction_char - single character string used to draw bottom line junctions"""
+        bottom_junction_char -
+            single character string used to draw bottom line junctions"""
         return self._bottom_junction_char
 
     @bottom_junction_char.setter
@@ -941,7 +947,8 @@ class PrettyTable:
 
         Arguments:
 
-        right_junction_char - single character string used to draw right line junctions"""
+        right_junction_char -
+            single character string used to draw right line junctions"""
         return self._right_junction_char
 
     @right_junction_char.setter
@@ -971,7 +978,8 @@ class PrettyTable:
 
         Arguments:
 
-        top_right_junction_char - single character string used to draw top-right line junctions"""
+        top_right_junction_char -
+            single character string used to draw top-right line junctions"""
         return self._top_right_junction_char
 
     @top_right_junction_char.setter
@@ -982,11 +990,13 @@ class PrettyTable:
 
     @property
     def top_left_junction_char(self):
-        """The character used when printing table borders to draw top-left line junctions
+        """
+        The character used when printing table borders to draw top-left line junctions
 
         Arguments:
 
-        top_left_junction_char - single character string used to draw top-left line junctions"""
+        top_left_junction_char -
+            single character string used to draw top-left line junctions"""
         return self._top_left_junction_char
 
     @top_left_junction_char.setter
@@ -997,11 +1007,13 @@ class PrettyTable:
 
     @property
     def bottom_right_junction_char(self):
-        """The character used when printing table borders to draw bottom-right line junctions
+        """The character used when printing table borders
+           to draw bottom-right line junctions
 
         Arguments:
 
-        bottom_right_junction_char - single character string used to draw bottom-right line junctions"""
+        bottom_right_junction_char -
+            single character string used to draw bottom-right line junctions"""
         return self._bottom_right_junction_char
 
     @bottom_right_junction_char.setter
@@ -1012,11 +1024,13 @@ class PrettyTable:
 
     @property
     def bottom_left_junction_char(self):
-        """The character used when printing table borders to draw bottom-left line junctions
+        """The character used when printing table borders
+           to draw bottom-left line junctions
 
         Arguments:
 
-        bottom_left_junction_char - single character string used to draw bottom-left line junctions"""
+        bottom_left_junction_char -
+            single character string used to draw bottom-left line junctions"""
         return self._bottom_left_junction_char
 
     @bottom_left_junction_char.setter
@@ -1476,13 +1490,18 @@ class PrettyTable:
         junction_char - single character string used to draw line junctions
         junction_char - single character string used to draw line junctions
         top_junction_char - single character string used to draw top line junctions
-        bottom_junction_char - single character string used to draw bottom line junctions
+        bottom_junction_char -
+            single character string used to draw bottom line junctions
         right_junction_char - single character string used to draw right line junctions
         left_junction_char - single character string used to draw left line junctions
-        top_right_junction_char - single character string used to draw top-right line junctions
-        top_left_junction_char - single character string used to draw top-left line junctions
-        bottom_right_junction_char - single character string used to draw bottom-right line junctions
-        bottom_left_junction_char - single character string used to draw bottom-left line junctions
+        top_right_junction_char -
+            single character string used to draw top-right line junctions
+        top_left_junction_char -
+            single character string used to draw top-left line junctions
+        bottom_right_junction_char -
+            single character string used to draw bottom-right line junctions
+        bottom_left_junction_char -
+            single character string used to draw bottom-left line junctions
         sortby - name of field to sort rows by
         sort_key - sorting key function, applied to data points before sorting
         reversesort - True or False to sort in descending or ascending order

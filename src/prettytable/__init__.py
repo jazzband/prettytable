@@ -1,6 +1,7 @@
 from .prettytable import (
     ALL,
     DEFAULT,
+    FANCY,
     FRAME,
     HEADER,
     MARKDOWN,
@@ -8,7 +9,6 @@ from .prettytable import (
     NONE,
     ORGMODE,
     PLAIN_COLUMNS,
-    FANCY,
     RANDOM,
     PrettyTable,
     TableHandler,
