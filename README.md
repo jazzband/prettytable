@@ -382,7 +382,8 @@ use for your tables:
   columnar data
 - `MARKDOWN` - A style that follows Markdown syntax
 - `ORGMODE` - A table style that fits [Org mode](https://orgmode.org/) syntax
-- `FANCY` - A style that uses continuous border lines for a fancier display on terminal
+- `DOUBLE_BORDER` - A style that uses continuous double border lines for a fancier
+  display on terminal
 
 Other styles are likely to appear in future releases.
 

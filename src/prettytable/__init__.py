@@ -1,7 +1,7 @@
 from .prettytable import (
     ALL,
     DEFAULT,
-    FANCY,
+    DOUBLE_BORDER,
     FRAME,
     HEADER,
     MARKDOWN,
@@ -29,7 +29,7 @@ __all__ = [
     "NONE",
     "ORGMODE",
     "PLAIN_COLUMNS",
-    "FANCY",
+    "DOUBLE_BORDER",
     "RANDOM",
     "PrettyTable",
     "TableHandler",

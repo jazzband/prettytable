@@ -56,7 +56,7 @@ MSWORD_FRIENDLY = 11
 PLAIN_COLUMNS = 12
 MARKDOWN = 13
 ORGMODE = 14
-FANCY = 15
+DOUBLE_BORDER = 15
 RANDOM = 20
 
 _re = re.compile(r"\033\[[0-9;]*m")
@@ -1124,8 +1124,8 @@ class PrettyTable:
             self._set_markdown_style()
         elif style == ORGMODE:
             self._set_orgmode_style()
-        elif style == FANCY:
-            self._set_fancy_style()
+        elif style == DOUBLE_BORDER:
+            self._set_double_border_style()
         elif style == RANDOM:
             self._set_random_style()
         else:
@@ -1184,7 +1184,7 @@ class PrettyTable:
         self.left_padding_width = 0
         self.right_padding_width = 8
 
-    def _set_fancy_style(self):
+    def _set_double_border_style(self):
         self.horizontal_char = "\u2550"
         self.vertical_char = "\u2551"
         self.junction_char = "\u256c"

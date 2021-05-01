@@ -11,7 +11,7 @@ import pytest
 from prettytable import (
     ALL,
     DEFAULT,
-    FANCY,
+    DOUBLE_BORDER,
     MARKDOWN,
     MSWORD_FRIENDLY,
     NONE,
@@ -767,7 +767,7 @@ value 7         value8         value9
             id="RANDOM",
         ),
         pytest.param(
-            FANCY,
+            DOUBLE_BORDER,
             """
 ╔═════════╦═════════╦═════════╗
 ║ Field 1 ║ Field 2 ║ Field 3 ║
