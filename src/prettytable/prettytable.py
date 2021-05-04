@@ -907,7 +907,7 @@ class PrettyTable:
 
     @property
     def oldsortslice(self):
-        """ oldsortslice - Slice rows before sorting in the "old style" """
+        """oldsortslice - Slice rows before sorting in the "old style" """
         return self._oldsortslice
 
     @oldsortslice.setter
@@ -1086,6 +1086,30 @@ class PrettyTable:
                 f"Column length {len(column)} does not match number of rows "
                 f"{len(self._rows)}"
             )
+
+    def add_autoindex(self, align="c", valign="t"):
+
+        """Add an index column to the table.
+
+        Arguments:
+
+        align - desired alignment for this column - "l" for left, "c" for centre and
+            "r" for right
+        valign - desired vertical alignment for new columns - "t" for top,
+            "m" for middle and "b" for bottom"""
+
+        fieldname = "Index"
+        self._validate_align(align)
+        self._validate_valign(valign)
+        self._field_names.append(fieldname)
+        self._align[fieldname] = align
+        self._valign[fieldname] = valign
+        c = 1
+        for i in range(0, len(self._rows)):
+            if len(self._rows) < i + 1:
+                self._rows.append([])
+            self._rows[i].append(c)
+            c += 1
 
     def del_column(self, fieldname):
 
