@@ -1111,6 +1111,31 @@ class PrettyTable:
             self._rows[i].append(c)
             c += 1
 
+    def insert_average(self, align="c", valign="t"):
+        """Add a column that contains the average
+        of each row with numerical values
+
+        Arguments:
+
+        align - desired alignment for this column - "l" for left, "c" for centre and
+            "r" for right
+        valign - desired vertical alignment for new columns - "t" for top,
+            "m" for middle and "b" for bottom"""
+
+        fieldname = "Average"
+        self._validate_align(align)
+        self._validate_valign(valign)
+        self._field_names.append(fieldname)
+        self._align[fieldname] = align
+        self._valign[fieldname] = valign
+        for i in range(0, len(self._rows)):
+            average = 0
+            if len(self._rows) < i + 1:
+                self._rows.append([])
+            for p in range(0, len(self._rows[i])):
+                average += self._rows[i][p]
+            self._rows[i].append(average / len(self._rows[i]))
+
     def del_column(self, fieldname):
 
         """Delete a column from the table
