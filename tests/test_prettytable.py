@@ -6,7 +6,6 @@ import sqlite3
 import unittest
 from math import e, pi, sqrt
 
-
 import pytest
 
 from prettytable import (
