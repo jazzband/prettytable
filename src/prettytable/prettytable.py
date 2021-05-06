@@ -1106,8 +1106,6 @@ class PrettyTable:
         self._valign[fieldname] = valign
         c = 1
         for i in range(0, len(self._rows)):
-            if len(self._rows) < i + 1:
-                self._rows.append([])
             self._rows[i].append(c)
             c += 1
 
