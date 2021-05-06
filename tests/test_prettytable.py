@@ -1018,7 +1018,7 @@ def test_autoindex_align():
     table1.add_autoindex(align="l")
 
     table2 = PrettyTable()
-    table2.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    table2.field_names = ["City name", "Area", "Population", "Annual Rainfall", "Index"]
     table2.add_row(["Adelaide", 1295, 1158259, 600.5, 1])
     table2.add_row(["Brisbane", 5905, 1857594, 1146.4, 2])
     table2.add_row(["Darwin", 112, 120900, 1714.7, 3])
