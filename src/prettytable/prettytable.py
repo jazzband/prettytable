@@ -917,7 +917,7 @@ class PrettyTable:
         Arguments:
 
         top_junction_char - single character string used to draw top line junctions"""
-        return self._top_junction_char
+        return self._top_junction_char or self.junction_char
 
     @top_junction_char.setter
     def top_junction_char(self, val):
@@ -933,7 +933,7 @@ class PrettyTable:
 
         bottom_junction_char -
             single character string used to draw bottom line junctions"""
-        return self._bottom_junction_char
+        return self._bottom_junction_char or self.junction_char
 
     @bottom_junction_char.setter
     def bottom_junction_char(self, val):
@@ -949,7 +949,7 @@ class PrettyTable:
 
         right_junction_char -
             single character string used to draw right line junctions"""
-        return self._right_junction_char
+        return self._right_junction_char or self.junction_char
 
     @right_junction_char.setter
     def right_junction_char(self, val):
@@ -964,7 +964,7 @@ class PrettyTable:
         Arguments:
 
         left_junction_char - single character string used to draw left line junctions"""
-        return self._left_junction_char
+        return self._left_junction_char or self.junction_char
 
     @left_junction_char.setter
     def left_junction_char(self, val):
@@ -980,7 +980,7 @@ class PrettyTable:
 
         top_right_junction_char -
             single character string used to draw top-right line junctions"""
-        return self._top_right_junction_char
+        return self._top_right_junction_char or self.junction_char
 
     @top_right_junction_char.setter
     def top_right_junction_char(self, val):
@@ -997,7 +997,7 @@ class PrettyTable:
 
         top_left_junction_char -
             single character string used to draw top-left line junctions"""
-        return self._top_left_junction_char
+        return self._top_left_junction_char or self.junction_char
 
     @top_left_junction_char.setter
     def top_left_junction_char(self, val):
@@ -1014,7 +1014,7 @@ class PrettyTable:
 
         bottom_right_junction_char -
             single character string used to draw bottom-right line junctions"""
-        return self._bottom_right_junction_char
+        return self._bottom_right_junction_char or self.junction_char
 
     @bottom_right_junction_char.setter
     def bottom_right_junction_char(self, val):
@@ -1031,7 +1031,7 @@ class PrettyTable:
 
         bottom_left_junction_char -
             single character string used to draw bottom-left line junctions"""
-        return self._bottom_left_junction_char
+        return self._bottom_left_junction_char or self.junction_char
 
     @bottom_left_junction_char.setter
     def bottom_left_junction_char(self, val):
@@ -1536,10 +1536,11 @@ class PrettyTable:
         if options["header"]:
             lines.append(self._stringify_header(options))
         elif options["border"] and options["hrules"] in (ALL, FRAME):
-            if title:
-                lines.append(self._hrule)
-            else:
-                lines.append(self._stringify_hrule(options, where="top_"))
+            lines.append(self._stringify_hrule(options, where="top_"))
+            if title and options["vrules"] in (ALL, FRAME):
+                lines[-1] = (
+                    self.left_junction_char + lines[-1][1:-1] + self.right_junction_char
+                )
 
         # Add rows
         for row in formatted_rows[:-1]:
@@ -1571,24 +1572,24 @@ class PrettyTable:
             return ""
         lpad, rpad = self._get_padding_widths(options)
         if options["vrules"] in (ALL, FRAME):
-            bits = [options[where + "left_junction_char"] or self.junction_char]
+            bits = [options[where + "left_junction_char"]]
         else:
             bits = [options["horizontal_char"]]
         # For tables with no data or fieldnames
         if not self._field_names:
-            bits.append(options[where + "right_junction_char"] or self.junction_char)
+            bits.append(options[where + "right_junction_char"])
             return "".join(bits)
         for field, width in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
             bits.append((width + lpad + rpad) * options["horizontal_char"])
             if options["vrules"] == ALL:
-                bits.append(options[where + "junction_char"] or self.junction_char)
+                bits.append(options[where + "junction_char"])
             else:
                 bits.append(options["horizontal_char"])
         if options["vrules"] in (ALL, FRAME):
             bits.pop()
-            bits.append(options[where + "right_junction_char"] or self.junction_char)
+            bits.append(options[where + "right_junction_char"])
         return "".join(bits)
 
     def _stringify_title(self, title, options):
@@ -1619,11 +1620,13 @@ class PrettyTable:
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
             if options["hrules"] in (ALL, FRAME):
-                if options["title"] or self._title:
-                    where = ""
-                else:
-                    where = "top_"
-                bits.append(self._stringify_hrule(options, where))
+                bits.append(self._stringify_hrule(options, "top_"))
+                if options["title"] and options["vrules"] in (ALL, FRAME):
+                    bits[-1] = (
+                        self.left_junction_char
+                        + bits[-1][1:-1]
+                        + self.right_junction_char
+                    )
                 bits.append("\n")
             if options["vrules"] in (ALL, FRAME):
                 bits.append(options["vertical_char"])

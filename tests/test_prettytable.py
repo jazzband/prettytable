@@ -25,6 +25,7 @@ from prettytable import (
     from_html_one,
     from_json,
 )
+from prettytable.prettytable import FRAME
 
 
 def helper_table(rows=3):
@@ -219,7 +220,7 @@ class OptionAttributeTests(CityDataTest):
         self.x.reversesort = True
         self.x.header = True
         self.x.border = False
-        self.x.hrule = True
+        self.x.hrules = True
         self.x.int_format = "4"
         self.x.float_format = "2.2"
         self.x.padding_width = 2
@@ -237,6 +238,7 @@ class OptionAttributeTests(CityDataTest):
         self.x.bottom_right_junction_char = "("
         self.x.bottom_left_junction_char = ")"
         self.x.format = True
+        self.x.xhtml = True
         self.x.attributes = {"class": "prettytable"}
         assert self.x.get_string() == self.x[:].get_string()
 
@@ -690,6 +692,163 @@ class HtmlOutputTests(unittest.TestCase):
     </tbody>
 </table>
 """.strip()  # noqa: E501
+        )
+
+
+class PositionalJunctionsTests(CityDataTest):
+
+    """Verify different cases for positional-junction characters"""
+
+    def setUp(self):
+        CityDataTest.setUp(self)
+        self.x.set_style(DOUBLE_BORDER)
+
+    def testDefault(self):
+        assert (
+            self.x.get_string().strip()
+            == """
+╔═══════════╦══════╦════════════╦═════════════════╗
+║ City name ║ Area ║ Population ║ Annual Rainfall ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
+║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
+║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
+║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
+║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
+║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
+║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
+╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
+        )
+
+    def testNoHeader(self):
+        self.x.header = False
+        assert (
+            self.x.get_string().strip()
+            == """
+╔═══════════╦══════╦═════════╦════════╗
+║  Adelaide ║ 1295 ║ 1158259 ║ 600.5  ║
+║  Brisbane ║ 5905 ║ 1857594 ║ 1146.4 ║
+║   Darwin  ║ 112  ║  120900 ║ 1714.7 ║
+║   Hobart  ║ 1357 ║  205556 ║ 619.5  ║
+║   Sydney  ║ 2058 ║ 4336374 ║ 1214.8 ║
+║ Melbourne ║ 1566 ║ 3806092 ║ 646.9  ║
+║   Perth   ║ 5386 ║ 1554769 ║ 869.4  ║
+╚═══════════╩══════╩═════════╩════════╝""".strip()
+        )
+
+    def testWithTitle(self):
+        self.x.title = "Title"
+        assert (
+            self.x.get_string().strip()
+            == """
+╔═════════════════════════════════════════════════╗
+║                      Title                      ║
+╠═══════════╦══════╦════════════╦═════════════════╣
+║ City name ║ Area ║ Population ║ Annual Rainfall ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
+║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
+║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
+║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
+║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
+║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
+║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
+╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
+        )
+
+    def testWithTitleNoHeader(self):
+        self.x.title = "Title"
+        self.x.header = False
+        assert (
+            self.x.get_string().strip()
+            == """
+╔═════════════════════════════════════╗
+║                Title                ║
+╠═══════════╦══════╦═════════╦════════╣
+║  Adelaide ║ 1295 ║ 1158259 ║ 600.5  ║
+║  Brisbane ║ 5905 ║ 1857594 ║ 1146.4 ║
+║   Darwin  ║ 112  ║  120900 ║ 1714.7 ║
+║   Hobart  ║ 1357 ║  205556 ║ 619.5  ║
+║   Sydney  ║ 2058 ║ 4336374 ║ 1214.8 ║
+║ Melbourne ║ 1566 ║ 3806092 ║ 646.9  ║
+║   Perth   ║ 5386 ║ 1554769 ║ 869.4  ║
+╚═══════════╩══════╩═════════╩════════╝""".strip()
+        )
+
+    def testHruleAll(self):
+        self.x.title = "Title"
+        self.x.hrules = ALL
+        assert (
+            self.x.get_string().strip()
+            == """
+╔═════════════════════════════════════════════════╗
+║                      Title                      ║
+╠═══════════╦══════╦════════════╦═════════════════╣
+║ City name ║ Area ║ Population ║ Annual Rainfall ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
+╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
+        )
+
+    def testVrulesNone(self):
+        self.x.vrules = NONE
+        assert (
+            self.x.get_string().strip()
+            == "═══════════════════════════════════════════════════\n"
+            "  City name   Area   Population   Annual Rainfall  \n"
+            "═══════════════════════════════════════════════════\n"
+            "   Adelaide   1295    1158259          600.5       \n"
+            "   Brisbane   5905    1857594          1146.4      \n"
+            "    Darwin    112      120900          1714.7      \n"
+            "    Hobart    1357     205556          619.5       \n"
+            "    Sydney    2058    4336374          1214.8      \n"
+            "  Melbourne   1566    3806092          646.9       \n"
+            "    Perth     5386    1554769          869.4       \n"
+            "═══════════════════════════════════════════════════".strip()
+        )
+
+    def testVrulesFrameWithTitle(self):
+        self.x.vrules = FRAME
+        self.x.title = "Title"
+        assert (
+            self.x.get_string().strip()
+            == """
+╔═════════════════════════════════════════════════╗
+║                      Title                      ║
+╠═════════════════════════════════════════════════╣
+║ City name   Area   Population   Annual Rainfall ║
+╠═════════════════════════════════════════════════╣
+║  Adelaide   1295    1158259          600.5      ║
+║  Brisbane   5905    1857594          1146.4     ║
+║   Darwin    112      120900          1714.7     ║
+║   Hobart    1357     205556          619.5      ║
+║   Sydney    2058    4336374          1214.8     ║
+║ Melbourne   1566    3806092          646.9      ║
+║   Perth     5386    1554769          869.4      ║
+╚═════════════════════════════════════════════════╝""".strip()
+        )
+
+    def testEmpty(self):
+        self.x.clear()
+        assert (
+            self.x.get_string().strip()
+            == """
+╔╗
+║║
+╠╣
+╚╝""".strip()
         )
 
 
