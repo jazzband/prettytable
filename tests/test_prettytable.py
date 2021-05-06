@@ -999,6 +999,32 @@ def test_autoindex():
 
     assert str(table1) == str(table2)
 
+def test_autoindex_align():
+    """Testing that different inputs for align 
+    parameter in add_autoindex() function
+    """
+    table1 = PrettyTable()
+    table1.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    table1.add_row(["Adelaide", 1295, 1158259, 600.5])
+    table1.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    table1.add_row(["Darwin", 112, 120900, 1714.7])
+    
+    table1.add_autoindex(align = "l")
+    assert("1  " in table1.get_string())
+    assert("2  " in table1.get_string())
+    assert("3  " in table1.get_string())
+    table1.del_column("Index")
+
+    table1.add_autoindex(align = "c")
+    assert(" 1 " in table1.get_string())
+    assert(" 2 " in table1.get_string())
+    assert(" 3 " in table1.get_string())
+    table1.del_column("Index")
+
+    table1.add_autoindex(align = "r")
+    assert("  1" in table1.get_string())
+    assert("  2" in table1.get_string())
+    assert("  3" in table1.get_string())
 
 class UnpaddedTableTest(unittest.TestCase):
     def setUp(self):
