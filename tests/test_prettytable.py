@@ -999,32 +999,44 @@ def test_autoindex():
 
     assert str(table1) == str(table2)
 
+
 def test_autoindex_align():
-    """Testing that different inputs for align 
+    """Testing all different inputs for align
     parameter in add_autoindex() function
+    by checking if two tables are equal
+    when one is pre-made and aligned all together while
+    the other one uses the parameter align of the function
+    add_autoindex() to align the last column containing the
+    Index
     """
     table1 = PrettyTable()
     table1.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
     table1.add_row(["Adelaide", 1295, 1158259, 600.5])
     table1.add_row(["Brisbane", 5905, 1857594, 1146.4])
     table1.add_row(["Darwin", 112, 120900, 1714.7])
-    
-    table1.add_autoindex(align = "l")
-    assert("1  " in table1.get_string())
-    assert("2  " in table1.get_string())
-    assert("3  " in table1.get_string())
-    table1.del_column("Index")
+    table1.align = "l"
+    table1.add_autoindex(align="l")
 
-    table1.add_autoindex(align = "c")
-    assert(" 1 " in table1.get_string())
-    assert(" 2 " in table1.get_string())
-    assert(" 3 " in table1.get_string())
-    table1.del_column("Index")
+    table2 = PrettyTable()
+    table2.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    table2.add_row(["Adelaide", 1295, 1158259, 600.5, 1])
+    table2.add_row(["Brisbane", 5905, 1857594, 1146.4, 2])
+    table2.add_row(["Darwin", 112, 120900, 1714.7, 3])
+    table2.align = "l"
+    assert str(table1) == str(table2)
 
-    table1.add_autoindex(align = "r")
-    assert("  1" in table1.get_string())
-    assert("  2" in table1.get_string())
-    assert("  3" in table1.get_string())
+    table1.del_column("Index")
+    table1.align = "c"
+    table1.add_autoindex(align="c")
+    table2.align = "c"
+    assert str(table1) == str(table2)
+
+    table1.del_column("Index")
+    table1.align = "r"
+    table1.add_autoindex(align="r")
+    table2.align = "r"
+    assert str(table1) == str(table2)
+
 
 class UnpaddedTableTest(unittest.TestCase):
     def setUp(self):
