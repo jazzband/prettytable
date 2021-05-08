@@ -1087,7 +1087,7 @@ class PrettyTable:
                 f"{len(self._rows)}"
             )
 
-    def add_autoindex(self, align="c", valign="t"):
+    def add_autoindex(self, align="c", valign="t", fieldname="Index"):
 
         """Add an index column to the table.
 
@@ -1098,15 +1098,14 @@ class PrettyTable:
         valign - desired vertical alignment for new columns - "t" for top,
             "m" for middle and "b" for bottom"""
 
-        fieldname = "Index"
         self._validate_align(align)
         self._validate_valign(valign)
-        self._field_names.append(fieldname)
+        self._field_names.insert(0, fieldname)
         self._align[fieldname] = align
         self._valign[fieldname] = valign
         c = 1
         for i in range(0, len(self._rows)):
-            self._rows[i].append(c)
+            self._rows[i].insert(0, c)
             c += 1
 
     def del_column(self, fieldname):
