@@ -22,6 +22,7 @@ from .prettytable import (
 __all__ = [
     "ALL",
     "DEFAULT",
+    "DOUBLE_BORDER",
     "FRAME",
     "HEADER",
     "MARKDOWN",
@@ -29,7 +30,6 @@ __all__ = [
     "NONE",
     "ORGMODE",
     "PLAIN_COLUMNS",
-    "DOUBLE_BORDER",
     "RANDOM",
     "PrettyTable",
     "TableHandler",
