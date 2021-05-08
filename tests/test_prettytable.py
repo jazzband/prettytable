@@ -840,17 +840,6 @@ class PositionalJunctionsTests(CityDataTest):
 ╚═════════════════════════════════════════════════╝""".strip()
         )
 
-    def testEmpty(self):
-        self.x.clear()
-        assert (
-            self.x.get_string().strip()
-            == """
-╔╗
-║║
-╠╣
-╚╝""".strip()
-        )
-
 
 @pytest.mark.parametrize(
     "test_style, expected",
