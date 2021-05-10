@@ -58,6 +58,7 @@ MARKDOWN = 13
 ORGMODE = 14
 DOUBLE_BORDER = 15
 SINGLE_BORDER = 16
+DRAWING = 17
 RANDOM = 20
 
 _re = re.compile(r"\033\[[0-9;]*m|\033\(B")
@@ -1206,20 +1207,22 @@ class PrettyTable:
 
         if style == DEFAULT:
             self._set_default_style()
-        elif style == MSWORD_FRIENDLY:
-            self._set_msword_style()
-        elif style == PLAIN_COLUMNS:
-            self._set_columns_style()
-        elif style == MARKDOWN:
-            self._set_markdown_style()
-        elif style == ORGMODE:
-            self._set_orgmode_style()
         elif style == DOUBLE_BORDER:
             self._set_double_border_style()
-        elif style == SINGLE_BORDER:
-            self._set_single_border_style()
+        elif style == DRAWING:
+            self._set_drawing_style()
+        elif style == MARKDOWN:
+            self._set_markdown_style()
+        elif style == MSWORD_FRIENDLY:
+            self._set_msword_style()
+        elif style == ORGMODE:
+            self._set_orgmode_style()
+        elif style == PLAIN_COLUMNS:
+            self._set_columns_style()
         elif style == RANDOM:
             self._set_random_style()
+        elif style == SINGLE_BORDER:
+            self._set_single_border_style()
         else:
             raise Exception("Invalid pre-set style")
 
@@ -1303,6 +1306,18 @@ class PrettyTable:
         self.top_left_junction_char = "┌"
         self.bottom_right_junction_char = "┘"
         self.bottom_left_junction_char = "└"
+
+    def _set_drawing_style(self):
+        self.header = True
+        self.border = True
+        self._hrules = HEADER
+        self._vrules = ALL
+        self.padding_width = 1
+        self.left_padding_width = 1
+        self.right_padding_width = 1
+        self.vertical_char = "│"
+        self.horizontal_char = "─"
+        self.junction_char = "┼"
 
     def _set_random_style(self):
 
