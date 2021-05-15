@@ -1308,6 +1308,8 @@ class PrettyTable:
         self.bottom_left_junction_char = "└"
 
     def _set_drawing_style(self):
+        self.drawing = True
+
         self.header = True
         self.border = True
         self._hrules = HEADER
@@ -1689,6 +1691,13 @@ class PrettyTable:
             for line in lines:
                 tmp.extend(line.split("\n"))
             lines = ["|" + line[1:-1] + "|" for line in tmp]
+
+        if "drawing" in self.__dict__ and self.drawing is True:
+            tmp = list()
+            for line in lines:
+                tmp.extend(line.split("\n"))
+            tmp[1] = "├" + tmp[1][1:-1] + "┤"
+            lines = [line[:] for line in tmp]
 
         return "\n".join(lines)
 
