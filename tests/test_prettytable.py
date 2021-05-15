@@ -14,6 +14,7 @@ from prettytable import (
     DOUBLE_BORDER,
     FRAME,
     HEADER,
+    DRAWING,
     MARKDOWN,
     MSWORD_FRIENDLY,
     NONE,
@@ -1054,6 +1055,17 @@ class TestStyle:
 +---------+---------+---------+
 """,
                 id="DEFAULT",
+            ),
+            pytest.param(
+                DRAWING,
+                """
+│ Field 1 │ Field 2 │ Field 3 │
+┼─────────┼─────────┼─────────┼
+│ value 1 │  value2 │  value3 │
+│ value 4 │  value5 │  value6 │
+│ value 7 │  value8 │  value9 │
+""",
+                id="DRAWING",
             ),
             pytest.param(
                 MARKDOWN,
