@@ -985,56 +985,18 @@ def test_autoindex():
     table1.add_row(["Sydney", 2058, 4336374, 1214.8])
     table1.add_row(["Melbourne", 1566, 3806092, 646.9])
     table1.add_row(["Perth", 5386, 1554769, 869.4])
-    table1.add_autoindex()
+    table1.add_autoindex(fieldname="Test")
 
     table2 = PrettyTable()
-    table2.field_names = ["City name", "Area", "Population", "Annual Rainfall", "Index"]
-    table2.add_row(["Adelaide", 1295, 1158259, 600.5, 1])
-    table2.add_row(["Brisbane", 5905, 1857594, 1146.4, 2])
-    table2.add_row(["Darwin", 112, 120900, 1714.7, 3])
-    table2.add_row(["Hobart", 1357, 205556, 619.5, 4])
-    table2.add_row(["Sydney", 2058, 4336374, 1214.8, 5])
-    table2.add_row(["Melbourne", 1566, 3806092, 646.9, 6])
-    table2.add_row(["Perth", 5386, 1554769, 869.4, 7])
+    table2.field_names = ["Test", "City name", "Area", "Population", "Annual Rainfall"]
+    table2.add_row([1, "Adelaide", 1295, 1158259, 600.5])
+    table2.add_row([2, "Brisbane", 5905, 1857594, 1146.4])
+    table2.add_row([3, "Darwin", 112, 120900, 1714.7])
+    table2.add_row([4, "Hobart", 1357, 205556, 619.5])
+    table2.add_row([5, "Sydney", 2058, 4336374, 1214.8])
+    table2.add_row([6, "Melbourne", 1566, 3806092, 646.9])
+    table2.add_row([7, "Perth", 5386, 1554769, 869.4])
 
-    assert str(table1) == str(table2)
-
-
-def test_autoindex_align():
-    """Testing all different inputs for align
-    parameter in add_autoindex() function
-    by checking if two tables are equal
-    when one is pre-made and aligned all together while
-    the other one uses the parameter align of the function
-    add_autoindex() to align the last column containing the
-    Index
-    """
-    table1 = PrettyTable()
-    table1.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-    table1.add_row(["Adelaide", 1295, 1158259, 600.5])
-    table1.add_row(["Brisbane", 5905, 1857594, 1146.4])
-    table1.add_row(["Darwin", 112, 120900, 1714.7])
-    table1.align = "l"
-    table1.add_autoindex(align="l")
-
-    table2 = PrettyTable()
-    table2.field_names = ["City name", "Area", "Population", "Annual Rainfall", "Index"]
-    table2.add_row(["Adelaide", 1295, 1158259, 600.5, 1])
-    table2.add_row(["Brisbane", 5905, 1857594, 1146.4, 2])
-    table2.add_row(["Darwin", 112, 120900, 1714.7, 3])
-    table2.align = "l"
-    assert str(table1) == str(table2)
-
-    table1.del_column("Index")
-    table1.align = "c"
-    table1.add_autoindex(align="c")
-    table2.align = "c"
-    assert str(table1) == str(table2)
-
-    table1.del_column("Index")
-    table1.align = "r"
-    table1.add_autoindex(align="r")
-    table2.align = "r"
     assert str(table1) == str(table2)
 
 
