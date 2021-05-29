@@ -337,39 +337,39 @@ class PrettyTable:
         try:
             assert len(val) == len(set(val))
         except AssertionError:
-            raise Exception("Field names must be unique!")
+            raise Exception("Field names must be unique")
 
     def _validate_header_style(self, val):
         try:
             assert val in ("cap", "title", "upper", "lower", None)
         except AssertionError:
             raise Exception(
-                "Invalid header style, use cap, title, upper, lower or None!"
+                "Invalid header style, use cap, title, upper, lower or None"
             )
 
     def _validate_align(self, val):
         try:
             assert val in ["l", "c", "r"]
         except AssertionError:
-            raise Exception(f"Alignment {val} is invalid, use l, c or r!")
+            raise Exception(f"Alignment {val} is invalid, use l, c or r")
 
     def _validate_valign(self, val):
         try:
             assert val in ["t", "m", "b", None]
         except AssertionError:
-            raise Exception(f"Alignment {val} is invalid, use t, m, b or None!")
+            raise Exception(f"Alignment {val} is invalid, use t, m, b or None")
 
     def _validate_nonnegative_int(self, name, val):
         try:
             assert int(val) >= 0
         except AssertionError:
-            raise Exception(f"Invalid value for {name}: {val}!")
+            raise Exception(f"Invalid value for {name}: {val}")
 
     def _validate_true_or_false(self, name, val):
         try:
             assert val in (True, False)
         except AssertionError:
-            raise Exception(f"Invalid value for {name}! Must be True or False.")
+            raise Exception(f"Invalid value for {name}. Must be True or False.")
 
     def _validate_int_format(self, name, val):
         if val == "":
@@ -379,7 +379,7 @@ class PrettyTable:
             assert val.isdigit()
         except AssertionError:
             raise Exception(
-                f"Invalid value for {name}! Must be an integer format string."
+                f"Invalid value for {name}. Must be an integer format string."
             )
 
     def _validate_float_format(self, name, val):
@@ -397,52 +397,52 @@ class PrettyTable:
                 or (bits[1][-1] == "f" and bits[1].rstrip("f").isdigit())
             )
         except AssertionError:
-            raise Exception(f"Invalid value for {name}! Must be a float format string.")
+            raise Exception(f"Invalid value for {name}. Must be a float format string.")
 
     def _validate_function(self, name, val):
         try:
             assert hasattr(val, "__call__")
         except AssertionError:
-            raise Exception(f"Invalid value for {name}! Must be a function.")
+            raise Exception(f"Invalid value for {name}. Must be a function.")
 
     def _validate_hrules(self, name, val):
         try:
             assert val in (ALL, FRAME, HEADER, NONE)
         except AssertionError:
             raise Exception(
-                f"Invalid value for {name}! Must be ALL, FRAME, HEADER or NONE."
+                f"Invalid value for {name}. Must be ALL, FRAME, HEADER or NONE."
             )
 
     def _validate_vrules(self, name, val):
         try:
             assert val in (ALL, FRAME, NONE)
         except AssertionError:
-            raise Exception(f"Invalid value for {name}! Must be ALL, FRAME, or NONE.")
+            raise Exception(f"Invalid value for {name}. Must be ALL, FRAME, or NONE.")
 
     def _validate_field_name(self, name, val):
         try:
             assert (val in self._field_names) or (val is None)
         except AssertionError:
-            raise Exception(f"Invalid field name: {val}!")
+            raise Exception(f"Invalid field name: {val}")
 
     def _validate_all_field_names(self, name, val):
         try:
             for x in val:
                 self._validate_field_name(name, x)
         except AssertionError:
-            raise Exception("fields must be a sequence of field names!")
+            raise Exception("Fields must be a sequence of field names")
 
     def _validate_single_char(self, name, val):
         try:
             assert _str_block_width(val) == 1
         except AssertionError:
-            raise Exception(f"Invalid value for {name}! Must be a string of length 1.")
+            raise Exception(f"Invalid value for {name}. Must be a string of length 1.")
 
     def _validate_attributes(self, name, val):
         try:
             assert isinstance(val, dict)
         except AssertionError:
-            raise Exception("attributes must be a dictionary of name/value pairs!")
+            raise Exception("Attributes must be a dictionary of name/value pairs")
 
     ##############################
     # ATTRIBUTE MANAGEMENT       #
@@ -949,7 +949,7 @@ class PrettyTable:
         elif style == RANDOM:
             self._set_random_style()
         else:
-            raise Exception("Invalid pre-set style!")
+            raise Exception("Invalid pre-set style")
 
     def _set_orgmode_style(self):
         self._set_default_style()
@@ -1053,7 +1053,7 @@ class PrettyTable:
         if row_index > len(self._rows) - 1:
             raise Exception(
                 f"Can't delete row at index {row_index}, "
-                f"table only has {len(self._rows)} rows!"
+                f"table only has {len(self._rows)} rows"
             )
         del self._rows[row_index]
 
@@ -1084,7 +1084,7 @@ class PrettyTable:
         else:
             raise Exception(
                 f"Column length {len(column)} does not match number of rows "
-                f"{len(self._rows)}!"
+                f"{len(self._rows)}"
             )
 
     def add_autoindex(self, fieldname="Index"):
@@ -1945,6 +1945,6 @@ def from_html_one(html_code, **kwargs):
         assert len(tables) == 1
     except AssertionError:
         raise Exception(
-            "More than one <table> in provided HTML code!  Use from_html instead."
+            "More than one <table> in provided HTML code. Use from_html instead."
         )
     return tables[0]
