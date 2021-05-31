@@ -449,6 +449,16 @@ class PrettyTable:
     ##############################
 
     @property
+    def xhtml(self):
+        """Print <br/> tags if True, <br> tags if false"""
+        return self._xhtml
+
+    @xhtml.setter
+    def xhtml(self, val):
+        self._validate_option("xhtml", val)
+        self._xhtml = val
+
+    @property
     def field_names(self):
         """List or tuple of field names
 
@@ -927,7 +937,7 @@ class PrettyTable:
                 self._validate_option(option, kwargs[option])
                 options[option] = kwargs[option]
             else:
-                options[option] = getattr(self, "_" + option)
+                options[option] = getattr(self, option)
         return options
 
     ##############################
