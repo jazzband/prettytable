@@ -1185,17 +1185,17 @@ class PrettyTable:
         self.right_padding_width = 8
 
     def _set_double_border_style(self):
-        self.horizontal_char = "\u2550"
-        self.vertical_char = "\u2551"
-        self.junction_char = "\u256c"
-        self.top_junction_char = "\u2566"
-        self.bottom_junction_char = "\u2569"
-        self.right_junction_char = "\u2563"
-        self.left_junction_char = "\u2560"
-        self.top_right_junction_char = "\u2557"
-        self.top_left_junction_char = "\u2554"
-        self.bottom_right_junction_char = "\u255d"
-        self.bottom_left_junction_char = "\u255a"
+        self.horizontal_char = "═"
+        self.vertical_char = "║"
+        self.junction_char = "╬"
+        self.top_junction_char = "╦"
+        self.bottom_junction_char = "╩"
+        self.right_junction_char = "╣"
+        self.left_junction_char = "╠"
+        self.top_right_junction_char = "╗"
+        self.top_left_junction_char = "╔"
+        self.bottom_right_junction_char = "╝"
+        self.bottom_left_junction_char = "╚"
 
     def _set_random_style(self):
 
