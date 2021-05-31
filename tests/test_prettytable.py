@@ -238,7 +238,6 @@ class OptionAttributeTests(CityDataTest):
         self.x.bottom_right_junction_char = "("
         self.x.bottom_left_junction_char = ")"
         self.x.format = True
-        self.x.xhtml = True
         self.x.attributes = {"class": "prettytable"}
         assert self.x.get_string() == self.x[:].get_string()
 
