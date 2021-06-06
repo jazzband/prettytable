@@ -449,6 +449,16 @@ class PrettyTable:
     ##############################
 
     @property
+    def xhtml(self):
+        """Print <br/> tags if True, <br> tags if False"""
+        return self._xhtml
+
+    @xhtml.setter
+    def xhtml(self, val):
+        self._validate_option("xhtml", val)
+        self._xhtml = val
+
+    @property
     def field_names(self):
         """List or tuple of field names
 
@@ -927,7 +937,7 @@ class PrettyTable:
                 self._validate_option(option, kwargs[option])
                 options[option] = kwargs[option]
             else:
-                options[option] = getattr(self, "_" + option)
+                options[option] = getattr(self, option)
         return options
 
     ##############################
@@ -1621,7 +1631,7 @@ class PrettyTable:
             <table> tag
         format - Controls whether or not HTML tables are formatted to match
             styling options (True or False)
-        xhtml - print <br/> tags if True, <br> tags if false"""
+        xhtml - print <br/> tags if True, <br> tags if False"""
 
         options = self._get_options(kwargs)
 
