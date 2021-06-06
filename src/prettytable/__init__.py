@@ -1,6 +1,7 @@
 from .prettytable import (
     ALL,
     DEFAULT,
+    DOUBLE_BORDER,
     FRAME,
     HEADER,
     MARKDOWN,
@@ -21,6 +22,7 @@ from .prettytable import (
 __all__ = [
     "ALL",
     "DEFAULT",
+    "DOUBLE_BORDER",
     "FRAME",
     "HEADER",
     "MARKDOWN",
