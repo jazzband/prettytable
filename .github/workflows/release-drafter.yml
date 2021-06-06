@@ -8,6 +8,9 @@ on:
 
 jobs:
   update_release_draft:
+    permissions:
+      contents: write
+      pull-requests: read
     if: github.repository == 'jazzband/prettytable'
     runs-on: ubuntu-latest
     steps:
