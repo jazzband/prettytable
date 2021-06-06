@@ -48,7 +48,6 @@ jobs:
           python -m pip install -U tox
 
       - name: Tox tests
-        shell: bash
         run: |
           tox -e py
 
