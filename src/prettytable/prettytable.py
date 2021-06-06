@@ -450,7 +450,7 @@ class PrettyTable:
 
     @property
     def xhtml(self):
-        """Print <br/> tags if True, <br> tags if false"""
+        """Print <br/> tags if True, <br> tags if False"""
         return self._xhtml
 
     @xhtml.setter
@@ -1621,7 +1621,7 @@ class PrettyTable:
             <table> tag
         format - Controls whether or not HTML tables are formatted to match
             styling options (True or False)
-        xhtml - print <br/> tags if True, <br> tags if false"""
+        xhtml - print <br/> tags if True, <br> tags if False"""
 
         options = self._get_options(kwargs)
 
