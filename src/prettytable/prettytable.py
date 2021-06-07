@@ -139,7 +139,7 @@ class PrettyTable:
             "print_empty oldsortslice".split()
         )
         self._options.extend(
-            "align valign max_width min_width header_escape data_escape".split())
+            "align valign max_width min_width escape_header escape_data".split())
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
@@ -155,15 +155,15 @@ class PrettyTable:
             self._header = kwargs["header"]
         else:
             self._header = True
-        if kwargs["header_escape"] in (True, False):
-            self._header_escape = kwargs["header_escape"]
+        if kwargs["escape_header"] in (True, False):
+            self._escape_header = kwargs["escape_header"]
         else:
-            self._header_escape = True
+            self._escape_header = True
         self._header_style = kwargs["header_style"] or None
-        if kwargs["data_escape"] in (True, False):
-            self._data_escape = kwargs["data_escape"]
+        if kwargs["escape_data"] in (True, False):
+            self._escape_data = kwargs["escape_data"]
         else:
-            self._data_escape = True
+            self._escape_data = True
         if kwargs["border"] in (True, False):
             self._border = kwargs["border"]
         else:
@@ -311,8 +311,8 @@ class PrettyTable:
             "xhtml",
             "print_empty",
             "oldsortslice",
-            "header_escape",
-            "data_escape",
+            "escape_header",
+            "escape_data",
         ):
             self._validate_true_or_false(option, val)
         elif option == "header_style":
@@ -1605,7 +1605,7 @@ class PrettyTable:
         end - index of last data row to include in output PLUS ONE (list slice style)
         fields - names of fields (columns) to include
         header - print a header showing field names (True or False)
-        header_escape - escapes the text within a header (True or False)
+        escape_header - escapes the text within a header (True or False)
         border - print a border around the table (True or False)
         hrules - controls printing of horizontal rules after rows.
             Allowed values: ALL, FRAME, HEADER, NONE
@@ -1623,7 +1623,7 @@ class PrettyTable:
             <table> tag
         format - Controls whether or not HTML tables are formatted to match
             styling options (True or False)
-        data_escape - escapes the text within a data field (True or False)
+        escape_data - escapes the text within a data field (True or False)
         xhtml - print <br/> tags if True, <br> tags if false"""
 
         options = self._get_options(kwargs)
@@ -1669,7 +1669,7 @@ class PrettyTable:
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                if options["header_escape"]:
+                if options["escape_header"]:
                     lines.append(
                         "            <th>%s</th>" % escape(field).replace("\n", linebreak)
                     )
@@ -1689,7 +1689,7 @@ class PrettyTable:
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                if options["data_escape"]:
+                if options["escape_data"]:
                     lines.append(
                         "            <td>%s</td>" % escape(datum).replace("\n", linebreak)
                     )
@@ -1753,7 +1753,7 @@ class PrettyTable:
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                if options["header_escape"]:
+                if options["escape_header"]:
                     lines.append(
                         '            <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
                         % (lpad, rpad, escape(field).replace("\n", linebreak))
@@ -1786,7 +1786,7 @@ class PrettyTable:
             ):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                if options["data_escape"]:
+                if options["escape_data"]:
                     lines.append(
                         '            <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
                         % (

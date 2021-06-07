@@ -888,6 +888,7 @@ class PrintJapaneseTest(unittest.TestCase):
         print()
         print(self.x)
 
+
 class PrintHTMLEscapingTest(unittest.TestCase):
     def setUp(self):
 
@@ -895,9 +896,8 @@ class PrintHTMLEscapingTest(unittest.TestCase):
         self.x.add_row(['value 1', 'value 2'])
         self.x.add_row(['<a href="https://google.com">value 3</a>', 'value 4'])
 
-
     def testNoFormatEscape(self):
-        result = self.x.get_html_string(header_escape=False, data_escape=False)
+        result = self.x.get_html_string(escape_header=False, escape_data=False)
         print(result)
         assert result.strip() == """
 <table>
@@ -919,9 +919,11 @@ class PrintHTMLEscapingTest(unittest.TestCase):
     </tbody>
 </table>
 """.strip()
-    
+
     def testFormatEscape(self):
-        result = self.x.get_html_string(header_escape=False, data_escape=False, format=True)
+        result = self.x.get_html_string(escape_header=False,
+                                        escape_data=False,
+                                        format=True)
         assert result.strip() == """
 <table frame="box" rules="cols">
     <thead>
@@ -941,7 +943,8 @@ class PrintHTMLEscapingTest(unittest.TestCase):
         </tr>
     </tbody>
 </table>
-""".strip()
+""".strip()  # noqa: E501
+
 
 class PrintEmojiTest(unittest.TestCase):
     def setUp(self):
