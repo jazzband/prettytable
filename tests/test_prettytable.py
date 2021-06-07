@@ -841,7 +841,7 @@ class PositionalJunctionsTests(CityDataTest):
 
 
 @pytest.mark.parametrize(
-    "test_style, expected",
+    "style, expected",
     [
         pytest.param(
             DEFAULT,
@@ -927,13 +927,13 @@ value 7         value8         value9
         ),
     ],
 )
-def test_style(test_style, expected):
+def test_style(style, expected):
     # Arrange
     t = helper_table()
     random.seed(1234)
 
     # Act
-    t.set_style(test_style)
+    t.set_style(style)
 
     # Assert
     result = t.get_string()

@@ -140,24 +140,48 @@ class PrettyTable:
             self._widths = []
 
         # Options
-        self._options = (
-            "title start end fields header border sortby reversesort "
-            "sort_key attributes format hrules vrules".split()
-        )
-        self._options.extend(
-            "int_format float_format min_table_width max_table_width padding_width "
-            "left_padding_width right_padding_width".split()
-        )
-        self._options.extend(
-            "vertical_char horizontal_char junction_char header_style valign xhtml "
-            "print_empty oldsortslice".split()
-        )
-        self._options.extend(
-            "top_junction_char bottom_junction_char right_junction_char "
-            "left_junction_char top_right_junction_char top_left_junction_char "
-            "bottom_right_junction_char bottom_left_junction_char".split()
-        )
-        self._options.extend("align valign max_width min_width".split())
+        self._options = [
+            "title",
+            "start",
+            "end",
+            "fields",
+            "header",
+            "border",
+            "sortby",
+            "reversesort",
+            "sort_key",
+            "attributes",
+            "format",
+            "hrules",
+            "vrules",
+            "int_format",
+            "float_format",
+            "min_table_width",
+            "max_table_width",
+            "padding_width",
+            "left_padding_width",
+            "right_padding_width",
+            "vertical_char",
+            "horizontal_char",
+            "junction_char",
+            "header_style",
+            "valign",
+            "xhtml",
+            "print_empty",
+            "oldsortslice",
+            "top_junction_char",
+            "bottom_junction_char",
+            "right_junction_char",
+            "left_junction_char",
+            "top_right_junction_char",
+            "top_left_junction_char",
+            "bottom_right_junction_char",
+            "bottom_left_junction_char",
+            "align",
+            "valign",
+            "max_width",
+            "min_width",
+        ]
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
