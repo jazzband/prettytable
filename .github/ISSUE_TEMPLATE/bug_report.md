@@ -17,7 +17,7 @@ assignees: ''
 
 * OS: 
 * Python: 
-* prettytable: 
+* PrettyTable: 
 
 Please include **code** that reproduces the issue.
 
