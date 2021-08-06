@@ -48,3 +48,4 @@ repos:
     hooks:
       - id: prettier
         args: [--prose-wrap=always, --print-width=88]
+        exclude: ^.github/ISSUE_TEMPLATE/bug_report.md$
