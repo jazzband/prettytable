@@ -15,7 +15,7 @@ Jazzband guidelines: https://jazzband.co/about/releases
 - [ ] Publish release
 
 - [ ] Once
-      [GitHub Actions](https://github.com/jazzband/prettytable/actions?query=workflow%3ADeploy)
+      [GitHub Actions](https://github.com/jazzband/prettytable/actions/workflows/release.yml)
       has built and uploaded distributions, check files at
       [Jazzband](https://jazzband.co/projects/prettytable) and release to
       [PyPI](https://pypi.org/pypi/prettytable)
