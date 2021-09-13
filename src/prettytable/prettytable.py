@@ -529,30 +529,6 @@ class PrettyTable:
         except AssertionError:
             raise Exception("Attributes must be a dictionary of name/value pairs")
 
-    def _get_column_name_wight(self, field):
-        width, name = None, str()
-        split_field = field.split("'")
-        if len(split_field) > 1:
-            try:
-                width = int(split_field[-1])
-                name = "'".join(split_field[0:-1])
-            except ValueError:
-                name = field
-        else:
-            name = field
-        return name, width
-
-    def _get_column_name_and_set_wight(self, val):
-        if isinstance(val, str):
-            temp_val, temp_width = self._get_column_name_wight(val)
-            self._user_column_widths.append(temp_width)
-        else:
-            temp_val = []
-            for v in val:
-                temp_name, temp_width = self._get_column_name_wight(v)
-                temp_val.append(temp_name)
-                self._user_column_widths.append(temp_width)
-        return temp_val
     ##############################
     # ATTRIBUTE MANAGEMENT       #
     ##############################
