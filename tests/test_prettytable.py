@@ -1246,6 +1246,6 @@ class ColumnsMinWidthsTest(unittest.TestCase):
             ),
         ]
         for table in tables:
-            self.x = table['min_widths']
+            self.x.columns_min_widths = table['min_widths']
             result = self.x.get_string()
             assert result == table['result']
