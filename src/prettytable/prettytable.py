@@ -126,7 +126,7 @@ class PrettyTable:
         self.encoding = kwargs.get("encoding", "UTF-8")
 
         # Data
-        self._user_column_widths = []
+        self._columns_min_widths = []
         self._field_names = []
         self._rows = []
         self.align = {}
@@ -378,6 +378,27 @@ class PrettyTable:
             self._validate_single_char(option, val)
         elif option == "attributes":
             self._validate_attributes(option, val)
+        elif option == "columns_min_widths":
+            self._validate_columns_min_widths(val)
+
+    def _validate_columns_min_widths(self, val):
+        # Check for appropriate length
+        if self._field_names:
+            try:
+                assert len(val) == len(self._field_names)
+            except AssertionError:
+                raise Exception(
+                    "Columns minimum widths list has incorrect number of values, "
+                    f"(actual) {len(val)}!={len(self._field_names)} (expected)"
+                )
+        if self._rows:
+            try:
+                assert len(val) == len(self._rows[0])
+            except AssertionError:
+                raise Exception(
+                    "Columns minimum widths list has incorrect number of values, "
+                    f"(actual) {len(val)}!={len(self._rows[0])} (expected)"
+                )
 
     def _validate_field_names(self, val):
         # Check for appropriate length
@@ -537,6 +558,16 @@ class PrettyTable:
     ##############################
 
     @property
+    def columns_min_widths(self):
+        return self._columns_min_widths
+
+    @columns_min_widths.setter
+    def columns_min_widths(self, val):
+        val = [int(x) if x else 0 for x in val]
+        self._validate_option("columns_min_widths", val)
+        self._columns_min_widths = val
+
+    @property
     def xhtml(self):
         """Print <br/> tags if True, <br> tags if False"""
         return self._xhtml
@@ -557,12 +588,13 @@ class PrettyTable:
 
     @field_names.setter
     def field_names(self, val):
-        val = self._get_column_name_and_set_wight([str(x) for x in val])
+        val = [str(x) for x in val]
         self._validate_option("field_names", val)
         old_names = None
         if self._field_names:
             old_names = self._field_names[:]
         self._field_names = val
+        self._columns_min_widths = [0 for _ in val]
         if self._align and old_names:
             for old_name, new_name in zip(old_names, val):
                 self._align[new_name] = self._align[old_name]
@@ -1307,7 +1339,7 @@ class PrettyTable:
             )
         del self._rows[row_index]
 
-    def add_column(self, fieldname, column, align="c", valign="t"):
+    def add_column(self, fieldname, column, align="c", valign="t", min_width=0):
 
         """Add a column to the table.
 
@@ -1324,7 +1356,6 @@ class PrettyTable:
         if len(self._rows) in (0, len(column)):
             self._validate_align(align)
             self._validate_valign(valign)
-            fieldname = self._get_column_name_and_set_wight(fieldname)
             self._field_names.append(fieldname)
             self._align[fieldname] = align
             self._valign[fieldname] = valign
@@ -1332,6 +1363,7 @@ class PrettyTable:
                 if len(self._rows) < i + 1:
                     self._rows.append([])
                 self._rows[i].append(column[i])
+            self._columns_min_widths.append(min_width)
         else:
             raise Exception(
                 f"Column length {len(column)} does not match number of rows "
@@ -1629,15 +1661,15 @@ class PrettyTable:
         if not self._field_names:
             bits.append(options[where + "right_junction_char"])
             return "".join(bits)
-        for field, width, user_width in zip(
+        for field, width, min_widths in zip(
                 self._field_names,
                 self._widths,
-                self._user_column_widths,
+                self._columns_min_widths
         ):
             if options["fields"] and field not in options["fields"]:
                 continue
-            width = user_width if user_width else width
-            bits.append((width + lpad + rpad) * options["horizontal_char"])
+            temp_width = width if width > min_widths else min_widths
+            bits.append((temp_width + lpad + rpad) * options["horizontal_char"])
             if options["vrules"] == ALL:
                 bits.append(options[where + "junction_char"])
             else:
@@ -1693,10 +1725,10 @@ class PrettyTable:
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
-        for (field, width, user_width) in zip(
+        for (field, width, min_widths) in zip(
                 self._field_names,
                 self._widths,
-                self._user_column_widths,
+                self._columns_min_widths,
         ):
             if options["fields"] and field not in options["fields"]:
                 continue
@@ -1710,10 +1742,10 @@ class PrettyTable:
                 fieldname = field.lower()
             else:
                 fieldname = field
-            width = user_width if user_width else width
+            temp_width = width if width > min_widths else min_widths
             bits.append(
                 " " * lpad
-                + self._justify(fieldname, width, self._align[field])
+                + self._justify(fieldname, temp_width, self._align[field])
                 + " " * rpad
             )
             if options["border"]:
@@ -1763,11 +1795,11 @@ class PrettyTable:
                 else:
                     bits[y].append(" ")
 
-        for (field, value, width, user_width) in zip(
+        for (field, value, width, min_widths) in zip(
                 self._field_names,
                 row,
                 self._widths,
-                self._user_column_widths,
+                self._columns_min_widths,
         ):
             valign = self._valign[field]
             lines = value.split("\n")
@@ -1788,10 +1820,10 @@ class PrettyTable:
             for line in lines:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                width = user_width if user_width else width
+                temp_width = width if width > min_widths else min_widths
                 bits[y].append(
                     " " * lpad
-                    + self._justify(line, width, self._align[field])
+                    + self._justify(line, temp_width, self._align[field])
                     + " " * rpad
                 )
                 if options["border"]:
