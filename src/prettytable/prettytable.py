@@ -126,6 +126,7 @@ class PrettyTable:
         self.encoding = kwargs.get("encoding", "UTF-8")
 
         # Data
+        self._user_column_widths = []
         self._field_names = []
         self._rows = []
         self.align = {}
@@ -507,6 +508,30 @@ class PrettyTable:
         except AssertionError:
             raise Exception("Attributes must be a dictionary of name/value pairs")
 
+    def _get_column_name_wight(self, field):
+        width, name = None, str()
+        split_field = field.split("'")
+        if len(split_field) > 1:
+            try:
+                width = int(split_field[-1])
+                name = "'".join(split_field[0:-1])
+            except ValueError:
+                name = field
+        else:
+            name = field
+        return name, width
+
+    def _get_column_name_and_set_wight(self, val):
+        if isinstance(val, str):
+            temp_val, temp_width = self._get_column_name_wight(val)
+            self._user_column_widths.append(temp_width)
+        else:
+            temp_val = []
+            for v in val:
+                temp_name, temp_width = self._get_column_name_wight(v)
+                temp_val.append(temp_name)
+                self._user_column_widths.append(temp_width)
+        return temp_val
     ##############################
     # ATTRIBUTE MANAGEMENT       #
     ##############################
@@ -532,7 +557,7 @@ class PrettyTable:
 
     @field_names.setter
     def field_names(self, val):
-        val = [str(x) for x in val]
+        val = self._get_column_name_and_set_wight([str(x) for x in val])
         self._validate_option("field_names", val)
         old_names = None
         if self._field_names:
@@ -1299,6 +1324,7 @@ class PrettyTable:
         if len(self._rows) in (0, len(column)):
             self._validate_align(align)
             self._validate_valign(valign)
+            fieldname = self._get_column_name_and_set_wight(fieldname)
             self._field_names.append(fieldname)
             self._align[fieldname] = align
             self._valign[fieldname] = valign
@@ -1603,9 +1629,14 @@ class PrettyTable:
         if not self._field_names:
             bits.append(options[where + "right_junction_char"])
             return "".join(bits)
-        for field, width in zip(self._field_names, self._widths):
+        for field, width, user_width in zip(
+                self._field_names,
+                self._widths,
+                self._user_column_widths,
+        ):
             if options["fields"] and field not in options["fields"]:
                 continue
+            width = user_width if user_width else width
             bits.append((width + lpad + rpad) * options["horizontal_char"])
             if options["vrules"] == ALL:
                 bits.append(options[where + "junction_char"])
@@ -1662,7 +1693,11 @@ class PrettyTable:
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
-        for (field, width) in zip(self._field_names, self._widths):
+        for (field, width, user_width) in zip(
+                self._field_names,
+                self._widths,
+                self._user_column_widths,
+        ):
             if options["fields"] and field not in options["fields"]:
                 continue
             if self._header_style == "cap":
@@ -1675,6 +1710,7 @@ class PrettyTable:
                 fieldname = field.lower()
             else:
                 fieldname = field
+            width = user_width if user_width else width
             bits.append(
                 " " * lpad
                 + self._justify(fieldname, width, self._align[field])
@@ -1727,8 +1763,12 @@ class PrettyTable:
                 else:
                     bits[y].append(" ")
 
-        for (field, value, width) in zip(self._field_names, row, self._widths):
-
+        for (field, value, width, user_width) in zip(
+                self._field_names,
+                row,
+                self._widths,
+                self._user_column_widths,
+        ):
             valign = self._valign[field]
             lines = value.split("\n")
             d_height = row_height - len(lines)
@@ -1748,7 +1788,7 @@ class PrettyTable:
             for line in lines:
                 if options["fields"] and field not in options["fields"]:
                     continue
-
+                width = user_width if user_width else width
                 bits[y].append(
                     " " * lpad
                     + self._justify(line, width, self._align[field])
