@@ -1206,6 +1206,11 @@ class ColumnsMinWidthsTest(unittest.TestCase):
         self.x.add_row(["Brisbane", 5905, 1857594])
         self.x.add_row(["Darwin", 112, 120900])
 
+        self.y = PrettyTable()
+        self.y.add_row(["Adelaide", 1295, 1158259])
+        self.y.add_row(["Brisbane", 5905, 1857594])
+        self.y.add_row(["Darwin", 112, 120900])
+
     def testColumnsMinWidths(self):
         tables = [
             dict(
@@ -1217,7 +1222,7 @@ class ColumnsMinWidthsTest(unittest.TestCase):
 |  Brisbane | 5905 |  1857594   |
 |   Darwin  | 112  |   120900   |
 +-----------+------+------------+
-                    """,
+""",
                 min_widths=[None, None, None],
             ),
             dict(
@@ -1228,8 +1233,8 @@ class ColumnsMinWidthsTest(unittest.TestCase):
 |       Adelaide       |              1295              |  1158259   |
 |       Brisbane       |              5905              |  1857594   |
 |        Darwin        |              112               |   120900   |
-+----------------------+--------------------------------+------------+           
-            """,
++----------------------+--------------------------------+------------+
+""",
                 min_widths=[20, 30, None],
             ),
             dict(
@@ -1240,12 +1245,24 @@ class ColumnsMinWidthsTest(unittest.TestCase):
 |  Adelaide |              1295              |  1158259   |
 |  Brisbane |              5905              |  1857594   |
 |   Darwin  |              112               |   120900   |
-+-----------+--------------------------------+------------+           
-                    """,
++-----------+--------------------------------+------------+
+""",
                 min_widths=[2, 30, 3],
             ),
         ]
         for table in tables:
             self.x.columns_min_widths = table["min_widths"]
             result = self.x.get_string()
-            assert result.strip() == table["result"].strip()
+            self.assertEqual(result.strip(), table["result"].strip())
+
+    def testExceptionsWithFieldNames(self):
+        with self.assertRaises(Exception):
+            self.x.columns_min_widths = [20, 30]
+        with self.assertRaises(Exception):
+            self.x.columns_min_widths = [20, 30, 40, 50]
+
+    def testExceptionsWithoutFieldNames(self):
+        with self.assertRaises(Exception):
+            self.y.columns_min_widths = [20, 30]
+        with self.assertRaises(Exception):
+            self.y.columns_min_widths = [20, 30, 40, 50]

@@ -1346,12 +1346,12 @@ class PrettyTable:
                 f"{len(self._rows)}"
             )
 
-    def add_autoindex(self, fieldname="Index"):
+    def add_autoindex(self, fieldname="Index", min_width=0):
         """Add an auto-incrementing index column to the table.
         Arguments:
         fieldname - name of the field to contain the new column of data"""
         self._field_names.insert(0, fieldname)
-        self._columns_min_widths.insert(0, 0)
+        self._columns_min_widths.insert(0, min_width)
         self._align[fieldname] = self.align
         self._valign[fieldname] = self.valign
         for i, row in enumerate(self._rows):
