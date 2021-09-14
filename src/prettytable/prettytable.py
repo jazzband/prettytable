@@ -1351,6 +1351,7 @@ class PrettyTable:
         Arguments:
         fieldname - name of the field to contain the new column of data"""
         self._field_names.insert(0, fieldname)
+        self._columns_min_widths.insert(0, 0)
         self._align[fieldname] = self.align
         self._valign[fieldname] = self.valign
         for i, row in enumerate(self._rows):
@@ -1638,9 +1639,7 @@ class PrettyTable:
             bits.append(options[where + "right_junction_char"])
             return "".join(bits)
         for field, width, min_widths in zip(
-                self._field_names,
-                self._widths,
-                self._columns_min_widths
+            self._field_names, self._widths, self._columns_min_widths
         ):
             if options["fields"] and field not in options["fields"]:
                 continue
@@ -1702,9 +1701,9 @@ class PrettyTable:
             else:
                 bits.append(" ")
         for (field, width, min_widths) in zip(
-                self._field_names,
-                self._widths,
-                self._columns_min_widths,
+            self._field_names,
+            self._widths,
+            self._columns_min_widths,
         ):
             if options["fields"] and field not in options["fields"]:
                 continue
@@ -1772,10 +1771,10 @@ class PrettyTable:
                     bits[y].append(" ")
 
         for (field, value, width, min_widths) in zip(
-                self._field_names,
-                row,
-                self._widths,
-                self._columns_min_widths,
+            self._field_names,
+            row,
+            self._widths,
+            self._columns_min_widths,
         ):
             valign = self._valign[field]
             lines = value.split("\n")

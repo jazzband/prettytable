@@ -355,7 +355,9 @@ elements are the data in each of the table's columns, in order, including a repe
 instance of the data in the `sort_by` column.
 
 ##### Setting the minimum columns lengths
+
 You can set the minimum width of each column using the property `columns_min_widths`:
+
 ```python
 x.columns_min_widths = [30, 15, 20, None]
 print(x)
@@ -376,6 +378,7 @@ to get:
 |             Perth              |       5386      |       1554769        |      869.4      |
 +--------------------------------+-----------------+----------------------+-----------------+
 ```
+
 If the argument `None` is passed, then the minimum width is automatically selected
 
 ### Changing the appearance of your table - the easy way
