@@ -1201,51 +1201,51 @@ g..
 class ColumnsMinWidthsTest(unittest.TestCase):
     def setUp(self):
         self.x = PrettyTable()
-        self.x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-        self.x.add_row(["Adelaide", 1295, 1158259, 600.5])
-        self.x.add_row(["Brisbane", 5905, 1857594, 1146.4])
-        self.x.add_row(["Darwin", 112, 120900, 1714.7])
+        self.x.field_names = ["City name", "Area", "Population"]
+        self.x.add_row(["Adelaide", 1295, 1158259])
+        self.x.add_row(["Brisbane", 5905, 1857594])
+        self.x.add_row(["Darwin", 112, 120900])
 
     def testColumnsMinWidths(self):
         tables = [
             dict(
                 result="""
-+-----------+------+------------+-----------------+
-| City name | Area | Population | Annual Rainfall |
-+-----------+------+------------+-----------------+
-|  Adelaide | 1295 |  1158259   |      600.5      |
-|  Brisbane | 5905 |  1857594   |      1146.4     |
-|   Darwin  | 112  |   120900   |      1714.7     |
-+-----------+------+------------+-----------------+
-                    """.strip(),
-                min_widths=[None, None, None, None],
++-----------+------+------------+
+| City name | Area | Population |
++-----------+------+------------+
+|  Adelaide | 1295 |  1158259   |
+|  Brisbane | 5905 |  1857594   |
+|   Darwin  | 112  |   120900   |
++-----------+------+------------+
+                    """,
+                min_widths=[None, None, None],
             ),
             dict(
                 result="""
-+----------------------+--------------------------------+---------------------------+-----------------+
-|      City name       |              Area              |         Population        | Annual Rainfall |
-+----------------------+--------------------------------+---------------------------+-----------------+
-|       Adelaide       |              1295              |          1158259          |      600.5      |
-|       Brisbane       |              5905              |          1857594          |      1146.4     |
-|        Darwin        |              112               |           120900          |      1714.7     |
-+----------------------+--------------------------------+---------------------------+-----------------+            
-            """.strip(),
-                min_widths=[20, 30, 25, None],
++----------------------+--------------------------------+------------+
+|      City name       |              Area              | Population |
++----------------------+--------------------------------+------------+
+|       Adelaide       |              1295              |  1158259   |
+|       Brisbane       |              5905              |  1857594   |
+|        Darwin        |              112               |   120900   |
++----------------------+--------------------------------+------------+           
+            """,
+                min_widths=[20, 30, None],
             ),
             dict(
                 result="""
-+-----------+--------------------------------+------------+-----------------+
-| City name |              Area              | Population | Annual Rainfall |
-+-----------+--------------------------------+------------+-----------------+
-|  Adelaide |              1295              |  1158259   |      600.5      |
-|  Brisbane |              5905              |  1857594   |      1146.4     |
-|   Darwin  |              112               |   120900   |      1714.7     |
-+-----------+--------------------------------+------------+-----------------+            
-                    """.strip(),
-                min_widths=[2, 30, 3, 10],
++-----------+--------------------------------+------------+
+| City name |              Area              | Population |
++-----------+--------------------------------+------------+
+|  Adelaide |              1295              |  1158259   |
+|  Brisbane |              5905              |  1857594   |
+|   Darwin  |              112               |   120900   |
++-----------+--------------------------------+------------+           
+                    """,
+                min_widths=[2, 30, 3],
             ),
         ]
         for table in tables:
             self.x.columns_min_widths = table['min_widths']
             result = self.x.get_string()
-            assert result == table['result']
+            assert result.strip() == table['result'].strip()
