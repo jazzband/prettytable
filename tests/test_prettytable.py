@@ -1211,6 +1211,18 @@ class ColumnsMinWidthsTest(unittest.TestCase):
         self.y.add_row(["Brisbane", 5905, 1857594])
         self.y.add_row(["Darwin", 112, 120900])
 
+        self.auto_index_table = PrettyTable()
+        self.auto_index_table.field_names = ["City name", "Area", "Population"]
+        self.auto_index_table.add_row(["Adelaide", 1295, 1158259])
+        self.auto_index_table.add_row(["Brisbane", 5905, 1857594])
+        self.auto_index_table.add_row(["Darwin", 112, 120900])
+
+        self.add_column_table = PrettyTable()
+        self.add_column_table.field_names = ["City name", "Area", "Population"]
+        self.add_column_table.add_row(["Adelaide", 1295, 1158259])
+        self.add_column_table.add_row(["Brisbane", 5905, 1857594])
+        self.add_column_table.add_row(["Darwin", 112, 120900])
+
     def testColumnsMinWidths(self):
         tables = [
             dict(
@@ -1266,3 +1278,19 @@ class ColumnsMinWidthsTest(unittest.TestCase):
             self.y.columns_min_widths = [20, 30]
         with self.assertRaises(Exception):
             self.y.columns_min_widths = [20, 30, 40, 50]
+
+    def testAutoIndex(self):
+        self.auto_index_table.add_autoindex(fieldname="Test")
+        self.assertEqual(self.auto_index_table.columns_min_widths, [0, 0, 0, 0])
+
+        self.auto_index_table.add_autoindex(fieldname="Test", min_width=30)
+        self.assertEqual(self.auto_index_table.columns_min_widths, [30, 0, 0, 0, 0])
+
+    def testAddColumn(self):
+        self.add_column_table.add_column("Starts with A", [True, False, False])
+        self.assertEqual(self.add_column_table.columns_min_widths, [0, 0, 0, 0])
+
+        self.add_column_table.add_column(
+            "Starts with B", [False, True, False], min_width=30
+        )
+        self.assertEqual(self.add_column_table.columns_min_widths, [0, 0, 0, 0, 30])
