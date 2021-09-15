@@ -383,21 +383,17 @@ class PrettyTable:
 
     def _validate_columns_min_widths(self, val):
         # Check for appropriate length
-        if self._field_names:
+        if self._field_names or self._rows:
             try:
                 assert len(val) == len(self._field_names)
-            except AssertionError:
-                raise Exception(
-                    "Columns minimum widths list has incorrect number of values, "
-                    f"(actual) {len(val)}!={len(self._field_names)} (expected)"
-                )
-        if self._rows:
-            try:
                 assert len(val) == len(self._rows[0])
             except AssertionError:
+                field_len = (
+                    len(self._field_names) if self._field_names else len(self._rows[0])
+                )
                 raise Exception(
                     "Columns minimum widths list has incorrect number of values, "
-                    f"(actual) {len(val)}!={len(self._rows[0])} (expected)"
+                    f"(actual) {len(val)}!={field_len} (expected)"
                 )
 
     def _validate_field_names(self, val):
