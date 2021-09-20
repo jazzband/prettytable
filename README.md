@@ -354,12 +354,12 @@ relevant row, in the column specified by the `sort_by` argument. The remaining n
 elements are the data in each of the table's columns, in order, including a repeated
 instance of the data in the `sort_by` column.
 
-##### Setting the minimum columns lengths
+##### Setting columns' minimum widths
 
 You can set the minimum width of each column using the property `columns_min_widths`:
 
 ```python
-x.columns_min_widths = [30, 15, 20, None]
+x.columns_min_widths = [30, 15, 20, 0]
 print(x)
 ```
 
@@ -379,7 +379,8 @@ to get:
 +--------------------------------+-----------------+----------------------+-----------------+
 ```
 
-If the argument `None` is passed, then the minimum width is automatically selected
+If `0` is given for a column, then the minimum width is calculated based on the column's
+data.
 
 ### Changing the appearance of your table - the easy way
 

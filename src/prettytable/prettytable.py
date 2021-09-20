@@ -392,7 +392,7 @@ class PrettyTable:
                     len(self._field_names) if self._field_names else len(self._rows[0])
                 )
                 raise Exception(
-                    "Columns minimum widths list has incorrect number of values, "
+                    "Columns' minimum widths list has incorrect number of values, "
                     f"(actual) {len(val)}!={field_len} (expected)"
                 )
 
@@ -535,7 +535,7 @@ class PrettyTable:
 
     @columns_min_widths.setter
     def columns_min_widths(self, val):
-        val = [int(x) if x else 0 for x in val]
+        val = [int(x) for x in val]
         self._validate_option("columns_min_widths", val)
         self._columns_min_widths = val
 
@@ -1634,12 +1634,12 @@ class PrettyTable:
         if not self._field_names:
             bits.append(options[where + "right_junction_char"])
             return "".join(bits)
-        for field, width, min_widths in zip(
+        for field, width, min_width in zip(
             self._field_names, self._widths, self._columns_min_widths
         ):
             if options["fields"] and field not in options["fields"]:
                 continue
-            temp_width = width if width > min_widths else min_widths
+            temp_width = max(width, min_width)
             bits.append((temp_width + lpad + rpad) * options["horizontal_char"])
             if options["vrules"] == ALL:
                 bits.append(options[where + "junction_char"])
@@ -1696,7 +1696,7 @@ class PrettyTable:
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
-        for (field, width, min_widths) in zip(
+        for (field, width, min_width) in zip(
             self._field_names,
             self._widths,
             self._columns_min_widths,
@@ -1713,7 +1713,7 @@ class PrettyTable:
                 fieldname = field.lower()
             else:
                 fieldname = field
-            temp_width = width if width > min_widths else min_widths
+            temp_width = max(width, min_width)
             bits.append(
                 " " * lpad
                 + self._justify(fieldname, temp_width, self._align[field])
@@ -1766,7 +1766,7 @@ class PrettyTable:
                 else:
                     bits[y].append(" ")
 
-        for (field, value, width, min_widths) in zip(
+        for (field, value, width, min_width) in zip(
             self._field_names,
             row,
             self._widths,
@@ -1791,7 +1791,7 @@ class PrettyTable:
             for line in lines:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                temp_width = width if width > min_widths else min_widths
+                temp_width = max(width, min_width)
                 bits[y].append(
                     " " * lpad
                     + self._justify(line, temp_width, self._align[field])

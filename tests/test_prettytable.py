@@ -1235,7 +1235,7 @@ class ColumnsMinWidthsTest(unittest.TestCase):
 |   Darwin  | 112  |   120900   |
 +-----------+------+------------+
 """,
-                min_widths=[None, None, None],
+                min_widths=[0, 0, 0],
             ),
             dict(
                 result="""
@@ -1247,7 +1247,7 @@ class ColumnsMinWidthsTest(unittest.TestCase):
 |        Darwin        |              112               |   120900   |
 +----------------------+--------------------------------+------------+
 """,
-                min_widths=[20, 30, None],
+                min_widths=[20, 30, 0],
             ),
             dict(
                 result="""
@@ -1265,32 +1265,32 @@ class ColumnsMinWidthsTest(unittest.TestCase):
         for table in tables:
             self.x.columns_min_widths = table["min_widths"]
             result = self.x.get_string()
-            self.assertEqual(result.strip(), table["result"].strip())
+            assert result.strip() == table["result"].strip()
 
     def testExceptionsWithFieldNames(self):
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             self.x.columns_min_widths = [20, 30]
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             self.x.columns_min_widths = [20, 30, 40, 50]
 
     def testExceptionsWithoutFieldNames(self):
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             self.y.columns_min_widths = [20, 30]
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             self.y.columns_min_widths = [20, 30, 40, 50]
 
     def testAutoIndex(self):
         self.auto_index_table.add_autoindex(fieldname="Test")
-        self.assertEqual(self.auto_index_table.columns_min_widths, [0, 0, 0, 0])
+        assert self.auto_index_table.columns_min_widths == [0, 0, 0, 0]
 
         self.auto_index_table.add_autoindex(fieldname="Test", min_width=30)
-        self.assertEqual(self.auto_index_table.columns_min_widths, [30, 0, 0, 0, 0])
+        assert self.auto_index_table.columns_min_widths == [30, 0, 0, 0, 0]
 
     def testAddColumn(self):
         self.add_column_table.add_column("Starts with A", [True, False, False])
-        self.assertEqual(self.add_column_table.columns_min_widths, [0, 0, 0, 0])
+        assert self.add_column_table.columns_min_widths == [0, 0, 0, 0]
 
         self.add_column_table.add_column(
             "Starts with B", [False, True, False], min_width=30
         )
-        self.assertEqual(self.add_column_table.columns_min_widths, [0, 0, 0, 0, 30])
+        assert self.add_column_table.columns_min_widths == [0, 0, 0, 0, 30]
