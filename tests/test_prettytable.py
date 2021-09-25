@@ -580,6 +580,44 @@ class BreakLineTests(unittest.TestCase):
         )
 
 
+class AnsiWidthTest(unittest.TestCase):
+    colored = "\033[31mC\033[32mO\033[31mL\033[32mO\033[31mR\033[32mE\033[31mD\033[0m"
+
+    def testColor(self):
+        t = PrettyTable(["Field 1", "Field 2"])
+        t.add_row([self.colored, self.colored])
+        t.add_row(["nothing", "neither"])
+        result = t.get_string()
+        assert (
+            result.strip()
+            == f"""
++---------+---------+
+| Field 1 | Field 2 |
++---------+---------+
+| {self.colored} | {self.colored} |
+| nothing | neither |
++---------+---------+
+""".strip()
+        )
+
+    def testReset(self):
+        t = PrettyTable(["Field 1", "Field 2"])
+        t.add_row(["abc def\033(B", "\033[31mabc def\033[m"])
+        t.add_row(["nothing", "neither"])
+        result = t.get_string()
+        assert (
+            result.strip()
+            == """
++---------+---------+
+| Field 1 | Field 2 |
++---------+---------+
+| abc def\033(B | \033[31mabc def\033[m |
+| nothing | neither |
++---------+---------+
+""".strip()
+        )
+
+
 class JSONOutputTests(unittest.TestCase):
     def testJSONOutput(self):
         t = helper_table()
