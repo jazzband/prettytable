@@ -110,6 +110,14 @@ class BuildEquivalenceTest(unittest.TestCase):
 
         assert self.row.get_html_string() == self.mix.get_html_string()
 
+    def testRowColEquivalenceLaTex(self):
+
+        assert False
+        
+    def testRowMixEquivalenceLaTex(self):
+
+        assert False
+
 
 class DeleteColumnTest(unittest.TestCase):
     def testDeleteColumn(self):
@@ -156,6 +164,9 @@ class FieldnamelessTableTest(unittest.TestCase):
         output = self.x.get_html_string()
         assert "<th>Field 1</th>" in output
         assert "<td>Adelaide</td>" in output
+
+    def testCanStringLaTex(self):
+        assert False
 
     def testAddFieldNamesLater(self):
         self.x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
@@ -578,6 +589,9 @@ class BreakLineTests(unittest.TestCase):
 </table>
 """.strip()
         )
+    
+    def testLatexBreakLine(self):
+        assert False
 
 
 class JSONOutputTests(unittest.TestCase):
@@ -980,6 +994,9 @@ class CsvOutputTests(unittest.TestCase):
             "value 7,value8,value9\r\n"
         )
 
+class LatexOutputTests(unittest.TestCase):
+    def testLatexOutput(self):
+        assert False
 
 class DatabaseConstructorTest(BasicTests):
     def setUp(self):
