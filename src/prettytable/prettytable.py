@@ -2045,52 +2045,112 @@ class PrettyTable:
     ##############################
 
     def get_latex_string(self, **kwargs):
+        """Return string representation of LaTex formatted version of table in current
+        state.
+
+        Arguments:
+
+        start - index of first data row to include in output
+        end - index of last data row to include in output PLUS ONE (list slice style)
+        fields - names of fields (columns) to include
+        header - print a header showing field names (True or False)
+        border - print a border around the table (True or False)
+        hrules - controls printing of horizontal rules after rows.
+            Allowed values: ALL, FRAME, HEADER, NONE
+        vrules - controls printing of vertical rules between columns.
+            Allowed values: FRAME, ALL, NONE
+        int_format - controls formatting of integer data
+        float_format - controls formatting of floating point data
+        sortby - name of field to sort rows by
+        sort_key - sorting key function, applied to data points before sorting
+        format - Controls whether or not HTML tables are formatted to match
+            styling options (True or False)
+        """
         options = self._get_options(kwargs)
 
+        if options["format"]:
+            string = self._get_formatted_latex_string(options)
+        else:
+            string = self._get_simple_latex_string(options)
+        return string
+
+    def _get_simple_latex_string(self, options):
         lines = []
 
-        aligments = '|'.join([self._align[field] for field in self._field_names])
-        if self._border:
-            aligments = '|' + aligments + '|'
+        wanted_fields = []
+        if options["fields"]:
+            wanted_fields = [field for field in self._field_names 
+                    if field in options["fields"]]
+        else:
+            wanted_fields = self._field_names
 
-        begin_cmd = "\\begin{{tabular}}{{{}}}".format(aligments)
+        aligments = ''.join([self._align[field] for field in self._field_names])
+
+        begin_cmd = "\\begin{tabular}{%s}" % aligments
         lines.append(begin_cmd)
-
-        if self._border:
-            lines.append("\\hline")
-
-        # Title
-        # Putting titles on tables is not a common practice in LaTex
-        # Moreover, it is not clear how to do using native LaTex
 
         # Headers
         if options["header"]:
-            wanted_fields = []
-            for field in self._field_names:
-                if options["fields"] and field not in options["fields"]:
-                    continue
-                wanted_fields.append(field)
             lines.append(" & ".join(wanted_fields)+" \\\\")
-        lines.append("\\hline")
+
+        # Data
+        rows = self._get_rows(options)
+        formatted_rows = self._format_rows(rows, options)
+        for row in formatted_rows:
+            wanted_data = [d for f,d in zip(self._field_names, row) if f in wanted_fields]
+            lines.append(" & ".join(wanted_data)+" \\\\")
+
+        lines.append("\\end{tabular}")
+
+        return "\r\n".join(lines)
+    
+    def _get_formatted_latex_string(self, options):
+        lines = []
+
+        wanted_fields = []
+        if options["fields"]:
+            wanted_fields = [field for field in self._field_names 
+                    if field in options["fields"]]
+        else:
+            wanted_fields = self._field_names
+
+        wanted_aligments = [self._align[field] for field in self._field_names]
+        if options["border"] and options["vrules"] == ALL: 
+            aligment_str = '|'.join(wanted_aligments)
+        else:
+            aligment_str = ''.join(wanted_aligments)
+
+        if options["border"] and options["vrules"] in [ALL, FRAME]:
+            aligment_str = '|' + aligment_str + '|'
+
+        begin_cmd = "\\begin{tabular}{%s}" % aligment_str
+        lines.append(begin_cmd)
+
+        if options["border"] and options["hrules"] in [ALL, FRAME, HEADER]:
+            lines.append("\\hline")
+
+        # Headers
+        if options["header"]:
+            lines.append(" & ".join(wanted_fields)+" \\\\")
+        if options["border"] and options["hrules"] in [ALL, HEADER]:
+            lines.append("\\hline")
                 
         # Data
         rows = self._get_rows(options)
         formatted_rows = self._format_rows(rows, options)
         for row in formatted_rows:
-            wanted_data = []
-            for field, datum in zip(self._field_names, row):
-                if options["fields"] and field not in options["fields"]:
-                    continue
-                wanted_data.append(datum)
+            wanted_data = [d for f,d in zip(self._field_names, row) if f in wanted_fields]
             lines.append(" & ".join(wanted_data)+" \\\\")
+            if options["border"] and options["hrules"] == ALL:
+                lines.append("\\hline")
 
-        if self._border:
+
+        if options["border"] and options["hrules"] == FRAME:
             lines.append("\\hline")
 
         lines.append("\\end{tabular}")
 
         return "\r\n".join(lines)
-        
 
 ##############################
 # UNICODE WIDTH FUNCTION     #
