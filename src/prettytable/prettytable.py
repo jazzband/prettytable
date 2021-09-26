@@ -2079,8 +2079,8 @@ class PrettyTable:
 
         wanted_fields = []
         if options["fields"]:
-            wanted_fields = [field for field in self._field_names 
-                    if field in options["fields"]]
+            wanted_fields = [field for field in self._field_names
+                             if field in options["fields"]]
         else:
             wanted_fields = self._field_names
 
@@ -2097,25 +2097,26 @@ class PrettyTable:
         rows = self._get_rows(options)
         formatted_rows = self._format_rows(rows, options)
         for row in formatted_rows:
-            wanted_data = [d for f,d in zip(self._field_names, row) if f in wanted_fields]
+            wanted_data = [d for f, d in zip(self._field_names, row)
+                           if f in wanted_fields]
             lines.append(" & ".join(wanted_data)+" \\\\")
 
         lines.append("\\end{tabular}")
 
         return "\r\n".join(lines)
-    
+
     def _get_formatted_latex_string(self, options):
         lines = []
 
         wanted_fields = []
         if options["fields"]:
-            wanted_fields = [field for field in self._field_names 
-                    if field in options["fields"]]
+            wanted_fields = [field for field in self._field_names
+                             if field in options["fields"]]
         else:
             wanted_fields = self._field_names
 
         wanted_aligments = [self._align[field] for field in self._field_names]
-        if options["border"] and options["vrules"] == ALL: 
+        if options["border"] and options["vrules"] == ALL:
             aligment_str = '|'.join(wanted_aligments)
         else:
             aligment_str = ''.join(wanted_aligments)
@@ -2134,16 +2135,16 @@ class PrettyTable:
             lines.append(" & ".join(wanted_fields)+" \\\\")
         if options["border"] and options["hrules"] in [ALL, HEADER]:
             lines.append("\\hline")
-                
+
         # Data
         rows = self._get_rows(options)
         formatted_rows = self._format_rows(rows, options)
         for row in formatted_rows:
-            wanted_data = [d for f,d in zip(self._field_names, row) if f in wanted_fields]
+            wanted_data = [d for f, d in zip(self._field_names, row)
+                           if f in wanted_fields]
             lines.append(" & ".join(wanted_data)+" \\\\")
             if options["border"] and options["hrules"] == ALL:
                 lines.append("\\hline")
-
 
         if options["border"] and options["hrules"] == FRAME:
             lines.append("\\hline")

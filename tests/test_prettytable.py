@@ -113,7 +113,7 @@ class BuildEquivalenceTest(unittest.TestCase):
     def testRowColEquivalenceLaTex(self):
 
         assert self.row.get_latex_string() == self.col.get_latex_string()
-        
+
     def testRowMixEquivalenceLaTex(self):
 
         assert self.row.get_latex_string() == self.col.get_latex_string()
@@ -591,7 +591,6 @@ class BreakLineTests(unittest.TestCase):
 </table>
 """.strip()
         )
-    
 
 
 class AnsiWidthTest(unittest.TestCase):
@@ -1031,6 +1030,7 @@ class CsvOutputTests(unittest.TestCase):
             "value 4,value5,value6\r\n"
             "value 7,value8,value9\r\n"
         )
+
 
 class LatexOutputTests(unittest.TestCase):
     def testLatexOutput(self):
