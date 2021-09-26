@@ -2040,6 +2040,57 @@ class PrettyTable:
 
         return "\n".join(lines)
 
+    ##############################
+    # LATEX STRING METHODS       #
+    ##############################
+
+    def get_latex_string(self, **kwargs):
+        options = self._get_options(kwargs)
+
+        lines = []
+
+        aligments = '|'.join([self._align[field] for field in self._field_names])
+        if self._border:
+            aligments = '|' + aligments + '|'
+
+        begin_cmd = "\\begin{{tabular}}{{{}}}".format(aligments)
+        lines.append(begin_cmd)
+
+        if self._border:
+            lines.append("\\hline")
+
+        # Title
+        # Putting titles on tables is not a common practice in LaTex
+        # Moreover, it is not clear how to do using native LaTex
+
+        # Headers
+        if options["header"]:
+            wanted_fields = []
+            for field in self._field_names:
+                if options["fields"] and field not in options["fields"]:
+                    continue
+                wanted_fields.append(field)
+            lines.append(" & ".join(wanted_fields)+" \\\\")
+        lines.append("\\hline")
+                
+        # Data
+        rows = self._get_rows(options)
+        formatted_rows = self._format_rows(rows, options)
+        for row in formatted_rows:
+            wanted_data = []
+            for field, datum in zip(self._field_names, row):
+                if options["fields"] and field not in options["fields"]:
+                    continue
+                wanted_data.append(datum)
+            lines.append(" & ".join(wanted_data)+" \\\\")
+
+        if self._border:
+            lines.append("\\hline")
+
+        lines.append("\\end{tabular}")
+
+        return "\n".join(lines)
+        
 
 ##############################
 # UNICODE WIDTH FUNCTION     #
