@@ -59,7 +59,7 @@ ORGMODE = 14
 DOUBLE_BORDER = 15
 RANDOM = 20
 
-_re = re.compile(r"\033\[[0-9;]*m")
+_re = re.compile(r"\033\[[0-9;]*m|\033\(B")
 
 
 def _get_size(text):
