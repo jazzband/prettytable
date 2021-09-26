@@ -2089,7 +2089,7 @@ class PrettyTable:
 
         lines.append("\\end{tabular}")
 
-        return "\n".join(lines)
+        return "\r\n".join(lines)
         
 
 ##############################
