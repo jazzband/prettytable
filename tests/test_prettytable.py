@@ -593,6 +593,7 @@ class BreakLineTests(unittest.TestCase):
         )
     
 
+
 class JSONOutputTests(unittest.TestCase):
     def testJSONOutput(self):
         t = helper_table()
@@ -997,10 +998,20 @@ class LatexOutputTests(unittest.TestCase):
     def testLatexOutput(self):
         t = helper_table()
         assert t.get_latex_string() == (
+            "\\begin{tabular}{ccc}\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\end{tabular}"
+        )
+
+    def testLatexOutputFormatted(self):
+        t = helper_table()
+        assert t.get_latex_string(format=True) == (
             "\\begin{tabular}{|c|c|c|}\r\n"
             "\\hline\r\n"
             "Field 1 & Field 2 & Field 3 \\\\\r\n"
-            "\\hline\r\n"
             "value 1 & value2 & value3 \\\\\r\n"
             "value 4 & value5 & value6 \\\\\r\n"
             "value 7 & value8 & value9 \\\\\r\n"
