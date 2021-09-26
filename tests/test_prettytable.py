@@ -1095,6 +1095,63 @@ class PrintJapaneseTest(unittest.TestCase):
         print(self.x)
 
 
+class PrintHTMLEscapingTest(unittest.TestCase):
+    def setUp(self):
+
+        self.x = PrettyTable(['<a href="https://google.com">Field 1</a>', 'Field 2'])
+        self.x.add_row(['value 1', 'value 2'])
+        self.x.add_row(['<a href="https://google.com">value 3</a>', 'value 4'])
+
+    def testNoFormatEscape(self):
+        result = self.x.get_html_string(escape_header=False, escape_data=False)
+        print(result)
+        assert result.strip() == """
+<table>
+    <thead>
+        <tr>
+            <th><a href="https://google.com">Field 1</a></th>
+            <th>Field 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>value 1</td>
+            <td>value 2</td>
+        </tr>
+        <tr>
+            <td><a href="https://google.com">value 3</a></td>
+            <td>value 4</td>
+        </tr>
+    </tbody>
+</table>
+""".strip()
+
+    def testFormatEscape(self):
+        result = self.x.get_html_string(escape_header=False,
+                                        escape_data=False,
+                                        format=True)
+        assert result.strip() == """
+<table frame="box" rules="cols">
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center"><a href="https://google.com">Field 1</a></th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 1</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 2</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top"><a href="https://google.com">value 3</a></td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 4</td>
+        </tr>
+    </tbody>
+</table>
+""".strip()  # noqa: E501
+
+
 class PrintEmojiTest(unittest.TestCase):
     def setUp(self):
         thunder1 = [
