@@ -1223,6 +1223,16 @@ class ColumnsMinWidthsTest(unittest.TestCase):
         self.add_column_table.add_row(["Brisbane", 5905, 1857594])
         self.add_column_table.add_row(["Darwin", 112, 120900])
 
+        self.min_width_table = PrettyTable()
+        self.min_width_table.field_names = ["City name", "Area", "Population"]
+        self.min_width_table.add_row(["Adelaide", 1295, 1158259])
+        self.min_width_table.add_row(["Brisbane", 5905, 1857594])
+
+        self.max_width_table = PrettyTable()
+        self.max_width_table.field_names = ["City name", "Area", "Population"]
+        self.max_width_table.add_row(["Adelaide", 1295, 1158259])
+        self.max_width_table.add_row(["Brisbane", 5905, 18575943432423434242342])
+
     def testColumnsMinWidths(self):
         tables = [
             dict(
@@ -1294,3 +1304,31 @@ class ColumnsMinWidthsTest(unittest.TestCase):
             "Starts with B", [False, True, False], min_width=30
         )
         assert self.add_column_table.columns_min_widths == [0, 0, 0, 0, 30]
+
+    def testMinWidth(self):
+        self.min_width_table.columns_min_widths = [15, 15, 30]
+        self.min_width_table.min_width["Area"] = 30
+        self.min_width_table.min_width["Population"] = 15
+        result = """
++-----------------+--------------------------------+--------------------------------+
+|    City name    |              Area              |           Population           |
++-----------------+--------------------------------+--------------------------------+
+|     Adelaide    |              1295              |            1158259             |
+|     Brisbane    |              5905              |            1857594             |
++-----------------+--------------------------------+--------------------------------+
+        """.strip()
+        assert self.min_width_table.get_string() == result
+
+    def testMaxWidth(self):
+        self.max_width_table.columns_min_widths = [10, 30, 10]
+        self.max_width_table.max_width["Area"] = 15
+        self.max_width_table.max_width["Population"] = 30
+        result = """
++------------+--------------------------------+-------------------------+
+| City name  |              Area              |        Population       |
++------------+--------------------------------+-------------------------+
+|  Adelaide  |              1295              |         1158259         |
+|  Brisbane  |              5905              | 18575943432423434242342 |
++------------+--------------------------------+-------------------------+
+                """.strip()
+        assert self.max_width_table.get_string() == result
