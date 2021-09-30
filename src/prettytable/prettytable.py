@@ -2130,7 +2130,7 @@ class PrettyTable:
         begin_cmd = "\\begin{tabular}{%s}" % aligment_str
         lines.append(begin_cmd)
 
-        if options["border"] and options["hrules"] in [ALL, FRAME, HEADER]:
+        if options["border"] and options["hrules"] in [ALL, FRAME]:
             lines.append("\\hline")
 
         # Headers
