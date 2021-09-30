@@ -18,6 +18,7 @@ from prettytable import (
     ORGMODE,
     PLAIN_COLUMNS,
     RANDOM,
+    HEADER,
     PrettyTable,
     from_csv,
     from_db_cursor,
@@ -1054,6 +1055,18 @@ class LatexOutputTests(unittest.TestCase):
             "value 4 & value5 & value6 \\\\\r\n"
             "value 7 & value8 & value9 \\\\\r\n"
             "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+    def testLatexOutputHeader(self):
+        t = helper_table()
+        assert t.get_latex_string(format=True, hrules=HEADER) == (
+            "\\begin{tabular}{|c|c|c|}\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "\\hline\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
             "\\end{tabular}"
         )
 
