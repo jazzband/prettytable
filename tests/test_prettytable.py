@@ -3,8 +3,8 @@
 import io
 import random
 import sqlite3
-import unittest
 from math import e, pi, sqrt
+from typing import Any, List
 
 import pytest
 
@@ -106,25 +106,21 @@ class TestBuildEquivalence:
     """Make sure that building a table row-by-row and column-by-column yield the same
     results"""
 
+    @pytest.mark.parametrize(["left_hand", "right_hand"],
+    [(pytest.lazy_fixture('row_prettytable'), pytest.lazy_fixture('col_prettytable')),
+     (pytest.lazy_fixture('row_prettytable'), pytest.lazy_fixture('mix_prettytable'))])
     def test_RowColEquivalenceASCII(
-        self, row_prettytable: PrettyTable, col_prettytable: PrettyTable
+        self, left_hand: PrettyTable, right_hand: PrettyTable
     ):
-        assert row_prettytable.get_string() == col_prettytable.get_string()
+        assert left_hand.get_string() == right_hand.get_string()
 
-    def test_RowMixEquivalenceASCII(
-        self, row_prettytable: PrettyTable, mix_prettytable: PrettyTable
-    ):
-        assert row_prettytable.get_string() == mix_prettytable.get_string()
-
+    @pytest.mark.parametrize(["left_hand", "right_hand"],
+    [(pytest.lazy_fixture('row_prettytable'), pytest.lazy_fixture('col_prettytable')),
+     (pytest.lazy_fixture('row_prettytable'), pytest.lazy_fixture('mix_prettytable'))])
     def test_RowColEquivalenceHTML(
-        self, row_prettytable: PrettyTable, col_prettytable: PrettyTable
+        self, left_hand: PrettyTable, right_hand: PrettyTable
     ):
-        assert row_prettytable.get_html_string() == col_prettytable.get_html_string()
-
-    def testRowMixEquivalenceHTML(
-        self, row_prettytable: PrettyTable, mix_prettytable: PrettyTable
-    ):
-        assert row_prettytable.get_html_string() == mix_prettytable.get_html_string()
+        assert left_hand.get_html_string() == right_hand.get_html_string()
 
 
 class TestDeleteColumn:
@@ -522,21 +518,24 @@ class TestsBasic:
 #         assert "20" in oldstyle
 
 
-class FloatFormatTests(unittest.TestCase):
-    def setUp(self):
-        self.x = PrettyTable(["Constant", "Value"])
-        self.x.add_row(["Pi", pi])
-        self.x.add_row(["e", e])
-        self.x.add_row(["sqrt(2)", sqrt(2)])
+@pytest.fixture(scope="function")
+def float_pt():
+    pt = PrettyTable(["Constant", "Value"])
+    pt.add_row(["Pi", pi])
+    pt.add_row(["e", e])
+    pt.add_row(["sqrt(2)", sqrt(2)])
+    return pt
 
-    def testNoDecimals(self):
-        self.x.float_format = ".0f"
-        self.x.caching = False
-        assert "." not in self.x.get_string()
 
-    def testRoundTo5DP(self):
-        self.x.float_format = ".5f"
-        string = self.x.get_string()
+class TestFloatFormat:
+    def test_NoDecimals(self, float_pt: PrettyTable):
+        float_pt.float_format = ".0f"
+        float_pt.caching = False
+        assert "." not in float_pt.get_string()
+
+    def test_RoundTo5DP(self, float_pt: PrettyTable):
+        float_pt.float_format = ".5f"
+        string = float_pt.get_string()
         assert "3.14159" in string
         assert "3.141592" not in string
         assert "2.71828" in string
@@ -545,23 +544,22 @@ class FloatFormatTests(unittest.TestCase):
         assert "1.41421" in string
         assert "1.414213" not in string
 
-    def testPadWith2Zeroes(self):
-        self.x.float_format = "06.2f"
-        string = self.x.get_string()
+    def test_PadWith2Zeroes(self, float_pt: PrettyTable):
+        float_pt.float_format = "06.2f"
+        string = float_pt.get_string()
         assert "003.14" in string
         assert "002.72" in string
         assert "001.41" in string
 
 
-class BreakLineTests(unittest.TestCase):
-    def testAsciiBreakLine(self):
-        t = PrettyTable(["Field 1", "Field 2"])
-        t.add_row(["value 1", "value2\nsecond line"])
-        t.add_row(["value 3", "value4"])
-        result = t.get_string(hrules=ALL)
-        assert (
-            result.strip()
-            == """
+class TestBreakLine:
+    @pytest.mark.parametrize(
+        ["rows", "hrule", "expected_result"],
+        [
+            (
+                [["value 1", "value2\nsecond line"], ["value 3", "value4"]],
+                ALL,
+                """
 +---------+-------------+
 | Field 1 |   Field 2   |
 +---------+-------------+
@@ -570,16 +568,15 @@ class BreakLineTests(unittest.TestCase):
 +---------+-------------+
 | value 3 |    value4   |
 +---------+-------------+
-""".strip()
-        )
-
-        t = PrettyTable(["Field 1", "Field 2"])
-        t.add_row(["value 1", "value2\nsecond line"])
-        t.add_row(["value 3\n\nother line", "value4\n\n\nvalue5"])
-        result = t.get_string(hrules=ALL)
-        assert (
-            result.strip()
-            == """
+"""
+            ),
+            (
+                [
+                    ["value 1", "value2\nsecond line"],
+                    ["value 3\n\nother line", "value4\n\n\nvalue5"],
+                ],
+                ALL,
+                """
 +------------+-------------+
 |  Field 1   |   Field 2   |
 +------------+-------------+
@@ -591,16 +588,15 @@ class BreakLineTests(unittest.TestCase):
 | other line |             |
 |            |    value5   |
 +------------+-------------+
-""".strip()
-        )
-
-        t = PrettyTable(["Field 1", "Field 2"])
-        t.add_row(["value 1", "value2\nsecond line"])
-        t.add_row(["value 3\n\nother line", "value4\n\n\nvalue5"])
-        result = t.get_string()
-        assert (
-            result.strip()
-            == """
+"""
+            ),
+(
+                [
+                    ["value 1", "value2\nsecond line"],
+                    ["value 3\n\nother line", "value4\n\n\nvalue5"],
+                ],
+                FRAME,
+                """
 +------------+-------------+
 |  Field 1   |   Field 2   |
 +------------+-------------+
@@ -611,10 +607,20 @@ class BreakLineTests(unittest.TestCase):
 | other line |             |
 |            |    value5   |
 +------------+-------------+
-""".strip()
-        )
+"""
+            ),
+        ],
+    )
+    def test_AsciiBreakLine(
+        self, rows: List[List[Any]], hrule: int, expected_result: str
+    ):
+        t = PrettyTable(["Field 1", "Field 2"])
+        for row in rows:
+            t.add_row(row)
+        result = t.get_string(hrules=hrule)
+        assert result.strip() == expected_result.strip()
 
-    def testHtmlBreakLine(self):
+    def test_HtmlBreakLine(self):
         t = PrettyTable(["Field 1", "Field 2"])
         t.add_row(["value 1", "value2\nsecond line"])
         t.add_row(["value 3", "value4"])
@@ -644,88 +650,88 @@ class BreakLineTests(unittest.TestCase):
         )
 
 
-class AnsiWidthTest(unittest.TestCase):
-    colored = "\033[31mC\033[32mO\033[31mL\033[32mO\033[31mR\033[32mE\033[31mD\033[0m"
+# class AnsiWidthTest(unittest.TestCase):
+#     colored = "\033[31mC\033[32mO\033[31mL\033[32mO\033[31mR\033[32mE\033[31mD\033[0m"
 
-    def testColor(self):
-        t = PrettyTable(["Field 1", "Field 2"])
-        t.add_row([self.colored, self.colored])
-        t.add_row(["nothing", "neither"])
-        result = t.get_string()
-        assert (
-            result.strip()
-            == f"""
-+---------+---------+
-| Field 1 | Field 2 |
-+---------+---------+
-| {self.colored} | {self.colored} |
-| nothing | neither |
-+---------+---------+
-""".strip()
-        )
+#     def testColor(self):
+#         t = PrettyTable(["Field 1", "Field 2"])
+#         t.add_row([self.colored, self.colored])
+#         t.add_row(["nothing", "neither"])
+#         result = t.get_string()
+#         assert (
+#             result.strip()
+#             == f"""
+# +---------+---------+
+# | Field 1 | Field 2 |
+# +---------+---------+
+# | {self.colored} | {self.colored} |
+# | nothing | neither |
+# +---------+---------+
+# """.strip()
+#         )
 
-    def testReset(self):
-        t = PrettyTable(["Field 1", "Field 2"])
-        t.add_row(["abc def\033(B", "\033[31mabc def\033[m"])
-        t.add_row(["nothing", "neither"])
-        result = t.get_string()
-        assert (
-            result.strip()
-            == """
-+---------+---------+
-| Field 1 | Field 2 |
-+---------+---------+
-| abc def\033(B | \033[31mabc def\033[m |
-| nothing | neither |
-+---------+---------+
-""".strip()
-        )
-
-
-class JSONOutputTests(unittest.TestCase):
-    def testJSONOutput(self):
-        t = helper_table()
-        result = t.get_json_string()
-        assert (
-            result.strip()
-            == """
-[
-    [
-        "Field 1",
-        "Field 2",
-        "Field 3"
-    ],
-    {
-        "Field 1": "value 1",
-        "Field 2": "value2",
-        "Field 3": "value3"
-    },
-    {
-        "Field 1": "value 4",
-        "Field 2": "value5",
-        "Field 3": "value6"
-    },
-    {
-        "Field 1": "value 7",
-        "Field 2": "value8",
-        "Field 3": "value9"
-    }
-]""".strip()
-        )
-
-    def testJSONOutputOptions(self):
-        t = helper_table()
-        result = t.get_json_string(header=False, indent=None, separators=(",", ":"))
-        assert (
-            result
-            == """[{"Field 1":"value 1","Field 2":"value2","Field 3":"value3"},"""
-            """{"Field 1":"value 4","Field 2":"value5","Field 3":"value6"},"""
-            """{"Field 1":"value 7","Field 2":"value8","Field 3":"value9"}]"""
-        )
+#     def testReset(self):
+#         t = PrettyTable(["Field 1", "Field 2"])
+#         t.add_row(["abc def\033(B", "\033[31mabc def\033[m"])
+#         t.add_row(["nothing", "neither"])
+#         result = t.get_string()
+#         assert (
+#             result.strip()
+#             == """
+# +---------+---------+
+# | Field 1 | Field 2 |
+# +---------+---------+
+# | abc def\033(B | \033[31mabc def\033[m |
+# | nothing | neither |
+# +---------+---------+
+# """.strip()
+#         )
 
 
-class HtmlOutputTests(unittest.TestCase):
-    def testHtmlOutput(self):
+# class JSONOutputTests(unittest.TestCase):
+#     def testJSONOutput(self):
+#         t = helper_table()
+#         result = t.get_json_string()
+#         assert (
+#             result.strip()
+#             == """
+# [
+#     [
+#         "Field 1",
+#         "Field 2",
+#         "Field 3"
+#     ],
+#     {
+#         "Field 1": "value 1",
+#         "Field 2": "value2",
+#         "Field 3": "value3"
+#     },
+#     {
+#         "Field 1": "value 4",
+#         "Field 2": "value5",
+#         "Field 3": "value6"
+#     },
+#     {
+#         "Field 1": "value 7",
+#         "Field 2": "value8",
+#         "Field 3": "value9"
+#     }
+# ]""".strip()
+#         )
+
+#     def testJSONOutputOptions(self):
+#         t = helper_table()
+#         result = t.get_json_string(header=False, indent=None, separators=(",", ":"))
+#         assert (
+#             result
+#             == """[{"Field 1":"value 1","Field 2":"value2","Field 3":"value3"},"""
+#             """{"Field 1":"value 4","Field 2":"value5","Field 3":"value6"},"""
+#             """{"Field 1":"value 7","Field 2":"value8","Field 3":"value9"}]"""
+#         )
+
+
+class TestHtmlOutput:
+    def test_HtmlOutput(self):
         t = helper_table()
         result = t.get_html_string()
         assert (
@@ -760,7 +766,7 @@ class HtmlOutputTests(unittest.TestCase):
 """.strip()
         )
 
-    def testHtmlOutputFormatted(self):
+    def test_HtmlOutputFormatted(self):
         t = helper_table()
         result = t.get_html_string(format=True)
         assert (
@@ -796,158 +802,164 @@ class HtmlOutputTests(unittest.TestCase):
         )
 
 
-# class PositionalJunctionsTests(CityDataTest):
+class TestPositionalJunctions:
+    """Verify different cases for positional-junction characters"""
 
-#     """Verify different cases for positional-junction characters"""
+    def test_Default(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.set_style(DOUBLE_BORDER)
 
-#     def setUp(self):
-#         CityDataTest.setUp(self)
-#         self.x.set_style(DOUBLE_BORDER)
+        assert (
+            city_data_prettytable.get_string().strip()
+            == """
+╔═══════════╦══════╦════════════╦═════════════════╗
+║ City name ║ Area ║ Population ║ Annual Rainfall ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
+║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
+║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
+║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
+║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
+║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
+║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
+╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
+        )
 
-#     def testDefault(self):
-#         assert (
-#             self.x.get_string().strip()
-#             == """
-# ╔═══════════╦══════╦════════════╦═════════════════╗
-# ║ City name ║ Area ║ Population ║ Annual Rainfall ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
-# ║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
-# ║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
-# ║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
-# ║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
-# ║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
-# ║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
-# ╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
-#         )
+    def test_NoHeader(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.set_style(DOUBLE_BORDER)
+        city_data_prettytable.header = False
 
-#     def testNoHeader(self):
-#         self.x.header = False
-#         assert (
-#             self.x.get_string().strip()
-#             == """
-# ╔═══════════╦══════╦═════════╦════════╗
-# ║  Adelaide ║ 1295 ║ 1158259 ║ 600.5  ║
-# ║  Brisbane ║ 5905 ║ 1857594 ║ 1146.4 ║
-# ║   Darwin  ║ 112  ║  120900 ║ 1714.7 ║
-# ║   Hobart  ║ 1357 ║  205556 ║ 619.5  ║
-# ║   Sydney  ║ 2058 ║ 4336374 ║ 1214.8 ║
-# ║ Melbourne ║ 1566 ║ 3806092 ║ 646.9  ║
-# ║   Perth   ║ 5386 ║ 1554769 ║ 869.4  ║
-# ╚═══════════╩══════╩═════════╩════════╝""".strip()
-#         )
+        assert (
+            city_data_prettytable.get_string().strip()
+            == """
+╔═══════════╦══════╦═════════╦════════╗
+║  Adelaide ║ 1295 ║ 1158259 ║ 600.5  ║
+║  Brisbane ║ 5905 ║ 1857594 ║ 1146.4 ║
+║   Darwin  ║ 112  ║  120900 ║ 1714.7 ║
+║   Hobart  ║ 1357 ║  205556 ║ 619.5  ║
+║   Sydney  ║ 2058 ║ 4336374 ║ 1214.8 ║
+║ Melbourne ║ 1566 ║ 3806092 ║ 646.9  ║
+║   Perth   ║ 5386 ║ 1554769 ║ 869.4  ║
+╚═══════════╩══════╩═════════╩════════╝""".strip()
+        )
 
-#     def testWithTitle(self):
-#         self.x.title = "Title"
-#         assert (
-#             self.x.get_string().strip()
-#             == """
-# ╔═════════════════════════════════════════════════╗
-# ║                      Title                      ║
-# ╠═══════════╦══════╦════════════╦═════════════════╣
-# ║ City name ║ Area ║ Population ║ Annual Rainfall ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
-# ║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
-# ║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
-# ║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
-# ║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
-# ║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
-# ║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
-# ╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
-#         )
+    def test_WithTitle(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.set_style(DOUBLE_BORDER)
+        city_data_prettytable.title = "Title"
 
-#     def testWithTitleNoHeader(self):
-#         self.x.title = "Title"
-#         self.x.header = False
-#         assert (
-#             self.x.get_string().strip()
-#             == """
-# ╔═════════════════════════════════════╗
-# ║                Title                ║
-# ╠═══════════╦══════╦═════════╦════════╣
-# ║  Adelaide ║ 1295 ║ 1158259 ║ 600.5  ║
-# ║  Brisbane ║ 5905 ║ 1857594 ║ 1146.4 ║
-# ║   Darwin  ║ 112  ║  120900 ║ 1714.7 ║
-# ║   Hobart  ║ 1357 ║  205556 ║ 619.5  ║
-# ║   Sydney  ║ 2058 ║ 4336374 ║ 1214.8 ║
-# ║ Melbourne ║ 1566 ║ 3806092 ║ 646.9  ║
-# ║   Perth   ║ 5386 ║ 1554769 ║ 869.4  ║
-# ╚═══════════╩══════╩═════════╩════════╝""".strip()
-#         )
+        assert (
+            city_data_prettytable.get_string().strip()
+            == """
+╔═════════════════════════════════════════════════╗
+║                      Title                      ║
+╠═══════════╦══════╦════════════╦═════════════════╣
+║ City name ║ Area ║ Population ║ Annual Rainfall ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
+║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
+║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
+║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
+║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
+║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
+║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
+╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
+        )
 
-#     def testHruleAll(self):
-#         self.x.title = "Title"
-#         self.x.hrules = ALL
-#         assert (
-#             self.x.get_string().strip()
-#             == """
-# ╔═════════════════════════════════════════════════╗
-# ║                      Title                      ║
-# ╠═══════════╦══════╦════════════╦═════════════════╣
-# ║ City name ║ Area ║ Population ║ Annual Rainfall ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
-# ╠═══════════╬══════╬════════════╬═════════════════╣
-# ║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
-# ╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
-#         )
+    def test_WithTitleNoHeader(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.set_style(DOUBLE_BORDER)
+        city_data_prettytable.title = "Title"
+        city_data_prettytable.header = False
+        assert (
+            city_data_prettytable.get_string().strip()
+            == """
+╔═════════════════════════════════════╗
+║                Title                ║
+╠═══════════╦══════╦═════════╦════════╣
+║  Adelaide ║ 1295 ║ 1158259 ║ 600.5  ║
+║  Brisbane ║ 5905 ║ 1857594 ║ 1146.4 ║
+║   Darwin  ║ 112  ║  120900 ║ 1714.7 ║
+║   Hobart  ║ 1357 ║  205556 ║ 619.5  ║
+║   Sydney  ║ 2058 ║ 4336374 ║ 1214.8 ║
+║ Melbourne ║ 1566 ║ 3806092 ║ 646.9  ║
+║   Perth   ║ 5386 ║ 1554769 ║ 869.4  ║
+╚═══════════╩══════╩═════════╩════════╝""".strip()
+        )
 
-#     def testVrulesNone(self):
-#         self.x.vrules = NONE
-#         assert (
-#             self.x.get_string().strip()
-#             == "═══════════════════════════════════════════════════\n"
-#             "  City name   Area   Population   Annual Rainfall  \n"
-#             "═══════════════════════════════════════════════════\n"
-#             "   Adelaide   1295    1158259          600.5       \n"
-#             "   Brisbane   5905    1857594          1146.4      \n"
-#             "    Darwin    112      120900          1714.7      \n"
-#             "    Hobart    1357     205556          619.5       \n"
-#             "    Sydney    2058    4336374          1214.8      \n"
-#             "  Melbourne   1566    3806092          646.9       \n"
-#             "    Perth     5386    1554769          869.4       \n"
-#             "═══════════════════════════════════════════════════".strip()
-#         )
+    def test_HruleAll(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.set_style(DOUBLE_BORDER)
+        city_data_prettytable.title = "Title"
+        city_data_prettytable.hrules = ALL
+        assert (
+            city_data_prettytable.get_string().strip()
+            == """
+╔═════════════════════════════════════════════════╗
+║                      Title                      ║
+╠═══════════╦══════╦════════════╦═════════════════╣
+║ City name ║ Area ║ Population ║ Annual Rainfall ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Adelaide ║ 1295 ║  1158259   ║      600.5      ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║  Brisbane ║ 5905 ║  1857594   ║      1146.4     ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Darwin  ║ 112  ║   120900   ║      1714.7     ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Hobart  ║ 1357 ║   205556   ║      619.5      ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Sydney  ║ 2058 ║  4336374   ║      1214.8     ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║ Melbourne ║ 1566 ║  3806092   ║      646.9      ║
+╠═══════════╬══════╬════════════╬═════════════════╣
+║   Perth   ║ 5386 ║  1554769   ║      869.4      ║
+╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
+        )
 
-#     def testVrulesFrameWithTitle(self):
-#         self.x.vrules = FRAME
-#         self.x.title = "Title"
-#         assert (
-#             self.x.get_string().strip()
-#             == """
-# ╔═════════════════════════════════════════════════╗
-# ║                      Title                      ║
-# ╠═════════════════════════════════════════════════╣
-# ║ City name   Area   Population   Annual Rainfall ║
-# ╠═════════════════════════════════════════════════╣
-# ║  Adelaide   1295    1158259          600.5      ║
-# ║  Brisbane   5905    1857594          1146.4     ║
-# ║   Darwin    112      120900          1714.7     ║
-# ║   Hobart    1357     205556          619.5      ║
-# ║   Sydney    2058    4336374          1214.8     ║
-# ║ Melbourne   1566    3806092          646.9      ║
-# ║   Perth     5386    1554769          869.4      ║
-# ╚═════════════════════════════════════════════════╝""".strip()
-#         )
+    def test_VrulesNone(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.set_style(DOUBLE_BORDER)
+        city_data_prettytable.vrules = NONE
+        assert (
+            city_data_prettytable.get_string().strip()
+            == "═══════════════════════════════════════════════════\n"
+            "  City name   Area   Population   Annual Rainfall  \n"
+            "═══════════════════════════════════════════════════\n"
+            "   Adelaide   1295    1158259          600.5       \n"
+            "   Brisbane   5905    1857594          1146.4      \n"
+            "    Darwin    112      120900          1714.7      \n"
+            "    Hobart    1357     205556          619.5       \n"
+            "    Sydney    2058    4336374          1214.8      \n"
+            "  Melbourne   1566    3806092          646.9       \n"
+            "    Perth     5386    1554769          869.4       \n"
+            "═══════════════════════════════════════════════════".strip()
+        )
+
+    def test_VrulesFrameWithTitle(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.set_style(DOUBLE_BORDER)
+        city_data_prettytable.vrules = FRAME
+        city_data_prettytable.title = "Title"
+        assert (
+            city_data_prettytable.get_string().strip()
+            == """
+╔═════════════════════════════════════════════════╗
+║                      Title                      ║
+╠═════════════════════════════════════════════════╣
+║ City name   Area   Population   Annual Rainfall ║
+╠═════════════════════════════════════════════════╣
+║  Adelaide   1295    1158259          600.5      ║
+║  Brisbane   5905    1857594          1146.4     ║
+║   Darwin    112      120900          1714.7     ║
+║   Hobart    1357     205556          619.5      ║
+║   Sydney    2058    4336374          1214.8     ║
+║ Melbourne   1566    3806092          646.9      ║
+║   Perth     5386    1554769          869.4      ║
+╚═════════════════════════════════════════════════╝""".strip()
+        )
 
 
-@pytest.mark.parametrize(
-    "style, expected",
-    [
-        pytest.param(
-            DEFAULT,
-            """
+class TestStyle:
+    @pytest.mark.parametrize(
+        "style, expected",
+        [
+            pytest.param(
+                DEFAULT,
+                """
 +---------+---------+---------+
 | Field 1 | Field 2 | Field 3 |
 +---------+---------+---------+
@@ -956,32 +968,32 @@ class HtmlOutputTests(unittest.TestCase):
 | value 7 |  value8 |  value9 |
 +---------+---------+---------+
 """,
-            id="DEFAULT",
-        ),
-        pytest.param(
-            MARKDOWN,
-            """
+                id="DEFAULT",
+            ),
+            pytest.param(
+                MARKDOWN,
+                """
 | Field 1 | Field 2 | Field 3 |
 |---------|---------|---------|
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
 """,
-            id="MARKDOWN",
-        ),
-        pytest.param(
-            MSWORD_FRIENDLY,
-            """
+                id="MARKDOWN",
+            ),
+            pytest.param(
+                MSWORD_FRIENDLY,
+                """
 | Field 1 | Field 2 | Field 3 |
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
 """,
-            id="MSWORD_FRIENDLY",
-        ),
-        pytest.param(
-            ORGMODE,
-            """
+                id="MSWORD_FRIENDLY",
+            ),
+            pytest.param(
+                ORGMODE,
+                """
 |---------+---------+---------|
 | Field 1 | Field 2 | Field 3 |
 |---------+---------+---------|
@@ -990,21 +1002,21 @@ class HtmlOutputTests(unittest.TestCase):
 | value 7 |  value8 |  value9 |
 |---------+---------+---------|
 """,
-            id="ORGMODE",
-        ),
-        pytest.param(
-            PLAIN_COLUMNS,
-            """
+                id="ORGMODE",
+            ),
+            pytest.param(
+                PLAIN_COLUMNS,
+                """
 Field 1        Field 2        Field 3        
 value 1         value2         value3        
 value 4         value5         value6        
 value 7         value8         value9
 """,  # noqa: W291
-            id="PLAIN_COLUMNS",
-        ),
-        pytest.param(
-            RANDOM,
-            """
+                id="PLAIN_COLUMNS",
+            ),
+            pytest.param(
+                RANDOM,
+                """
 '^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
 %    value 1%    value2%    value3%
 '^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
@@ -1013,11 +1025,11 @@ value 7         value8         value9
 %    value 7%    value8%    value9%
 '^^^^^^^^^^^'^^^^^^^^^^'^^^^^^^^^^'
 """,
-            id="RANDOM",
-        ),
-        pytest.param(
-            DOUBLE_BORDER,
-            """
+                id="RANDOM",
+            ),
+            pytest.param(
+                DOUBLE_BORDER,
+                """
 ╔═════════╦═════════╦═════════╗
 ║ Field 1 ║ Field 2 ║ Field 3 ║
 ╠═════════╬═════════╬═════════╣
@@ -1026,46 +1038,45 @@ value 7         value8         value9
 ║ value 7 ║  value8 ║  value9 ║
 ╚═════════╩═════════╩═════════╝
 """,
-        ),
-    ],
-)
-def test_style(style, expected):
-    # Arrange
-    t = helper_table()
-    random.seed(1234)
-
-    # Act
-    t.set_style(style)
-
-    # Assert
-    result = t.get_string()
-    assert result.strip() == expected.strip()
-
-
-def test_style_invalid():
-    # Arrange
-    t = helper_table()
-
-    # Act / Assert
-    # This is an hrule style, not a table style
-    with pytest.raises(Exception):
-        t.set_style(ALL)
-
-
-class CsvOutputTests(unittest.TestCase):
-    def testCsvOutput(self):
+            ),
+        ],
+    )
+    def test_style(self, style, expected):
+        # Arrange
         t = helper_table()
-        assert t.get_csv_string(delimiter="\t", header=False) == (
-            "value 1\tvalue2\tvalue3\r\n"
-            "value 4\tvalue5\tvalue6\r\n"
-            "value 7\tvalue8\tvalue9\r\n"
-        )
-        assert t.get_csv_string() == (
-            "Field 1,Field 2,Field 3\r\n"
-            "value 1,value2,value3\r\n"
-            "value 4,value5,value6\r\n"
-            "value 7,value8,value9\r\n"
-        )
+        random.seed(1234)
+
+        # Act
+        t.set_style(style)
+
+        # Assert
+        result = t.get_string()
+        assert result.strip() == expected.strip()
+
+    def test_style_invalid(self):
+        # Arrange
+        t = helper_table()
+
+        # Act / Assert
+        # This is an hrule style, not a table style
+        with pytest.raises(Exception):
+            t.set_style(ALL)
+
+
+# class CsvOutputTests(unittest.TestCase):
+#     def testCsvOutput(self):
+#         t = helper_table()
+#         assert t.get_csv_string(delimiter="\t", header=False) == (
+#             "value 1\tvalue2\tvalue3\r\n"
+#             "value 4\tvalue5\tvalue6\r\n"
+#             "value 7\tvalue8\tvalue9\r\n"
+#         )
+#         assert t.get_csv_string() == (
+#             "Field 1,Field 2,Field 3\r\n"
+#             "value 1,value2,value3\r\n"
+#             "value 4,value5,value6\r\n"
+#             "value 7,value8,value9\r\n"
+#         )
 
 
 # class DatabaseConstructorTest(BasicTests):
@@ -1095,29 +1106,29 @@ class CsvOutputTests(unittest.TestCase):
 #         assert from_db_cursor(self.cur) is None
 
 
-# class JSONConstructorTest(CityDataTest):
-#     def testJSONAndBack(self):
-#         json_string = self.x.get_json_string()
-#         new_table = from_json(json_string)
-#         assert new_table.get_string() == self.x.get_string()
+class TestJSONConstructor:
+    def test_JSONAndBack(self, city_data_prettytable: PrettyTable):
+        json_string = city_data_prettytable.get_json_string()
+        new_table = from_json(json_string)
+        assert new_table.get_string() == city_data_prettytable.get_string()
 
 
-# class HtmlConstructorTest(CityDataTest):
-#     def testHtmlAndBack(self):
-#         html_string = self.x.get_html_string()
-#         new_table = from_html(html_string)[0]
-#         assert new_table.get_string() == self.x.get_string()
+class TestHtmlConstructor:
+    def test_HtmlAndBack(self, city_data_prettytable: PrettyTable):
+        html_string = city_data_prettytable.get_html_string()
+        new_table = from_html(html_string)[0]
+        assert new_table.get_string() == city_data_prettytable.get_string()
 
-#     def testHtmlOneAndBack(self):
-#         html_string = self.x.get_html_string()
-#         new_table = from_html_one(html_string)
-#         assert new_table.get_string() == self.x.get_string()
+    def test_HtmlOneAndBack(self, city_data_prettytable: PrettyTable):
+        html_string = city_data_prettytable.get_html_string()
+        new_table = from_html_one(html_string)
+        assert new_table.get_string() == city_data_prettytable.get_string()
 
-#     def testHtmlOneFailOnMany(self):
-#         html_string = self.x.get_html_string()
-#         html_string += self.x.get_html_string()
-#         with pytest.raises(Exception):
-#             from_html_one(html_string)
+    def test_HtmlOneFailOnMany(self, city_data_prettytable: PrettyTable):
+        html_string = city_data_prettytable.get_html_string()
+        html_string += city_data_prettytable.get_html_string()
+        with pytest.raises(Exception):
+            from_html_one(html_string)
 
 
 # class PrintEnglishTest(CityDataTest):
@@ -1126,26 +1137,24 @@ class CsvOutputTests(unittest.TestCase):
 #         print(self.x)
 
 
-class PrintJapaneseTest(unittest.TestCase):
-    def setUp(self):
+class TestPrintJapanese:
+    def test_Print(self):
+        pt = PrettyTable(["Kanji", "Hiragana", "English"])
+        pt.add_row(["神戸", "こうべ", "Kobe"])
+        pt.add_row(["京都", "きょうと", "Kyoto"])
+        pt.add_row(["長崎", "ながさき", "Nagasaki"])
+        pt.add_row(["名古屋", "なごや", "Nagoya"])
+        pt.add_row(["大阪", "おおさか", "Osaka"])
+        pt.add_row(["札幌", "さっぽろ", "Sapporo"])
+        pt.add_row(["東京", "とうきょう", "Tokyo"])
+        pt.add_row(["横浜", "よこはま", "Yokohama"])
 
-        self.x = PrettyTable(["Kanji", "Hiragana", "English"])
-        self.x.add_row(["神戸", "こうべ", "Kobe"])
-        self.x.add_row(["京都", "きょうと", "Kyoto"])
-        self.x.add_row(["長崎", "ながさき", "Nagasaki"])
-        self.x.add_row(["名古屋", "なごや", "Nagoya"])
-        self.x.add_row(["大阪", "おおさか", "Osaka"])
-        self.x.add_row(["札幌", "さっぽろ", "Sapporo"])
-        self.x.add_row(["東京", "とうきょう", "Tokyo"])
-        self.x.add_row(["横浜", "よこはま", "Yokohama"])
-
-    def testPrint(self):
         print()
-        print(self.x)
+        print(pt)
 
 
-class PrintEmojiTest(unittest.TestCase):
-    def setUp(self):
+class TestPrintEmoji:
+    def test_Print(self):
         thunder1 = [
             '\033[38;5;226m _`/""\033[38;5;250m.-.    \033[0m',
             "\033[38;5;226m  ,\\_\033[38;5;250m(   ).  \033[0m",
@@ -1162,13 +1171,12 @@ class PrintEmojiTest(unittest.TestCase):
             "⚡\033[38;5;21;25m‚ʻ   \033[0m",
             "\033[38;5;21;1m  ‚ʻ‚ʻ\033[38;5;228;5m⚡\033[38;5;21;25mʻ‚ʻ   \033[0m",
         ]
-        self.x = PrettyTable(["Thunderbolt", "Lightning"])
+        pt = PrettyTable(["Thunderbolt", "Lightning"])
         for i in range(len(thunder1)):
-            self.x.add_row([thunder1[i], thunder2[i]])
+            pt.add_row([thunder1[i], thunder2[i]])
 
-    def testPrint(self):
         print()
-        print(self.x)
+        print(pt)
 
 
 def test_paginate():
@@ -1255,16 +1263,19 @@ def test_autoindex():
     assert str(table1) == str(table2)
 
 
-class UnpaddedTableTest(unittest.TestCase):
-    def setUp(self):
-        self.x = PrettyTable(header=False, padding_width=0)
-        self.x.add_row("abc")
-        self.x.add_row("def")
-        self.x.add_row("g..")
+@pytest.fixture(scope="function")
+def unpadded_pt():
+    pt = PrettyTable(header=False, padding_width=0)
+    pt.add_row("abc")
+    pt.add_row("def")
+    pt.add_row("g..")
+    return pt
 
-    def testUnbordered(self):
-        self.x.border = False
-        result = self.x.get_string()
+
+class TestUnpaddedTable:
+    def testUnbordered(self, unpadded_pt: PrettyTable):
+        unpadded_pt.border = False
+        result = unpadded_pt.get_string()
         expected = """
 abc
 def
@@ -1272,9 +1283,9 @@ g..
 """
         assert result.strip() == expected.strip()
 
-    def testBordered(self):
-        self.x.border = True
-        result = self.x.get_string()
+    def testBordered(self, unpadded_pt: PrettyTable):
+        unpadded_pt.border = True
+        result = unpadded_pt.get_string()
         expected = """
 +-+-+-+
 |a|b|c|
