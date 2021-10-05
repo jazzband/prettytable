@@ -38,77 +38,79 @@ def helper_table(rows=3):
     return t
 
 
-class BuildEquivalenceTest(unittest.TestCase):
+@pytest.fixture
+def row_prettytable():
+    # Row by row...
+    row = PrettyTable()
+    row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    row.add_row(["Adelaide", 1295, 1158259, 600.5])
+    row.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    row.add_row(["Darwin", 112, 120900, 1714.7])
+    row.add_row(["Hobart", 1357, 205556, 619.5])
+    row.add_row(["Sydney", 2058, 4336374, 1214.8])
+    row.add_row(["Melbourne", 1566, 3806092, 646.9])
+    row.add_row(["Perth", 5386, 1554769, 869.4])
+    return row 
+
+@pytest.fixture
+def col_prettytable():
+    # Column by column...
+    col = PrettyTable()
+    col.add_column(
+        "City name",
+        [
+            "Adelaide",
+            "Brisbane",
+            "Darwin",
+            "Hobart",
+            "Sydney",
+            "Melbourne",
+            "Perth",
+        ],
+    )
+    col.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
+    col.add_column(
+        "Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769])
+    col.add_column(
+        "Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4]
+    )
+    return col
+
+@pytest.fixture
+def mix_prettytable():
+    # A mix of both!
+    mix = PrettyTable()
+    mix.field_names = ["City name", "Area"]
+    mix.add_row(["Adelaide", 1295])
+    mix.add_row(["Brisbane", 5905])
+    mix.add_row(["Darwin", 112])
+    mix.add_row(["Hobart", 1357])
+    mix.add_row(["Sydney", 2058])
+    mix.add_row(["Melbourne", 1566])
+    mix.add_row(["Perth", 5386])
+    mix.add_column(
+        "Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769]
+    )
+    mix.add_column(
+        "Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4]
+    )
+    return mix
+
+
+class TestBuildEquivalence():
     """Make sure that building a table row-by-row and column-by-column yield the same
     results"""
+    def test_RowColEquivalenceASCII(self, row_prettytable: PrettyTable, col_prettytable: PrettyTable ):
+        assert row_prettytable.get_string() == col_prettytable.get_string()
 
-    def setUp(self):
+    def test_RowMixEquivalenceASCII(self, row_prettytable: PrettyTable, mix_prettytable: PrettyTable):
+        assert row_prettytable.get_string() == mix_prettytable.get_string()
 
-        # Row by row...
-        self.row = PrettyTable()
-        self.row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-        self.row.add_row(["Adelaide", 1295, 1158259, 600.5])
-        self.row.add_row(["Brisbane", 5905, 1857594, 1146.4])
-        self.row.add_row(["Darwin", 112, 120900, 1714.7])
-        self.row.add_row(["Hobart", 1357, 205556, 619.5])
-        self.row.add_row(["Sydney", 2058, 4336374, 1214.8])
-        self.row.add_row(["Melbourne", 1566, 3806092, 646.9])
-        self.row.add_row(["Perth", 5386, 1554769, 869.4])
+    def test_RowColEquivalenceHTML(self, row_prettytable: PrettyTable, col_prettytable: PrettyTable):
+        assert row_prettytable.get_html_string() == col_prettytable.get_html_string()
 
-        # Column by column...
-        self.col = PrettyTable()
-        self.col.add_column(
-            "City name",
-            [
-                "Adelaide",
-                "Brisbane",
-                "Darwin",
-                "Hobart",
-                "Sydney",
-                "Melbourne",
-                "Perth",
-            ],
-        )
-        self.col.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
-        self.col.add_column(
-            "Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769]
-        )
-        self.col.add_column(
-            "Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4]
-        )
-
-        # A mix of both!
-        self.mix = PrettyTable()
-        self.mix.field_names = ["City name", "Area"]
-        self.mix.add_row(["Adelaide", 1295])
-        self.mix.add_row(["Brisbane", 5905])
-        self.mix.add_row(["Darwin", 112])
-        self.mix.add_row(["Hobart", 1357])
-        self.mix.add_row(["Sydney", 2058])
-        self.mix.add_row(["Melbourne", 1566])
-        self.mix.add_row(["Perth", 5386])
-        self.mix.add_column(
-            "Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769]
-        )
-        self.mix.add_column(
-            "Annual Rainfall", [600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4]
-        )
-
-    def testRowColEquivalenceASCII(self):
-
-        assert self.row.get_string() == self.col.get_string()
-
-    def testRowMixEquivalenceASCII(self):
-
-        assert self.row.get_string() == self.mix.get_string()
-
-    def testRowColEquivalenceHTML(self):
-
-        assert self.row.get_html_string() == self.col.get_html_string()
-
-    def testRowMixEquivalenceHTML(self):
-
-        assert self.row.get_html_string() == self.mix.get_html_string()
+    def testRowMixEquivalenceHTML(self, row_prettytable: PrettyTable, mix_prettytable: PrettyTable):
+        assert row_prettytable.get_html_string() == mix_prettytable.get_html_string()
 
 
 class DeleteColumnTest(unittest.TestCase):
