@@ -27,6 +27,8 @@ from prettytable import (
 )
 from prettytable.prettytable import FRAME
 
+import prettytable
+
 
 def helper_table(rows=3):
     t = PrettyTable(["Field 1", "Field 2", "Field 3"])
@@ -113,8 +115,8 @@ class TestBuildEquivalence():
         assert row_prettytable.get_html_string() == mix_prettytable.get_html_string()
 
 
-class DeleteColumnTest(unittest.TestCase):
-    def testDeleteColumn(self):
+class TestDeleteColumn():
+    def test_DeleteColumn(self):
         with_del = PrettyTable()
         with_del.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
         with_del.add_column("Area", [1295, 5905, 112])
@@ -127,41 +129,42 @@ class DeleteColumnTest(unittest.TestCase):
 
         assert with_del.get_string() == without_row.get_string()
 
-    def testDeleteIllegalColumnRaisesException(self):
+    def test_DeleteIllegalColumnRaisesException(self):
         table = PrettyTable()
         table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
 
         with pytest.raises(Exception):
             table.del_column("City not-a-name")
 
+@pytest.fixture(scope="function")
+def field_name_less_table():
+    x = PrettyTable()
+    x.add_row(["Adelaide", 1295, 1158259, 600.5])
+    x.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    x.add_row(["Darwin", 112, 120900, 1714.7])
+    x.add_row(["Hobart", 1357, 205556, 619.5])
+    x.add_row(["Sydney", 2058, 4336374, 1214.8])
+    x.add_row(["Melbourne", 1566, 3806092, 646.9])
+    x.add_row(["Perth", 5386, 1554769, 869.4])
+    return x
 
-class FieldnamelessTableTest(unittest.TestCase):
+class TestFieldnamelessTable():
 
     """Make sure that building and stringing a table with no fieldnames works fine"""
 
-    def setUp(self):
-        self.x = PrettyTable()
-        self.x.add_row(["Adelaide", 1295, 1158259, 600.5])
-        self.x.add_row(["Brisbane", 5905, 1857594, 1146.4])
-        self.x.add_row(["Darwin", 112, 120900, 1714.7])
-        self.x.add_row(["Hobart", 1357, 205556, 619.5])
-        self.x.add_row(["Sydney", 2058, 4336374, 1214.8])
-        self.x.add_row(["Melbourne", 1566, 3806092, 646.9])
-        self.x.add_row(["Perth", 5386, 1554769, 869.4])
-
-    def testCanStringASCII(self):
-        output = self.x.get_string()
+    def test_CanStringASCII(self, field_name_less_table: prettytable):
+        output = field_name_less_table.get_string()
         assert "|  Field 1  | Field 2 | Field 3 | Field 4 |" in output
         assert "|  Adelaide |   1295  | 1158259 |  600.5  |" in output
 
-    def testCanStringHTML(self):
-        output = self.x.get_html_string()
+    def test_CanStringHTML(self, field_name_less_table: prettytable):
+        output = field_name_less_table.get_html_string()
         assert "<th>Field 1</th>" in output
         assert "<td>Adelaide</td>" in output
 
-    def testAddFieldNamesLater(self):
-        self.x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-        assert "City name | Area | Population | Annual Rainfall" in self.x.get_string()
+    def test_AddFieldNamesLater(self, field_name_less_table: prettytable):
+        field_name_less_table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+        assert "City name | Area | Population | Annual Rainfall" in field_name_less_table.get_string()
 
 
 class CityDataTest(unittest.TestCase):
