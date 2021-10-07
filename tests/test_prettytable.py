@@ -6,6 +6,7 @@ from typing import Any, List
 
 import pytest
 
+import prettytable
 from prettytable import (
     ALL,
     DEFAULT,
@@ -24,8 +25,6 @@ from prettytable import (
     from_json,
 )
 from prettytable.prettytable import FRAME
-
-import prettytable
 
 
 def helper_table(rows=3):
@@ -1258,8 +1257,8 @@ class TestMultiPattern:
 |  \x1b[38;5;226m   /\x1b[38;5;250m(___(__) \x1b[0m  |  \x1b[38;5;240;1m   (___(__)  \x1b[0m  |
 | \x1b[38;5;228;5m    ⚡\x1b[38;5;111;25mʻ ʻ\x1b[38;5;228;5m⚡\x1b[38;5;111;25mʻ ʻ \x1b[0m | \x1b[38;5;21;1m  ‚ʻ\x1b[38;5;228;5m⚡\x1b[38;5;21;25mʻ‚\x1b[38;5;228;5m⚡\x1b[38;5;21;25m‚ʻ   \x1b[0m |
 |  \x1b[38;5;111m    ʻ ʻ ʻ ʻ  \x1b[0m  |  \x1b[38;5;21;1m  ‚ʻ‚ʻ\x1b[38;5;228;5m⚡\x1b[38;5;21;25mʻ‚ʻ   \x1b[0m |
-+-----------------+-----------------+            
-            """,
++-----------------+-----------------+
+            """,  # noqa: E501
                 "Emoji table",
             ),
         ],
