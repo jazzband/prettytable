@@ -134,6 +134,8 @@ class PrettyTable:
         self.min_width = {}
         self.int_format = {}
         self.float_format = {}
+        self.custom_format = {}
+
         if field_names:
             self.field_names = field_names
         else:
@@ -156,6 +158,7 @@ class PrettyTable:
             "vrules",
             "int_format",
             "float_format",
+            "custom_format",
             "min_table_width",
             "max_table_width",
             "padding_width",
@@ -219,6 +222,7 @@ class PrettyTable:
         self.min_width = kwargs["min_width"] or {}
         self.int_format = kwargs["int_format"] or {}
         self.float_format = kwargs["float_format"] or {}
+        self.custom_format = kwargs["custom_format"] or {}
 
         self._min_table_width = kwargs["min_table_width"] or None
         self._max_table_width = kwargs["max_table_width"] or None
@@ -361,6 +365,9 @@ class PrettyTable:
             self._validate_int_format(option, val)
         elif option == "float_format":
             self._validate_float_format(option, val)
+        elif option == "custom_format":
+            for formatter in val.values():
+                self._validate_function(option, formatter)
         elif option in (
             "vertical_char",
             "horizontal_char",

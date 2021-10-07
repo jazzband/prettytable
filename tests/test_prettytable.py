@@ -1387,3 +1387,19 @@ g..
 +-+-+-+
 """
         assert result.strip() == expected.strip()
+
+
+class TestCustomFormatter:
+    def test_init_custom_format_is_empty(self):
+        pt = PrettyTable()
+        assert pt.custom_format == {}
+
+    def test_init_custom_format_set_value(self):
+        pt = PrettyTable(custom_format = {"col1": (lambda col_name, value: f"{value:.2}")})
+        assert len(pt.custom_format) == 1
+
+    def test_init_custom_format_throw_error_is_not_callable(self):
+        with pytest.raises(Exception) as e:
+            pt = PrettyTable(custom_format = {"col1": "{:.2}"})
+        
+        assert "Invalid value for custom_format. Must be a function."  in str(e.value)
