@@ -349,10 +349,6 @@ def init_db(db_cursor):
 #         self.cur.execute("SELECT * FROM cities")
 #         self.x = from_db_cursor(self.cur)
 
-#     def testNonSelectCursor(self):
-#         self.cur.execute('INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)')
-#         assert from_db_cursor(self.cur) is None
-
 
 class TestBasic:
     """Some very basic tests."""
@@ -769,6 +765,15 @@ class TestAnsiWidth:
 +---------+---------+
 """.strip()
         )
+
+
+class TestFromDB:
+    @pytest.mark.usefixtures("init_db")
+    def test_non_select_cursor(self, db_cursor):
+        db_cursor.execute(
+            'INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)'
+        )
+        assert from_db_cursor(db_cursor) is None
 
 
 class TestJSONOutput:
