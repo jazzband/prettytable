@@ -215,14 +215,14 @@ def city_data_prettytable():
 
 @pytest.fixture(scope="function")
 def city_data_from_csv():
-    csv_string = """City name, Area , Population , Annual Rainfall
-    Sydney, 2058 ,  4336374   ,      1214.8
-    Melbourne, 1566 ,  3806092   ,       646.9
-    Brisbane, 5905 ,  1857594   ,      1146.4
-    Perth, 5386 ,  1554769   ,       869.4
-    Adelaide, 1295 ,  1158259   ,       600.5
-    Hobart, 1357 ,   205556   ,       619.5
-    Darwin, 0112 ,   120900   ,      1714.7"""
+    csv_string = """City name, Area, Population, Annual Rainfall
+    Sydney, 2058, 4336374, 1214.8
+    Melbourne, 1566, 3806092, 646.9
+    Brisbane, 5905, 1857594, 1146.4
+    Perth, 5386, 1554769, 869.4
+    Adelaide, 1295, 1158259, 600.5
+    Hobart, 1357, 205556, 619.5
+    Darwin, 0112, 120900, 1714.7"""
     csv_fp = io.StringIO(csv_string)
     return from_csv(csv_fp)
 
@@ -325,29 +325,6 @@ def init_db(db_cursor):
     db_cursor.execute('INSERT INTO cities VALUES ("Perth", 5386, 1554769, 869.4)')
     yield
     db_cursor.execute("DROP TABLE cities")
-
-
-# class DatabaseConstructorTest(BasicTests):
-#     def setUp(self):
-#         self.conn = sqlite3.connect(":memory:")
-#         self.cur = self.conn.cursor()
-#         self.cur.execute(
-#             "CREATE TABLE cities "
-#             "(name TEXT, area INTEGER, population INTEGER, rainfall REAL)"
-#         )
-#         self.cur.execute('INSERT INTO cities VALUES ("Adelaide", 1295, 1158259, 600.5)')
-#         self.cur.execute(
-#             'INSERT INTO cities VALUES ("Brisbane", 5905, 1857594, 1146.4)'
-#         )
-#         self.cur.execute('INSERT INTO cities VALUES ("Darwin", 112, 120900, 1714.7)')
-#         self.cur.execute('INSERT INTO cities VALUES ("Hobart", 1357, 205556, 619.5)')
-#         self.cur.execute('INSERT INTO cities VALUES ("Sydney", 2058, 4336374, 1214.8)')
-#         self.cur.execute(
-#             'INSERT INTO cities VALUES ("Melbourne", 1566, 3806092, 646.9)'
-#         )
-#         self.cur.execute('INSERT INTO cities VALUES ("Perth", 5386, 1554769, 869.4)')
-#         self.cur.execute("SELECT * FROM cities")
-#         self.x = from_db_cursor(self.cur)
 
 
 class TestBasic:
@@ -699,7 +676,7 @@ class TestBreakLine:
         result = t.get_string(hrules=hrule)
         assert result.strip() == expected_result.strip()
 
-    def test_break_line_HTLM(self):
+    def test_break_line_HTML(self):
         t = PrettyTable(["Field 1", "Field 2"])
         t.add_row(["value 1", "value2\nsecond line"])
         t.add_row(["value 3", "value4"])
