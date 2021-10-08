@@ -1465,3 +1465,30 @@ class TestCustomFormatter:
 +-------------+----------+-----------+------------+
 """.strip()
         )
+
+    def test_custom_format_multi_type_using_on_function(self):
+        pt = PrettyTable(["col_date", "col_str", "col_float", "col_int"])
+        pt.add_row([date(2021, 1, 1), "January", 12345.12345, 12345678])
+        pt.add_row([date(2021, 2, 1), "February", 54321.12345, 87654321])
+
+        def my_format(col: str, value: Any) -> str:
+            if col == "col_date":
+                return value.strftime("%d %b %Y")
+            if col == "col_float":
+                return f"{value:.3f}"
+            if col == "col_int":
+                return f"{value:,}"
+            return str(value)
+
+        pt.custom_format = my_format
+        assert (
+            pt.get_string().strip()
+            == """
++-------------+----------+-----------+------------+
+|   col_date  | col_str  | col_float |  col_int   |
++-------------+----------+-----------+------------+
+| 01 Jan 2021 | January  | 12345.123 | 12,345,678 |
+| 01 Feb 2021 | February | 54321.123 | 87,654,321 |
++-------------+----------+-----------+------------+
+""".strip()
+        )
