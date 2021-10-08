@@ -415,9 +415,9 @@ The options are these:
   like: `print("%<int_format>d" % data)`
 - `float_format` - A string which controls the way floating point data is printed. This
   works like: `print("%<float_format>f" % data)`
-- `custom_format` - A Dictionary of field and callable. This allow you to set any format you wnat
-: `pf.custom_format["my_col_int"] = ()lambda f, v: f"{v:,}"`. The type of the callable if 
-```callable[[str, Any], str]```
+- `custom_format` - A Dictionary of field and callable. This allow you to set any format
+  you want `pf.custom_format["my_col_int"] = ()lambda f, v: f"{v:,}"`. The type of the
+  callable if `callable[[str, Any], str]`
 - `padding_width` - Number of spaces on either side of column data (only used if left
   and right paddings are `None`).
 - `left_padding_width` - Number of spaces on left hand side of column data.

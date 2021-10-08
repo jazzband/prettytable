@@ -1,7 +1,7 @@
+import datetime as dt
 import io
 import random
 import sqlite3
-from datetime import date
 from math import e, pi, sqrt
 from typing import Any, List
 
@@ -1449,8 +1449,8 @@ class TestCustomFormatter:
 
     def test_custom_format_multi_type(self):
         pt = PrettyTable(["col_date", "col_str", "col_float", "col_int"])
-        pt.add_row([date(2021, 1, 1), "January", 12345.12345, 12345678])
-        pt.add_row([date(2021, 2, 1), "February", 54321.12345, 87654321])
+        pt.add_row([dt.date(2021, 1, 1), "January", 12345.12345, 12345678])
+        pt.add_row([dt.date(2021, 2, 1), "February", 54321.12345, 87654321])
         pt.custom_format["col_date"] = lambda f, v: v.strftime("%d %b %Y")
         pt.custom_format["col_float"] = lambda f, v: f"{v:.3f}"
         pt.custom_format["col_int"] = lambda f, v: f"{v:,}"
@@ -1468,8 +1468,8 @@ class TestCustomFormatter:
 
     def test_custom_format_multi_type_using_on_function(self):
         pt = PrettyTable(["col_date", "col_str", "col_float", "col_int"])
-        pt.add_row([date(2021, 1, 1), "January", 12345.12345, 12345678])
-        pt.add_row([date(2021, 2, 1), "February", 54321.12345, 87654321])
+        pt.add_row([dt.date(2021, 1, 1), "January", 12345.12345, 12345678])
+        pt.add_row([dt.date(2021, 2, 1), "February", 54321.12345, 87654321])
 
         def my_format(col: str, value: Any) -> str:
             if col == "col_date":
