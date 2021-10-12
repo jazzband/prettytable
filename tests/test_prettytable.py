@@ -26,7 +26,6 @@ from prettytable import (
     from_html_one,
     from_json,
 )
-from prettytable.prettytable import FRAME
 
 
 def helper_table(rows=3):
@@ -60,7 +59,7 @@ def col_prettytable():
     col = PrettyTable()
     col.add_column(
         "City name",
-        ["Adelaide", "Brisbane", "Darwin", "Hobart", "Sydney", "Melbourne", "Perth",],
+        ["Adelaide", "Brisbane", "Darwin", "Hobart", "Sydney", "Melbourne", "Perth"],
     )
     col.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
     col.add_column(
