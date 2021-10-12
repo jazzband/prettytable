@@ -12,6 +12,7 @@ from prettytable import (
     ALL,
     DEFAULT,
     DOUBLE_BORDER,
+    FRAME,
     HEADER,
     MARKDOWN,
     MSWORD_FRIENDLY,
@@ -1044,6 +1045,15 @@ class LatexOutputTests(unittest.TestCase):
             "value 7 & value8 & value9 \\\\\r\n"
             "\\end{tabular}"
         )
+        options = {"fields": ["Field 1", "Field 3"]}
+        assert t.get_latex_string(**options) == (
+            "\\begin{tabular}{cc}\r\n"
+            "Field 1 & Field 3 \\\\\r\n"
+            "value 1 & value3 \\\\\r\n"
+            "value 4 & value6 \\\\\r\n"
+            "value 7 & value9 \\\\\r\n"
+            "\\end{tabular}"
+        )
 
     def testLatexOutputFormatted(self):
         t = helper_table()
@@ -1053,6 +1063,45 @@ class LatexOutputTests(unittest.TestCase):
             "Field 1 & Field 2 & Field 3 \\\\\r\n"
             "value 1 & value2 & value3 \\\\\r\n"
             "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+        options = {"fields": ["Field 1", "Field 3"]}
+        assert t.get_latex_string(format=True, **options) == (
+            "\\begin{tabular}{|c|c|}\r\n"
+            "\\hline\r\n"
+            "Field 1 & Field 3 \\\\\r\n"
+            "value 1 & value3 \\\\\r\n"
+            "value 4 & value6 \\\\\r\n"
+            "value 7 & value9 \\\\\r\n"
+            "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+        options = {"vrules": FRAME}
+        assert t.get_latex_string(format=True, **options) == (
+            "\\begin{tabular}{|ccc|}\r\n"
+            "\\hline\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+        options = {"hrules": ALL}
+        assert t.get_latex_string(format=True, **options) == (
+            "\\begin{tabular}{|c|c|c|}\r\n"
+            "\\hline\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "\\hline\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "\\hline\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "\\hline\r\n"
             "value 7 & value8 & value9 \\\\\r\n"
             "\\hline\r\n"
             "\\end{tabular}"

@@ -2085,7 +2085,7 @@ class PrettyTable:
         else:
             wanted_fields = self._field_names
 
-        aligments = "".join([self._align[field] for field in self._field_names])
+        aligments = "".join([self._align[field] for field in wanted_fields])
 
         begin_cmd = "\\begin{tabular}{%s}" % aligments
         lines.append(begin_cmd)
@@ -2118,7 +2118,7 @@ class PrettyTable:
         else:
             wanted_fields = self._field_names
 
-        wanted_aligments = [self._align[field] for field in self._field_names]
+        wanted_aligments = [self._align[field] for field in wanted_fields]
         if options["border"] and options["vrules"] == ALL:
             aligment_str = "|".join(wanted_aligments)
         else:
