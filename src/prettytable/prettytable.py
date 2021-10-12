@@ -1474,14 +1474,14 @@ class PrettyTable:
 
         return rows
 
-    def _format_row(self, row, options):
+    def _format_row(self, row):
         return [
             self._format_value(field, value)
             for (field, value) in zip(self._field_names, row)
         ]
 
-    def _format_rows(self, rows, options):
-        return [self._format_row(row, options) for row in rows]
+    def _format_rows(self, rows):
+        return [self._format_row(row) for row in rows]
 
     ##############################
     # PLAIN TEXT STRING METHODS  #
@@ -1545,7 +1545,7 @@ class PrettyTable:
         rows = self._get_rows(options)
 
         # Turn all data in all rows into Unicode, formatted as desired
-        formatted_rows = self._format_rows(rows, options)
+        formatted_rows = self._format_rows(rows)
 
         # Compute column widths
         self._compute_widths(formatted_rows, options)
@@ -1932,7 +1932,7 @@ class PrettyTable:
         # Data
         lines.append("    <tbody>")
         rows = self._get_rows(options)
-        formatted_rows = self._format_rows(rows, options)
+        formatted_rows = self._format_rows(rows)
         for row in formatted_rows:
             lines.append("        <tr>")
             for field, datum in zip(self._field_names, row):
@@ -2007,7 +2007,7 @@ class PrettyTable:
         # Data
         lines.append("    <tbody>")
         rows = self._get_rows(options)
-        formatted_rows = self._format_rows(rows, options)
+        formatted_rows = self._format_rows(rows)
         aligns = []
         valigns = []
         for field in self._field_names:
@@ -2096,7 +2096,7 @@ class PrettyTable:
 
         # Data
         rows = self._get_rows(options)
-        formatted_rows = self._format_rows(rows, options)
+        formatted_rows = self._format_rows(rows)
         for row in formatted_rows:
             wanted_data = [
                 d for f, d in zip(self._field_names, row) if f in wanted_fields
@@ -2141,7 +2141,8 @@ class PrettyTable:
 
         # Data
         rows = self._get_rows(options)
-        formatted_rows = self._format_rows(rows, options)
+        formatted_rows = self._format_rows(rows)
+        rows = self._get_rows(options)
         for row in formatted_rows:
             wanted_data = [
                 d for f, d in zip(self._field_names, row) if f in wanted_fields
