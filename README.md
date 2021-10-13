@@ -354,6 +354,34 @@ relevant row, in the column specified by the `sort_by` argument. The remaining n
 elements are the data in each of the table's columns, in order, including a repeated
 instance of the data in the `sort_by` column.
 
+##### Setting columns' minimum widths
+
+You can set the minimum width of each column using the property `columns_min_widths`:
+
+```python
+x.columns_min_widths = [30, 15, 20, 0]
+print(x)
+```
+
+to get:
+
+```
++--------------------------------+-----------------+----------------------+-----------------+
+|           City name            |       Area      |      Population      | Annual Rainfall |
++--------------------------------+-----------------+----------------------+-----------------+
+|            Adelaide            |       1295      |       1158259        |      600.5      |
+|            Brisbane            |       5905      |       1857594        |      1146.4     |
+|             Darwin             |       112       |        120900        |      1714.7     |
+|             Hobart             |       1357      |        205556        |      619.5      |
+|             Sydney             |       2058      |       4336374        |      1214.8     |
+|           Melbourne            |       1566      |       3806092        |      646.9      |
+|             Perth              |       5386      |       1554769        |      869.4      |
++--------------------------------+-----------------+----------------------+-----------------+
+```
+
+If `0` is given for a column, then the minimum width is calculated based on the column's
+data.
+
 ### Changing the appearance of your table - the easy way
 
 By default, PrettyTable produces ASCII tables that look like the ones used in SQL

@@ -126,6 +126,7 @@ class PrettyTable:
         self.encoding = kwargs.get("encoding", "UTF-8")
 
         # Data
+        self._columns_min_widths = []
         self._field_names = []
         self._rows = []
         self.align = {}
@@ -377,6 +378,23 @@ class PrettyTable:
             self._validate_single_char(option, val)
         elif option == "attributes":
             self._validate_attributes(option, val)
+        elif option == "columns_min_widths":
+            self._validate_columns_min_widths(val)
+
+    def _validate_columns_min_widths(self, val):
+        # Check for appropriate length
+        if self._field_names or self._rows:
+            try:
+                assert len(val) == len(self._field_names)
+                assert len(val) == len(self._rows[0])
+            except AssertionError:
+                field_len = (
+                    len(self._field_names) if self._field_names else len(self._rows[0])
+                )
+                raise Exception(
+                    "Columns' minimum widths list has incorrect number of values, "
+                    f"(actual) {len(val)}!={field_len} (expected)"
+                )
 
     def _validate_field_names(self, val):
         # Check for appropriate length
@@ -512,6 +530,16 @@ class PrettyTable:
     ##############################
 
     @property
+    def columns_min_widths(self):
+        return self._columns_min_widths
+
+    @columns_min_widths.setter
+    def columns_min_widths(self, val):
+        val = [int(x) for x in val]
+        self._validate_option("columns_min_widths", val)
+        self._columns_min_widths = val
+
+    @property
     def xhtml(self):
         """Print <br/> tags if True, <br> tags if False"""
         return self._xhtml
@@ -538,6 +566,7 @@ class PrettyTable:
         if self._field_names:
             old_names = self._field_names[:]
         self._field_names = val
+        self._columns_min_widths = [0 for _ in val]
         if self._align and old_names:
             for old_name, new_name in zip(old_names, val):
                 self._align[new_name] = self._align[old_name]
@@ -1282,7 +1311,7 @@ class PrettyTable:
             )
         del self._rows[row_index]
 
-    def add_column(self, fieldname, column, align="c", valign="t"):
+    def add_column(self, fieldname, column, align="c", valign="t", min_width=0):
 
         """Add a column to the table.
 
@@ -1306,17 +1335,19 @@ class PrettyTable:
                 if len(self._rows) < i + 1:
                     self._rows.append([])
                 self._rows[i].append(column[i])
+            self._columns_min_widths.append(min_width)
         else:
             raise Exception(
                 f"Column length {len(column)} does not match number of rows "
                 f"{len(self._rows)}"
             )
 
-    def add_autoindex(self, fieldname="Index"):
+    def add_autoindex(self, fieldname="Index", min_width=0):
         """Add an auto-incrementing index column to the table.
         Arguments:
         fieldname - name of the field to contain the new column of data"""
         self._field_names.insert(0, fieldname)
+        self._columns_min_widths.insert(0, min_width)
         self._align[fieldname] = self.align
         self._valign[fieldname] = self.valign
         for i, row in enumerate(self._rows):
@@ -1603,10 +1634,13 @@ class PrettyTable:
         if not self._field_names:
             bits.append(options[where + "right_junction_char"])
             return "".join(bits)
-        for field, width in zip(self._field_names, self._widths):
+        for field, width, min_width in zip(
+            self._field_names, self._widths, self._columns_min_widths
+        ):
             if options["fields"] and field not in options["fields"]:
                 continue
-            bits.append((width + lpad + rpad) * options["horizontal_char"])
+            temp_width = max(width, min_width)
+            bits.append((temp_width + lpad + rpad) * options["horizontal_char"])
             if options["vrules"] == ALL:
                 bits.append(options[where + "junction_char"])
             else:
@@ -1662,7 +1696,11 @@ class PrettyTable:
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
-        for (field, width) in zip(self._field_names, self._widths):
+        for (field, width, min_width) in zip(
+            self._field_names,
+            self._widths,
+            self._columns_min_widths,
+        ):
             if options["fields"] and field not in options["fields"]:
                 continue
             if self._header_style == "cap":
@@ -1675,9 +1713,10 @@ class PrettyTable:
                 fieldname = field.lower()
             else:
                 fieldname = field
+            temp_width = max(width, min_width)
             bits.append(
                 " " * lpad
-                + self._justify(fieldname, width, self._align[field])
+                + self._justify(fieldname, temp_width, self._align[field])
                 + " " * rpad
             )
             if options["border"]:
@@ -1727,8 +1766,12 @@ class PrettyTable:
                 else:
                     bits[y].append(" ")
 
-        for (field, value, width) in zip(self._field_names, row, self._widths):
-
+        for (field, value, width, min_width) in zip(
+            self._field_names,
+            row,
+            self._widths,
+            self._columns_min_widths,
+        ):
             valign = self._valign[field]
             lines = value.split("\n")
             d_height = row_height - len(lines)
@@ -1748,10 +1791,10 @@ class PrettyTable:
             for line in lines:
                 if options["fields"] and field not in options["fields"]:
                     continue
-
+                temp_width = max(width, min_width)
                 bits[y].append(
                     " " * lpad
-                    + self._justify(line, width, self._align[field])
+                    + self._justify(line, temp_width, self._align[field])
                     + " " * rpad
                 )
                 if options["border"]:

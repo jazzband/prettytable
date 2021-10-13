@@ -1487,3 +1487,139 @@ g..
 +-+-+-+
 """
         assert result.strip() == expected.strip()
+
+
+class ColumnsMinWidthsTest(unittest.TestCase):
+    def setUp(self):
+        self.x = PrettyTable()
+        self.x.field_names = ["City name", "Area", "Population"]
+        self.x.add_row(["Adelaide", 1295, 1158259])
+        self.x.add_row(["Brisbane", 5905, 1857594])
+        self.x.add_row(["Darwin", 112, 120900])
+
+        self.y = PrettyTable()
+        self.y.add_row(["Adelaide", 1295, 1158259])
+        self.y.add_row(["Brisbane", 5905, 1857594])
+        self.y.add_row(["Darwin", 112, 120900])
+
+        self.auto_index_table = PrettyTable()
+        self.auto_index_table.field_names = ["City name", "Area", "Population"]
+        self.auto_index_table.add_row(["Adelaide", 1295, 1158259])
+        self.auto_index_table.add_row(["Brisbane", 5905, 1857594])
+        self.auto_index_table.add_row(["Darwin", 112, 120900])
+
+        self.add_column_table = PrettyTable()
+        self.add_column_table.field_names = ["City name", "Area", "Population"]
+        self.add_column_table.add_row(["Adelaide", 1295, 1158259])
+        self.add_column_table.add_row(["Brisbane", 5905, 1857594])
+        self.add_column_table.add_row(["Darwin", 112, 120900])
+
+        self.min_width_table = PrettyTable()
+        self.min_width_table.field_names = ["City name", "Area", "Population"]
+        self.min_width_table.add_row(["Adelaide", 1295, 1158259])
+        self.min_width_table.add_row(["Brisbane", 5905, 1857594])
+
+        self.max_width_table = PrettyTable()
+        self.max_width_table.field_names = ["City name", "Area", "Population"]
+        self.max_width_table.add_row(["Adelaide", 1295, 1158259])
+        self.max_width_table.add_row(["Brisbane", 5905, 18575943432423434242342])
+
+    def testColumnsMinWidths(self):
+        tables = [
+            dict(
+                result="""
++-----------+------+------------+
+| City name | Area | Population |
++-----------+------+------------+
+|  Adelaide | 1295 |  1158259   |
+|  Brisbane | 5905 |  1857594   |
+|   Darwin  | 112  |   120900   |
++-----------+------+------------+
+""",
+                min_widths=[0, 0, 0],
+            ),
+            dict(
+                result="""
++----------------------+--------------------------------+------------+
+|      City name       |              Area              | Population |
++----------------------+--------------------------------+------------+
+|       Adelaide       |              1295              |  1158259   |
+|       Brisbane       |              5905              |  1857594   |
+|        Darwin        |              112               |   120900   |
++----------------------+--------------------------------+------------+
+""",
+                min_widths=[20, 30, 0],
+            ),
+            dict(
+                result="""
++-----------+--------------------------------+------------+
+| City name |              Area              | Population |
++-----------+--------------------------------+------------+
+|  Adelaide |              1295              |  1158259   |
+|  Brisbane |              5905              |  1857594   |
+|   Darwin  |              112               |   120900   |
++-----------+--------------------------------+------------+
+""",
+                min_widths=[2, 30, 3],
+            ),
+        ]
+        for table in tables:
+            self.x.columns_min_widths = table["min_widths"]
+            result = self.x.get_string()
+            assert result.strip() == table["result"].strip()
+
+    def testExceptionsWithFieldNames(self):
+        with pytest.raises(Exception):
+            self.x.columns_min_widths = [20, 30]
+        with pytest.raises(Exception):
+            self.x.columns_min_widths = [20, 30, 40, 50]
+
+    def testExceptionsWithoutFieldNames(self):
+        with pytest.raises(Exception):
+            self.y.columns_min_widths = [20, 30]
+        with pytest.raises(Exception):
+            self.y.columns_min_widths = [20, 30, 40, 50]
+
+    def testAutoIndex(self):
+        self.auto_index_table.add_autoindex(fieldname="Test")
+        assert self.auto_index_table.columns_min_widths == [0, 0, 0, 0]
+
+        self.auto_index_table.add_autoindex(fieldname="Test", min_width=30)
+        assert self.auto_index_table.columns_min_widths == [30, 0, 0, 0, 0]
+
+    def testAddColumn(self):
+        self.add_column_table.add_column("Starts with A", [True, False, False])
+        assert self.add_column_table.columns_min_widths == [0, 0, 0, 0]
+
+        self.add_column_table.add_column(
+            "Starts with B", [False, True, False], min_width=30
+        )
+        assert self.add_column_table.columns_min_widths == [0, 0, 0, 0, 30]
+
+    def testMinWidth(self):
+        self.min_width_table.columns_min_widths = [15, 15, 30]
+        self.min_width_table.min_width["Area"] = 30
+        self.min_width_table.min_width["Population"] = 15
+        result = """
++-----------------+--------------------------------+--------------------------------+
+|    City name    |              Area              |           Population           |
++-----------------+--------------------------------+--------------------------------+
+|     Adelaide    |              1295              |            1158259             |
+|     Brisbane    |              5905              |            1857594             |
++-----------------+--------------------------------+--------------------------------+
+        """.strip()
+        assert self.min_width_table.get_string() == result
+
+    def testMaxWidth(self):
+        self.max_width_table.columns_min_widths = [10, 30, 10]
+        self.max_width_table.max_width["Area"] = 15
+        self.max_width_table.max_width["Population"] = 30
+        result = """
++------------+--------------------------------+-------------------------+
+| City name  |              Area              |        Population       |
++------------+--------------------------------+-------------------------+
+|  Adelaide  |              1295              |         1158259         |
+|  Brisbane  |              5905              | 18575943432423434242342 |
++------------+--------------------------------+-------------------------+
+                """.strip()
+        assert self.max_width_table.get_string() == result
