@@ -11,6 +11,8 @@ from prettytable import (
     ALL,
     DEFAULT,
     DOUBLE_BORDER,
+    FRAME,
+    HEADER,
     MARKDOWN,
     MSWORD_FRIENDLY,
     NONE,
@@ -24,7 +26,6 @@ from prettytable import (
     from_html_one,
     from_json,
 )
-from prettytable.prettytable import FRAME
 
 
 def helper_table(rows=3):
@@ -58,15 +59,7 @@ def col_prettytable():
     col = PrettyTable()
     col.add_column(
         "City name",
-        [
-            "Adelaide",
-            "Brisbane",
-            "Darwin",
-            "Hobart",
-            "Sydney",
-            "Melbourne",
-            "Perth",
-        ],
+        ["Adelaide", "Brisbane", "Darwin", "Hobart", "Sydney", "Melbourne", "Perth"],
     )
     col.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
     col.add_column(
@@ -135,6 +128,22 @@ class TestBuildEquivalence:
     def test_equivalence_HTML(self, left_hand: PrettyTable, right_hand: PrettyTable):
         assert left_hand.get_html_string() == right_hand.get_html_string()
 
+    @pytest.mark.parametrize(
+        ["left_hand", "right_hand"],
+        [
+            (
+                pytest.lazy_fixture("row_prettytable"),
+                pytest.lazy_fixture("col_prettytable"),
+            ),
+            (
+                pytest.lazy_fixture("row_prettytable"),
+                pytest.lazy_fixture("mix_prettytable"),
+            ),
+        ],
+    )
+    def test_equivalence_latex(self, left_hand: PrettyTable, right_hand: PrettyTable):
+        assert left_hand.get_latex_string() == right_hand.get_latex_string()
+
 
 class TestDeleteColumn:
     def test_delete_column(self):
@@ -185,7 +194,12 @@ class TestFieldNameLessTable:
         assert "<th>Field 1</th>" in output
         assert "<td>Adelaide</td>" in output
 
-    def test_ddd_field_names_later(self, field_name_less_table: prettytable):
+    def test_can_string_latex(self, field_name_less_table: prettytable):
+        output = field_name_less_table.get_latex_string()
+        assert "Field 1 & Field 2 & Field 3 & Field 4 \\\\" in output
+        assert "Adelaide & 1295 & 1158259 & 600.5 \\\\" in output
+
+    def test_add_field_names_later(self, field_name_less_table: prettytable):
         field_name_less_table.field_names = [
             "City name",
             "Area",
@@ -1140,6 +1154,92 @@ class TestCsvOutput:
             "value 1,value2,value3\r\n"
             "value 4,value5,value6\r\n"
             "value 7,value8,value9\r\n"
+        )
+
+
+class TestLatexOutput:
+    def testLatexOutput(self):
+        t = helper_table()
+        assert t.get_latex_string() == (
+            "\\begin{tabular}{ccc}\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\end{tabular}"
+        )
+        options = {"fields": ["Field 1", "Field 3"]}
+        assert t.get_latex_string(**options) == (
+            "\\begin{tabular}{cc}\r\n"
+            "Field 1 & Field 3 \\\\\r\n"
+            "value 1 & value3 \\\\\r\n"
+            "value 4 & value6 \\\\\r\n"
+            "value 7 & value9 \\\\\r\n"
+            "\\end{tabular}"
+        )
+
+    def testLatexOutputFormatted(self):
+        t = helper_table()
+        assert t.get_latex_string(format=True) == (
+            "\\begin{tabular}{|c|c|c|}\r\n"
+            "\\hline\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+        options = {"fields": ["Field 1", "Field 3"]}
+        assert t.get_latex_string(format=True, **options) == (
+            "\\begin{tabular}{|c|c|}\r\n"
+            "\\hline\r\n"
+            "Field 1 & Field 3 \\\\\r\n"
+            "value 1 & value3 \\\\\r\n"
+            "value 4 & value6 \\\\\r\n"
+            "value 7 & value9 \\\\\r\n"
+            "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+        options = {"vrules": FRAME}
+        assert t.get_latex_string(format=True, **options) == (
+            "\\begin{tabular}{|ccc|}\r\n"
+            "\\hline\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+        options = {"hrules": ALL}
+        assert t.get_latex_string(format=True, **options) == (
+            "\\begin{tabular}{|c|c|c|}\r\n"
+            "\\hline\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "\\hline\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "\\hline\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "\\hline\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\hline\r\n"
+            "\\end{tabular}"
+        )
+
+    def testLatexOutputHeader(self):
+        t = helper_table()
+        assert t.get_latex_string(format=True, hrules=HEADER) == (
+            "\\begin{tabular}{|c|c|c|}\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "\\hline\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\end{tabular}"
         )
 
 
