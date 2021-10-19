@@ -4,7 +4,8 @@ try:
     from colorama import init
 except ImportError:
     # Do nothing if not installed
-    init = lambda: None
+    def init():
+        pass
 
 init()
 
