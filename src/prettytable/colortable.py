@@ -7,6 +7,7 @@ except ImportError:
     def init():
         pass
 
+
 init()
 
 RESET_CODE = "\x1b[0m"
