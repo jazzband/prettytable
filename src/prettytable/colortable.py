@@ -15,7 +15,7 @@ RESET_CODE = "\x1b[0m"
 # - Better way to customize colorama.init()
 
 
-class Theme(object):
+class Theme:
     def __init__(
         self,
         default_color: str = "",
@@ -44,7 +44,7 @@ class Theme(object):
             return f"\x1b[{s}m"
 
 
-class Themes(object):
+class Themes:
     DEFAULT = Theme()
     OCEAN = Theme(
         default_color="96",
