@@ -1,3 +1,4 @@
+import datetime as dt
 import io
 import random
 import sqlite3
@@ -1487,3 +1488,107 @@ g..
 +-+-+-+
 """
         assert result.strip() == expected.strip()
+
+
+class TestCustomFormatter:
+    def test_init_custom_format_is_empty(self):
+        pt = PrettyTable()
+        assert pt.custom_format == {}
+
+    def test_init_custom_format_set_value(self):
+        pt = PrettyTable(
+            custom_format={"col1": (lambda col_name, value: f"{value:.2}")}
+        )
+        assert len(pt.custom_format) == 1
+
+    def test_init_custom_format_throw_error_is_not_callable(self):
+        with pytest.raises(Exception) as e:
+            PrettyTable(custom_format={"col1": "{:.2}"})
+
+        assert "Invalid value for custom_format.col1. Must be a function." in str(
+            e.value
+        )
+
+    def test_can_set_custom_format_from_property_setter(self):
+        pt = PrettyTable()
+        pt.custom_format = {"col1": (lambda col_name, value: f"{value:.2}")}
+        assert len(pt.custom_format) == 1
+
+    def test_set_custom_format_to_none_set_empty_dict(self):
+        pt = PrettyTable()
+        pt.custom_format = None
+        assert len(pt.custom_format) == 0
+        assert isinstance(pt.custom_format, dict)
+
+    def test_set_custom_format_invalid_type_throw_error(self):
+        pt = PrettyTable()
+        with pytest.raises(Exception) as e:
+            pt.custom_format = "Some String"
+        assert "The custom_format property need to be a dictionary or callable" in str(
+            e.value
+        )
+
+    def test_use_custom_formater_for_int(self, city_data_prettytable: PrettyTable):
+        city_data_prettytable.custom_format["Annual Rainfall"] = lambda n, v: f"{v:.2f}"
+        assert (
+            city_data_prettytable.get_string().strip()
+            == """
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+|  Adelaide | 1295 |  1158259   |      600.50     |
+|  Brisbane | 5905 |  1857594   |     1146.40     |
+|   Darwin  | 112  |   120900   |     1714.70     |
+|   Hobart  | 1357 |   205556   |      619.50     |
+|   Sydney  | 2058 |  4336374   |     1214.80     |
+| Melbourne | 1566 |  3806092   |      646.90     |
+|   Perth   | 5386 |  1554769   |      869.40     |
++-----------+------+------------+-----------------+
+""".strip()
+        )
+
+    def test_custom_format_multi_type(self):
+        pt = PrettyTable(["col_date", "col_str", "col_float", "col_int"])
+        pt.add_row([dt.date(2021, 1, 1), "January", 12345.12345, 12345678])
+        pt.add_row([dt.date(2021, 2, 1), "February", 54321.12345, 87654321])
+        pt.custom_format["col_date"] = lambda f, v: v.strftime("%d %b %Y")
+        pt.custom_format["col_float"] = lambda f, v: f"{v:.3f}"
+        pt.custom_format["col_int"] = lambda f, v: f"{v:,}"
+        assert (
+            pt.get_string().strip()
+            == """
++-------------+----------+-----------+------------+
+|   col_date  | col_str  | col_float |  col_int   |
++-------------+----------+-----------+------------+
+| 01 Jan 2021 | January  | 12345.123 | 12,345,678 |
+| 01 Feb 2021 | February | 54321.123 | 87,654,321 |
++-------------+----------+-----------+------------+
+""".strip()
+        )
+
+    def test_custom_format_multi_type_using_on_function(self):
+        pt = PrettyTable(["col_date", "col_str", "col_float", "col_int"])
+        pt.add_row([dt.date(2021, 1, 1), "January", 12345.12345, 12345678])
+        pt.add_row([dt.date(2021, 2, 1), "February", 54321.12345, 87654321])
+
+        def my_format(col: str, value: Any) -> str:
+            if col == "col_date":
+                return value.strftime("%d %b %Y")
+            if col == "col_float":
+                return f"{value:.3f}"
+            if col == "col_int":
+                return f"{value:,}"
+            return str(value)
+
+        pt.custom_format = my_format
+        assert (
+            pt.get_string().strip()
+            == """
++-------------+----------+-----------+------------+
+|   col_date  | col_str  | col_float |  col_int   |
++-------------+----------+-----------+------------+
+| 01 Jan 2021 | January  | 12345.123 | 12,345,678 |
+| 01 Feb 2021 | February | 54321.123 | 87,654,321 |
++-------------+----------+-----------+------------+
+""".strip()
+        )

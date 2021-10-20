@@ -92,6 +92,7 @@ class PrettyTable:
             Allowed values: FRAME, ALL, NONE
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
+        custom_format - controls formatting of any column using callable
         min_table_width - minimum desired table width, in characters
         max_table_width - maximum desired table width, in characters
         min_width - minimum desired field width, in characters
@@ -134,6 +135,8 @@ class PrettyTable:
         self.min_width = {}
         self.int_format = {}
         self.float_format = {}
+        self.custom_format = {}
+
         if field_names:
             self.field_names = field_names
         else:
@@ -156,6 +159,7 @@ class PrettyTable:
             "vrules",
             "int_format",
             "float_format",
+            "custom_format",
             "min_table_width",
             "max_table_width",
             "padding_width",
@@ -219,6 +223,7 @@ class PrettyTable:
         self.min_width = kwargs["min_width"] or {}
         self.int_format = kwargs["int_format"] or {}
         self.float_format = kwargs["float_format"] or {}
+        self.custom_format = kwargs["custom_format"] or {}
 
         self._min_table_width = kwargs["min_table_width"] or None
         self._max_table_width = kwargs["max_table_width"] or None
@@ -361,6 +366,9 @@ class PrettyTable:
             self._validate_int_format(option, val)
         elif option == "float_format":
             self._validate_float_format(option, val)
+        elif option == "custom_format":
+            for k, formatter in val.items():
+                self._validate_function(f"{option}.{k}", formatter)
         elif option in (
             "vertical_char",
             "horizontal_char",
@@ -846,6 +854,31 @@ class PrettyTable:
             self._validate_option("float_format", val)
             for field in self._field_names:
                 self._float_format[field] = val
+
+    @property
+    def custom_format(self):
+        """Controls formatting of any column using callable
+        Arguments:
+
+        custom_format - Dictionary of field_name and callable"""
+        return self._custom_format
+
+    @custom_format.setter
+    def custom_format(self, val):
+        if val is None:
+            self._custom_format = {}
+        elif isinstance(val, dict):
+            for k, v in val.items():
+                self._validate_function(f"custom_value.{k}", v)
+            self._custom_format = val
+        elif hasattr(val, "__call__"):
+            self._validate_function("custom_value", val)
+            for field in self._field_names:
+                self._custom_format[field] = val
+        else:
+            raise Exception(
+                "The custom_format property need to be a dictionary or callable"
+            )
 
     @property
     def padding_width(self):
@@ -1370,10 +1403,12 @@ class PrettyTable:
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            value = ("%%%sd" % self._int_format[field]) % value
+            return ("%%%sd" % self._int_format[field]) % value
         elif isinstance(value, float) and field in self._float_format:
-            value = ("%%%sf" % self._float_format[field]) % value
-        return str(value)
+            return ("%%%sf" % self._float_format[field]) % value
+
+        formatter = self._custom_format.get(field, (lambda f, v: str(v)))
+        return formatter(field, value)
 
     def _compute_table_width(self, options):
         table_width = 2 if options["vrules"] in (FRAME, ALL) else 0
@@ -1505,6 +1540,7 @@ class PrettyTable:
             Allowed values: FRAME, ALL, NONE
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
+        custom_format - controls formatting of any column using callable
         padding_width - number of spaces on either side of column data (only used if
             left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
@@ -1868,6 +1904,7 @@ class PrettyTable:
             Allowed values: FRAME, ALL, NONE
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
+        custom_format - controls formatting of any column using callable
         padding_width - number of spaces on either side of column data (only used if
             left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
