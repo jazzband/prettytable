@@ -344,6 +344,11 @@ def init_db(db_cursor):
 class TestBasic:
     """Some very basic tests."""
 
+    def test_table_rows(self, city_data_prettytable: PrettyTable) -> None:
+        rows = city_data_prettytable.rows[:]
+        assert len(rows) == 7
+        assert rows[0] == ["Adelaide", 1295, 1158259, 600.5]
+
     def _test_no_blank_lines(self, table: prettytable):
         string = table.get_string()
         lines = string.split("\n")

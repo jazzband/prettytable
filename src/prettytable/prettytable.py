@@ -518,6 +518,9 @@ class PrettyTable:
     ##############################
     # ATTRIBUTE MANAGEMENT       #
     ##############################
+    @property
+    def rows(self):
+        return self._rows
 
     @property
     def xhtml(self):
