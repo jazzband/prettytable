@@ -1592,3 +1592,19 @@ class TestCustomFormatter:
 +-------------+----------+-----------+------------+
 """.strip()
         )
+
+
+@pytest.fixture
+def simple_table():
+    pt = PrettyTable(["field1", "field2"])
+    pt.add_row(["row1_field1", "row1_field2"])
+    pt.add_row(["row2_field1", "row2_field2"])
+    return pt
+
+
+class TestRepr:
+    def test_default_repr(self, simple_table: PrettyTable):
+        assert simple_table.__str__() == simple_table.__repr__()
+
+    def test_jupyter_repr(self, simple_table: PrettyTable):
+        assert simple_table._repr_html_() == simple_table.get_html_string()
