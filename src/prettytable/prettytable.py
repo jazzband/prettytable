@@ -290,6 +290,8 @@ class PrettyTable:
                 return len(self._rows[0])
             else:
                 return 0
+        elif name == "_repr_html_":
+            return self._repr_html_()
         else:
             raise AttributeError(name)
 
@@ -311,6 +313,10 @@ class PrettyTable:
 
     def __str__(self):
         return self.get_string()
+
+    def _repr_html_(self):
+        """Returns get_html_string value by default as a repr call in Jupyter notebook environment"""
+        return self.get_html_string()
 
     ##############################
     # ATTRIBUTE VALIDATORS       #
