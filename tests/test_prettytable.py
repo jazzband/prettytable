@@ -1603,6 +1603,12 @@ def simple_table():
 
 
 class TestRepr:
+    def test_repr_html_attribute(self, simple_table: PrettyTable):
+        try:
+            _ = getattr(simple_table, "_repr_html_")
+        except AttributeError:
+            assert False
+
     def test_default_repr(self, simple_table: PrettyTable):
         assert simple_table.__str__() == simple_table.__repr__()
 
