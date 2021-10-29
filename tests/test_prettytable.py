@@ -1594,23 +1594,15 @@ class TestCustomFormatter:
         )
 
 
-@pytest.fixture
-def simple_table():
-    pt = PrettyTable(["field1", "field2"])
-    pt.add_row(["row1_field1", "row1_field2"])
-    pt.add_row(["row2_field1", "row2_field2"])
-    return pt
-
-
 class TestRepr:
-    def test_repr_html_attribute(self, simple_table: PrettyTable):
+    def test_repr_html_attribute(self, row_prettytable: PrettyTable):
         try:
-            _ = getattr(simple_table, "_repr_html_")
+            _ = getattr(row_prettytable, "_repr_html_")
         except AttributeError:
             assert False
 
-    def test_default_repr(self, simple_table: PrettyTable):
-        assert simple_table.__str__() == simple_table.__repr__()
+    def test_default_repr(self, row_prettytable: PrettyTable):
+        assert row_prettytable.__str__() == row_prettytable.__repr__()
 
-    def test_jupyter_repr(self, simple_table: PrettyTable):
-        assert simple_table._repr_html_() == simple_table.get_html_string()
+    def test_jupyter_repr(self, row_prettytable: PrettyTable):
+        assert row_prettytable._repr_html_() == row_prettytable.get_html_string()
