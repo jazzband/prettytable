@@ -1595,12 +1595,6 @@ class TestCustomFormatter:
 
 
 class TestRepr:
-    def test_repr_html_attribute(self, row_prettytable: PrettyTable):
-        try:
-            _ = getattr(row_prettytable, "_repr_html_")
-        except AttributeError:
-            assert False
-
     def test_default_repr(self, row_prettytable: PrettyTable):
         assert row_prettytable.__str__() == row_prettytable.__repr__()
 

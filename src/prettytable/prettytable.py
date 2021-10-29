@@ -290,8 +290,6 @@ class PrettyTable:
                 return len(self._rows[0])
             else:
                 return 0
-        elif name == "_repr_html_":
-            return self._repr_html_()
         else:
             raise AttributeError(name)
 
