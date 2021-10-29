@@ -1592,3 +1592,11 @@ class TestCustomFormatter:
 +-------------+----------+-----------+------------+
 """.strip()
         )
+
+
+class TestRepr:
+    def test_default_repr(self, row_prettytable: PrettyTable):
+        assert row_prettytable.__str__() == row_prettytable.__repr__()
+
+    def test_jupyter_repr(self, row_prettytable: PrettyTable):
+        assert row_prettytable._repr_html_() == row_prettytable.get_html_string()

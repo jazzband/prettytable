@@ -312,6 +312,16 @@ class PrettyTable:
     def __str__(self):
         return self.get_string()
 
+    def __repr__(self):
+        return self.get_string()
+
+    def _repr_html_(self):
+        """
+        Returns get_html_string value by default
+        as the repr call in Jupyter notebook environment
+        """
+        return self.get_html_string()
+
     ##############################
     # ATTRIBUTE VALIDATORS       #
     ##############################
