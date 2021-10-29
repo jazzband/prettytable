@@ -345,7 +345,7 @@ class TestBasic:
     """Some very basic tests."""
 
     def test_table_rows(self, city_data_prettytable: PrettyTable) -> None:
-        rows = city_data_prettytable.rows[:]
+        rows = city_data_prettytable.rows
         assert len(rows) == 7
         assert rows[0] == ["Adelaide", 1295, 1158259, 600.5]
 
