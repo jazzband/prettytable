@@ -520,7 +520,7 @@ class PrettyTable:
     ##############################
     @property
     def rows(self):
-        return self._rows
+        return self._rows[:]
 
     @property
     def xhtml(self):
