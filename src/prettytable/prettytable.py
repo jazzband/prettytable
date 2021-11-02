@@ -1982,9 +1982,7 @@ class PrettyTable:
         open_tag = ["<table"]
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(
-                    ' {}="{}"'.format(attr_name, options["attributes"][attr_name])
-                )
+                open_tag.append(f' {attr_name}="{options["attributes"][attr_name]}"')
         open_tag.append(">")
         lines.append("".join(open_tag))
 
@@ -2056,9 +2054,7 @@ class PrettyTable:
                 open_tag.append(' frame="vsides" rules="cols"')
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(
-                    ' {}="{}"'.format(attr_name, options["attributes"][attr_name])
-                )
+                open_tag.append(f' {attr_name}="{options["attributes"][attr_name]}"')
         open_tag.append(">")
         lines.append("".join(open_tag))
 
