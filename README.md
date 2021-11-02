@@ -561,17 +561,17 @@ and `get_string`.
 
 You can provide a dictionary of HTML attribute name/value pairs to the `get_html_string`
 method using the `attributes` keyword argument. This lets you specify common HTML
-attributes like `name`, `id` and `class` that can be used for linking to your tables or
+attributes like `id` and `class` that can be used for linking to your tables or
 customising their appearance using CSS. For example:
 
 ```python
-print(x.get_html_string(attributes={"name":"my_table", "class":"red_table"}))
+print(x.get_html_string(attributes={"id":"my_table", "class":"red_table"}))
 ```
 
 will print:
 
 ```html
-<table name="my_table" class="red_table">
+<table id="my_table" class="red_table">
   <thead>
     <tr>
       <th>City name</th>
