@@ -1058,7 +1058,7 @@ class TestStyle:
                 MARKDOWN,
                 """
 | Field 1 | Field 2 | Field 3 |
-|---------|---------|---------|
+|:-------:|:-------:|:-------:|
 | value 1 |  value2 |  value3 |
 | value 4 |  value5 |  value6 |
 | value 7 |  value8 |  value9 |
@@ -1145,6 +1145,37 @@ value 7         value8         value9
         # This is an hrule style, not a table style
         with pytest.raises(Exception):
             t.set_style(ALL)
+
+    @pytest.mark.parametrize(
+        "style, expected",
+        [
+            pytest.param(
+                MARKDOWN,
+                """
+| Align left | Align centre | Align right |
+|:-----------|:------------:|------------:|
+| value 1    |    value2    |      value3 |
+| value 4    |    value5    |      value6 |
+| value 7    |    value8    |      value9 |
+""",
+                id="MARKDOWN",
+            ),
+        ],
+    )
+    def test_style_align(self, style, expected):
+        # Arrange
+        t = helper_table()
+        t.field_names = ["Align left", "Align centre", "Align right"]
+
+        # Act
+        t.set_style(style)
+        t.align["Align left"] = "l"
+        t.align["Align centre"] = "c"
+        t.align["Align right"] = "r"
+
+        # Assert
+        result = t.get_string()
+        assert result.strip() == expected.strip()
 
 
 class TestCsvOutput:

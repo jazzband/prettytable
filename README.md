@@ -425,6 +425,8 @@ The options are these:
 - `vertical_char` - Single character string used to draw vertical lines. Default is `|`.
 - `horizontal_char` - Single character string used to draw horizontal lines. Default is
   `-`.
+- `_horizontal_align_char` - single character string used to indicate column alignment
+  in horizontal lines. Default is `:` for Markdown, otherwise `None`.
 - `junction_char` - Single character string used to draw line junctions. Default is `+`.
 - `top_junction_char` - single character string used to draw top line junctions. Default
   is `junction_char`.
