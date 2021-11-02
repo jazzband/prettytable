@@ -2167,9 +2167,9 @@ class PrettyTable:
         else:
             wanted_fields = self._field_names
 
-        aligments = "".join([self._align[field] for field in wanted_fields])
+        alignments = "".join([self._align[field] for field in wanted_fields])
 
-        begin_cmd = "\\begin{tabular}{%s}" % aligments
+        begin_cmd = "\\begin{tabular}{%s}" % alignments
         lines.append(begin_cmd)
 
         # Headers
@@ -2200,16 +2200,16 @@ class PrettyTable:
         else:
             wanted_fields = self._field_names
 
-        wanted_aligments = [self._align[field] for field in wanted_fields]
+        wanted_alignments = [self._align[field] for field in wanted_fields]
         if options["border"] and options["vrules"] == ALL:
-            aligment_str = "|".join(wanted_aligments)
+            alignment_str = "|".join(wanted_alignments)
         else:
-            aligment_str = "".join(wanted_aligments)
+            alignment_str = "".join(wanted_alignments)
 
         if options["border"] and options["vrules"] in [ALL, FRAME]:
-            aligment_str = "|" + aligment_str + "|"
+            alignment_str = "|" + alignment_str + "|"
 
-        begin_cmd = "\\begin{tabular}{%s}" % aligment_str
+        begin_cmd = "\\begin{tabular}{%s}" % alignment_str
         lines.append(begin_cmd)
 
         if options["border"] and options["hrules"] in [ALL, FRAME]:

@@ -190,7 +190,7 @@ class TestFieldNameLessTable:
         assert "|  Field 1  | Field 2 | Field 3 | Field 4 |" in output
         assert "|  Adelaide |   1295  | 1158259 |  600.5  |" in output
 
-    def test_can_sring_HTML(self, field_name_less_table: prettytable):
+    def test_can_string_HTML(self, field_name_less_table: prettytable):
         output = field_name_less_table.get_html_string()
         assert "<th>Field 1</th>" in output
         assert "<td>Adelaide</td>" in output
@@ -354,7 +354,7 @@ class TestBasic:
         lines = string.split("\n")
         assert "" not in lines
 
-    def _test_all_lenght_equal(self, table: prettytable):
+    def _test_all_length_equal(self, table: prettytable):
         string = table.get_string()
         lines = string.split("\n")
         lengths = [len(line) for line in lines]
@@ -367,7 +367,7 @@ class TestBasic:
 
     def test_all_lengths_equal(self, city_data_prettytable):
         """All lines in a table should be of the same length."""
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_with_title(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -377,7 +377,7 @@ class TestBasic:
     def test_all_lengths_equal_with_title(self, city_data_prettytable: PrettyTable):
         """All lines in a table should be of the same length."""
         city_data_prettytable.title = "My table"
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_without_border(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -387,7 +387,7 @@ class TestBasic:
     def test_all_lengths_equal_without_border(self, city_data_prettytable: PrettyTable):
         """All lines in a table should be of the same length."""
         city_data_prettytable.border = False
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_without_header(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -397,7 +397,7 @@ class TestBasic:
     def test_all_lengths_equal_without_header(self, city_data_prettytable: PrettyTable):
         """All lines in a table should be of the same length."""
         city_data_prettytable.header = False
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_with_hrules_none(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -409,7 +409,7 @@ class TestBasic:
     ):
         """All lines in a table should be of the same length."""
         city_data_prettytable.hrules = NONE
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_with_hrules_all(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -421,7 +421,7 @@ class TestBasic:
     ):
         """All lines in a table should be of the same length."""
         city_data_prettytable.hrules = ALL
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_with_style_msword(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -433,7 +433,7 @@ class TestBasic:
     ):
         """All lines in a table should be of the same length."""
         city_data_prettytable.set_style(MSWORD_FRIENDLY)
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_with_int_format(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -445,7 +445,7 @@ class TestBasic:
     ):
         """All lines in a table should be of the same length."""
         city_data_prettytable.int_format = "04"
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_with_float_format(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -457,7 +457,7 @@ class TestBasic:
     ):
         """All lines in a table should be of the same length."""
         city_data_prettytable.float_format = "6.2f"
-        self._test_all_lenght_equal(city_data_prettytable)
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_from_csv(self, city_data_from_csv: PrettyTable):
         """No table should ever have blank lines in it."""
@@ -465,7 +465,7 @@ class TestBasic:
 
     def test_all_lengths_equal_from_csv(self, city_data_from_csv: PrettyTable):
         """All lines in a table should be of the same length."""
-        self._test_all_lenght_equal(city_data_from_csv)
+        self._test_all_length_equal(city_data_from_csv)
 
     @pytest.mark.usefixtures("init_db")
     def test_no_blank_lines_from_db(self, db_cursor):
@@ -479,7 +479,7 @@ class TestBasic:
         """No table should ever have blank lines in it."""
         db_cursor.execute("SELECT * FROM cities")
         pt = from_db_cursor(db_cursor)
-        self._test_all_lenght_equal(pt)
+        self._test_all_length_equal(pt)
 
 
 class TestEmptyTable:
@@ -585,9 +585,9 @@ class TestSorting:
         x = PrettyTable(["Foo"])
         for i in range(20, 0, -1):
             x.add_row([i])
-        newstyle = x.get_string(sortby="Foo", end=10)
-        assert "10" in newstyle
-        assert "20" not in newstyle
+        new_style = x.get_string(sortby="Foo", end=10)
+        assert "10" in new_style
+        assert "20" not in new_style
         oldstyle = x.get_string(sortby="Foo", end=10, oldsortslice=True)
         assert "10" not in oldstyle
         assert "20" in oldstyle
@@ -1564,7 +1564,7 @@ class TestCustomFormatter:
             e.value
         )
 
-    def test_use_custom_formater_for_int(self, city_data_prettytable: PrettyTable):
+    def test_use_custom_formatter_for_int(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.custom_format["Annual Rainfall"] = lambda n, v: f"{v:.2f}"
         assert (
             city_data_prettytable.get_string().strip()

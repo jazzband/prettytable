@@ -36,7 +36,7 @@ See GitHub Releases:
   correctly for tables with e.g. Japanese text.
 - Table contents can now be read in from a .csv file
 - Table contents can now be read in from a DB-API compatible cursor
-- Table contents can now be read in from a string containing a HTML table (thanks to
+- Table contents can now be read in from a string containing an HTML table (thanks to
   Christoph Robbert for submitting this patch!)
 - New `valign` attribute controls vertical alignment of text when some cells in a row
   have multiple lines of text and others don't. (thanks to Google Code user maartendb
