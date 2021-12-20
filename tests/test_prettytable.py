@@ -12,6 +12,7 @@ from prettytable import (
     ALL,
     DEFAULT,
     DOUBLE_BORDER,
+    SINGLE_BORDER,
     FRAME,
     HEADER,
     MARKDOWN,
@@ -1121,6 +1122,18 @@ value 7         value8         value9
 ║ value 4 ║  value5 ║  value6 ║
 ║ value 7 ║  value8 ║  value9 ║
 ╚═════════╩═════════╩═════════╝
+""",
+            ),
+            pytest.param(
+                SINGLE_BORDER,
+                """
+┌─────────┬─────────┬─────────┐
+│ Field 1 │ Field 2 │ Field 3 │
+├─────────┼─────────┼─────────┤
+│ value 1 │  value2 │  value3 │
+│ value 4 │  value5 │  value6 │
+│ value 7 │  value8 │  value9 │
+└─────────┴─────────┴─────────┘
 """,
             ),
         ],
