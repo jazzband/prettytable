@@ -381,7 +381,7 @@ In addition to `MSWORD_FRIENDLY` you can use these in-built styles for your tabl
   columnar data
 - `MARKDOWN` - A style that follows Markdown syntax
 - `ORGMODE` - A table style that fits [Org mode](https://orgmode.org/) syntax
-- `SINGLE_BORDER` and `DOUBLE_BORDER` - Styles that use continuous single/double border 
+- `SINGLE_BORDER` and `DOUBLE_BORDER` - Styles that use continuous single/double border
   lines with Box drawing characters for a fancier display on terminal.
 
 Other styles are likely to appear in future releases.
