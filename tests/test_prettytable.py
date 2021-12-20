@@ -20,6 +20,7 @@ from prettytable import (
     ORGMODE,
     PLAIN_COLUMNS,
     RANDOM,
+    SINGLE_BORDER,
     PrettyTable,
     from_csv,
     from_db_cursor,
@@ -1121,6 +1122,18 @@ value 7         value8         value9
 ║ value 4 ║  value5 ║  value6 ║
 ║ value 7 ║  value8 ║  value9 ║
 ╚═════════╩═════════╩═════════╝
+""",
+            ),
+            pytest.param(
+                SINGLE_BORDER,
+                """
+┌─────────┬─────────┬─────────┐
+│ Field 1 │ Field 2 │ Field 3 │
+├─────────┼─────────┼─────────┤
+│ value 1 │  value2 │  value3 │
+│ value 4 │  value5 │  value6 │
+│ value 7 │  value8 │  value9 │
+└─────────┴─────────┴─────────┘
 """,
             ),
         ],

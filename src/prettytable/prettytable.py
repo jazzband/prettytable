@@ -57,6 +57,7 @@ PLAIN_COLUMNS = 12
 MARKDOWN = 13
 ORGMODE = 14
 DOUBLE_BORDER = 15
+SINGLE_BORDER = 16
 RANDOM = 20
 
 _re = re.compile(r"\033\[[0-9;]*m|\033\(B")
@@ -1215,6 +1216,8 @@ class PrettyTable:
             self._set_orgmode_style()
         elif style == DOUBLE_BORDER:
             self._set_double_border_style()
+        elif style == SINGLE_BORDER:
+            self._set_single_border_style()
         elif style == RANDOM:
             self._set_random_style()
         else:
@@ -1287,6 +1290,19 @@ class PrettyTable:
         self.top_left_junction_char = "╔"
         self.bottom_right_junction_char = "╝"
         self.bottom_left_junction_char = "╚"
+
+    def _set_single_border_style(self):
+        self.horizontal_char = "─"
+        self.vertical_char = "│"
+        self.junction_char = "┼"
+        self.top_junction_char = "┬"
+        self.bottom_junction_char = "┴"
+        self.right_junction_char = "┤"
+        self.left_junction_char = "├"
+        self.top_right_junction_char = "┐"
+        self.top_left_junction_char = "┌"
+        self.bottom_right_junction_char = "┘"
+        self.bottom_left_junction_char = "└"
 
     def _set_random_style(self):
 
