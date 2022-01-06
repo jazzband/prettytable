@@ -886,6 +886,43 @@ class TestHtmlOutput:
 """.strip()  # noqa: E501
         )
 
+    def test_HtmlOutputWithTitle(self):
+        t = helper_table()
+        t.title = "Title"
+        result = t.get_html_string()
+        assert (
+            result.strip()
+            == """
+<table>
+    <caption>Title</caption>
+    <thead>
+        <tr>
+            <th>Field 1</th>
+            <th>Field 2</th>
+            <th>Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>value 1</td>
+            <td>value2</td>
+            <td>value3</td>
+        </tr>
+        <tr>
+            <td>value 4</td>
+            <td>value5</td>
+            <td>value6</td>
+        </tr>
+        <tr>
+            <td>value 7</td>
+            <td>value8</td>
+            <td>value9</td>
+        </tr>
+    </tbody>
+</table>
+""".strip()
+        )
+
 
 class TestPositionalJunctions:
     """Verify different cases for positional-junction characters"""
