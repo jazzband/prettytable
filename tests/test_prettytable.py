@@ -923,6 +923,43 @@ class TestHtmlOutput:
 """.strip()
         )
 
+    def test_HtmlOutputFormattedWithTitle(self):
+        t = helper_table()
+        t.title = "Title"
+        result = t.get_html_string(format=True)
+        assert (
+            result.strip()
+            == """
+<table frame="box" rules="cols">
+    <caption>Title</caption>
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 1</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value2</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value3</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 4</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value5</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value6</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 7</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value8</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value9</td>
+        </tr>
+    </tbody>
+</table>
+""".strip()  # noqa: E501
+        )
+
 
 class TestPositionalJunctions:
     """Verify different cases for positional-junction characters"""
