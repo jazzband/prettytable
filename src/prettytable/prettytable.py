@@ -2005,12 +2005,7 @@ class PrettyTable:
         # Title
         title = options["title"] or self._title
         if title:
-            cols = (
-                len(options["fields"]) if options["fields"] else len(self.field_names)
-            )
-            lines.append("    <tr>")
-            lines.append(f"        <td colspan={cols}>{title}</td>")
-            lines.append("    </tr>")
+            lines.append(f"    <caption>{title}</caption>")
 
         # Headers
         if options["header"]:
@@ -2077,12 +2072,7 @@ class PrettyTable:
         # Title
         title = options["title"] or self._title
         if title:
-            cols = (
-                len(options["fields"]) if options["fields"] else len(self.field_names)
-            )
-            lines.append("    <tr>")
-            lines.append(f"        <td colspan={cols}>{title}</td>")
-            lines.append("    </tr>")
+            lines.append(f"    <caption>{title}</caption>")
 
         # Headers
         if options["header"]:
