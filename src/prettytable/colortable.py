@@ -12,10 +12,6 @@ init()
 
 RESET_CODE = "\x1b[0m"
 
-# Long-term
-# - Create polyfill Colorama Fore, Back, Style
-# - Better way to customize colorama.init()
-
 
 class Theme:
     def __init__(
@@ -66,12 +62,10 @@ class ColorTable(PrettyTable):
 
     @property
     def theme(self) -> Theme:
-        print("Getting")
         return self._theme
 
     @theme.setter
     def theme(self, value: Theme):
-        print("Setting")
         self._theme = value
         self.update_theme()
 
