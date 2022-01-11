@@ -357,7 +357,7 @@ instance of the data in the `sort_by` column.
 ### Changing the appearance of your table - the easy way
 
 By default, PrettyTable produces ASCII tables that look like the ones used in SQL
-database shells. But if can print them in a variety of other formats as well. If the
+database shells. But it can print them in a variety of other formats as well. If the
 format you want to use is common, PrettyTable makes this easy for you to do using the
 `set_style` method. If you want to produce an uncommon table, you'll have to do things
 slightly harder (see later).
@@ -374,16 +374,15 @@ x.set_style(MSWORD_FRIENDLY)
 print(x)
 ```
 
-In addition to `MSWORD_FRIENDLY` there are currently two other in-built styles you can
-use for your tables:
+In addition to `MSWORD_FRIENDLY` you can use these in-built styles for your tables:
 
 - `DEFAULT` - The default look, used to undo any style changes you may have made
 - `PLAIN_COLUMNS` - A borderless style that works well with command line programs for
   columnar data
 - `MARKDOWN` - A style that follows Markdown syntax
 - `ORGMODE` - A table style that fits [Org mode](https://orgmode.org/) syntax
-- `DOUBLE_BORDER` - A style that uses continuous double border lines for a fancier
-  display on terminal
+- `SINGLE_BORDER` and `DOUBLE_BORDER` - Styles that use continuous single/double border
+  lines with Box drawing characters for a fancier display on terminal
 
 Other styles are likely to appear in future releases.
 
@@ -402,10 +401,10 @@ whatever you prefer. The `set_style` method just does this automatically for you
 
 The options are these:
 
-- `border` - A boolean option (must be `True` or `False`). Controls whether or not a
-  border is drawn around the table.
-- `header` - A boolean option (must be `True` or `False`). Controls whether or not the
-  first row of the table is a header showing the names of all the fields.
+- `border` - A boolean option (must be `True` or `False`). Controls whether a border is
+  drawn around the table.
+- `header` - A boolean option (must be `True` or `False`). Controls whether the first
+  row of the table is a header showing the names of all the fields.
 - `hrules` - Controls printing of horizontal rules after rows. Allowed values: `FRAME`,
   `HEADER`, `ALL`, `NONE` - note that these are variables defined inside the
   `prettytable` module so make sure you import them or use `prettytable.FRAME` etc.
@@ -415,13 +414,18 @@ The options are these:
   like: `print("%<int_format>d" % data)`
 - `float_format` - A string which controls the way floating point data is printed. This
   works like: `print("%<float_format>f" % data)`
+- `custom_format` - A Dictionary of field and callable. This allows you to set any
+  format you want `pf.custom_format["my_col_int"] = ()lambda f, v: f"{v:,}"`. The type
+  of the callable if `callable[[str, Any], str]`
 - `padding_width` - Number of spaces on either side of column data (only used if left
   and right paddings are `None`).
-- `left_padding_width` - Number of spaces on left hand side of column data.
-- `right_padding_width` - Number of spaces on right hand side of column data.
+- `left_padding_width` - Number of spaces on left-hand side of column data.
+- `right_padding_width` - Number of spaces on right-hand side of column data.
 - `vertical_char` - Single character string used to draw vertical lines. Default is `|`.
 - `horizontal_char` - Single character string used to draw horizontal lines. Default is
   `-`.
+- `_horizontal_align_char` - single character string used to indicate column alignment
+  in horizontal lines. Default is `:` for Markdown, otherwise `None`.
 - `junction_char` - Single character string used to draw line junctions. Default is `+`.
 - `top_junction_char` - single character string used to draw top line junctions. Default
   is `junction_char`.
@@ -549,24 +553,24 @@ x.format = True
 and the setting will persist until you turn it off.
 
 Just like with ASCII tables, if you want to change the table's style for just one
-`get_html_string` you can pass those methods keyword arguments - exactly like `print`
+`get_html_string` you can pass those methods' keyword arguments - exactly like `print`
 and `get_string`.
 
 #### Setting HTML attributes
 
 You can provide a dictionary of HTML attribute name/value pairs to the `get_html_string`
 method using the `attributes` keyword argument. This lets you specify common HTML
-attributes like `name`, `id` and `class` that can be used for linking to your tables or
+attributes like `id` and `class` that can be used for linking to your tables or
 customising their appearance using CSS. For example:
 
 ```python
-print(x.get_html_string(attributes={"name":"my_table", "class":"red_table"}))
+print(x.get_html_string(attributes={"id":"my_table", "class":"red_table"}))
 ```
 
 will print:
 
 ```html
-<table name="my_table" class="red_table">
+<table id="my_table" class="red_table">
   <thead>
     <tr>
       <th>City name</th>

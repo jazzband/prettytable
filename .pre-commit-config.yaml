@@ -1,18 +1,18 @@
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.0
+    rev: v2.31.0
     hooks:
       - id: pyupgrade
-        args: ["--py36-plus"]
+        args: [--py37-plus]
 
   - repo: https://github.com/psf/black
-    rev: 21.9b0
+    rev: 21.12b0
     hooks:
       - id: black
-        args: ["--target-version", "py36"]
+        args: [--target-version=py37]
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.9.3
+    rev: 5.10.1
     hooks:
       - id: isort
 
@@ -28,24 +28,23 @@ repos:
       - id: python-check-blanket-noqa
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
 
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.18.0
+    rev: v1.20.0
     hooks:
       - id: setup-cfg-fmt
-        args: ["--max-py-version=3.10"]
 
   - repo: https://github.com/tox-dev/tox-ini-fmt
-    rev: 0.5.1
+    rev: 0.5.2
     hooks:
       - id: tox-ini-fmt
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.4.1
+    rev: v2.5.1
     hooks:
       - id: prettier
         args: [--prose-wrap=always, --print-width=88]

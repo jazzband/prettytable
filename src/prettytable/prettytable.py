@@ -57,6 +57,7 @@ PLAIN_COLUMNS = 12
 MARKDOWN = 13
 ORGMODE = 14
 DOUBLE_BORDER = 15
+SINGLE_BORDER = 16
 RANDOM = 20
 
 _re = re.compile(r"\033\[[0-9;]*m|\033\(B")
@@ -92,6 +93,7 @@ class PrettyTable:
             Allowed values: FRAME, ALL, NONE
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
+        custom_format - controls formatting of any column using callable
         min_table_width - minimum desired table width, in characters
         max_table_width - maximum desired table width, in characters
         min_width - minimum desired field width, in characters
@@ -102,6 +104,7 @@ class PrettyTable:
         right_padding_width - number of spaces on right hand side of column data
         vertical_char - single character string used to draw vertical lines
         horizontal_char - single character string used to draw horizontal lines
+        horizontal_align_char - single character string used to indicate alignment
         junction_char - single character string used to draw line junctions
         top_junction_char - single character string used to draw top line junctions
         bottom_junction_char -
@@ -134,6 +137,8 @@ class PrettyTable:
         self.min_width = {}
         self.int_format = {}
         self.float_format = {}
+        self.custom_format = {}
+
         if field_names:
             self.field_names = field_names
         else:
@@ -156,6 +161,7 @@ class PrettyTable:
             "vrules",
             "int_format",
             "float_format",
+            "custom_format",
             "min_table_width",
             "max_table_width",
             "padding_width",
@@ -163,6 +169,7 @@ class PrettyTable:
             "right_padding_width",
             "vertical_char",
             "horizontal_char",
+            "horizontal_align_char",
             "junction_char",
             "header_style",
             "valign",
@@ -219,6 +226,7 @@ class PrettyTable:
         self.min_width = kwargs["min_width"] or {}
         self.int_format = kwargs["int_format"] or {}
         self.float_format = kwargs["float_format"] or {}
+        self.custom_format = kwargs["custom_format"] or {}
 
         self._min_table_width = kwargs["min_table_width"] or None
         self._max_table_width = kwargs["max_table_width"] or None
@@ -231,6 +239,7 @@ class PrettyTable:
 
         self._vertical_char = kwargs["vertical_char"] or "|"
         self._horizontal_char = kwargs["horizontal_char"] or "-"
+        self._horizontal_align_char = kwargs["horizontal_align_char"]
         self._junction_char = kwargs["junction_char"] or "+"
         self._top_junction_char = kwargs["top_junction_char"]
         self._bottom_junction_char = kwargs["bottom_junction_char"]
@@ -307,6 +316,16 @@ class PrettyTable:
     def __str__(self):
         return self.get_string()
 
+    def __repr__(self):
+        return self.get_string()
+
+    def _repr_html_(self):
+        """
+        Returns get_html_string value by default
+        as the repr call in Jupyter notebook environment
+        """
+        return self.get_html_string()
+
     ##############################
     # ATTRIBUTE VALIDATORS       #
     ##############################
@@ -361,9 +380,13 @@ class PrettyTable:
             self._validate_int_format(option, val)
         elif option == "float_format":
             self._validate_float_format(option, val)
+        elif option == "custom_format":
+            for k, formatter in val.items():
+                self._validate_function(f"{option}.{k}", formatter)
         elif option in (
             "vertical_char",
             "horizontal_char",
+            "horizontal_align_char",
             "junction_char",
             "top_junction_char",
             "bottom_junction_char",
@@ -510,6 +533,9 @@ class PrettyTable:
     ##############################
     # ATTRIBUTE MANAGEMENT       #
     ##############################
+    @property
+    def rows(self):
+        return self._rows[:]
 
     @property
     def xhtml(self):
@@ -848,6 +874,31 @@ class PrettyTable:
                 self._float_format[field] = val
 
     @property
+    def custom_format(self):
+        """Controls formatting of any column using callable
+        Arguments:
+
+        custom_format - Dictionary of field_name and callable"""
+        return self._custom_format
+
+    @custom_format.setter
+    def custom_format(self, val):
+        if val is None:
+            self._custom_format = {}
+        elif isinstance(val, dict):
+            for k, v in val.items():
+                self._validate_function(f"custom_value.{k}", v)
+            self._custom_format = val
+        elif hasattr(val, "__call__"):
+            self._validate_function("custom_value", val)
+            for field in self._field_names:
+                self._custom_format[field] = val
+        else:
+            raise Exception(
+                "The custom_format property need to be a dictionary or callable"
+            )
+
+    @property
     def padding_width(self):
         """The number of empty spaces between a column's edge and its content
 
@@ -918,6 +969,21 @@ class PrettyTable:
         val = str(val)
         self._validate_option("horizontal_char", val)
         self._horizontal_char = val
+
+    @property
+    def horizontal_align_char(self):
+        """The character used to indicate column alignment in horizontal lines
+
+        Arguments:
+
+        horizontal_align_char - single character string used to indicate alignment"""
+        return self._bottom_left_junction_char or self.junction_char
+
+    @horizontal_align_char.setter
+    def horizontal_align_char(self, val):
+        val = str(val)
+        self._validate_option("horizontal_align_char", val)
+        self._horizontal_align_char = val
 
     @property
     def junction_char(self):
@@ -1150,6 +1216,8 @@ class PrettyTable:
             self._set_orgmode_style()
         elif style == DOUBLE_BORDER:
             self._set_double_border_style()
+        elif style == SINGLE_BORDER:
+            self._set_single_border_style()
         elif style == RANDOM:
             self._set_random_style()
         else:
@@ -1168,6 +1236,7 @@ class PrettyTable:
         self.right_padding_width = 1
         self.vertical_char = "|"
         self.junction_char = "|"
+        self._horizontal_align_char = ":"
 
     def _set_default_style(self):
 
@@ -1180,6 +1249,7 @@ class PrettyTable:
         self.right_padding_width = 1
         self.vertical_char = "|"
         self.horizontal_char = "-"
+        self._horizontal_align_char = None
         self.junction_char = "+"
         self._top_junction_char = None
         self._bottom_junction_char = None
@@ -1220,6 +1290,19 @@ class PrettyTable:
         self.top_left_junction_char = "╔"
         self.bottom_right_junction_char = "╝"
         self.bottom_left_junction_char = "╚"
+
+    def _set_single_border_style(self):
+        self.horizontal_char = "─"
+        self.vertical_char = "│"
+        self.junction_char = "┼"
+        self.top_junction_char = "┬"
+        self.bottom_junction_char = "┴"
+        self.right_junction_char = "┤"
+        self.left_junction_char = "├"
+        self.top_right_junction_char = "┐"
+        self.top_left_junction_char = "┌"
+        self.bottom_right_junction_char = "┘"
+        self.bottom_left_junction_char = "└"
 
     def _set_random_style(self):
 
@@ -1370,10 +1453,12 @@ class PrettyTable:
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            value = ("%%%sd" % self._int_format[field]) % value
+            return ("%%%sd" % self._int_format[field]) % value
         elif isinstance(value, float) and field in self._float_format:
-            value = ("%%%sf" % self._float_format[field]) % value
-        return str(value)
+            return ("%%%sf" % self._float_format[field]) % value
+
+        formatter = self._custom_format.get(field, (lambda f, v: str(v)))
+        return formatter(field, value)
 
     def _compute_table_width(self, options):
         table_width = 2 if options["vrules"] in (FRAME, ALL) else 0
@@ -1505,12 +1590,14 @@ class PrettyTable:
             Allowed values: FRAME, ALL, NONE
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
+        custom_format - controls formatting of any column using callable
         padding_width - number of spaces on either side of column data (only used if
             left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
         right_padding_width - number of spaces on right hand side of column data
         vertical_char - single character string used to draw vertical lines
         horizontal_char - single character string used to draw horizontal lines
+        horizontal_align_char - single character string used to indicate alignment
         junction_char - single character string used to draw line junctions
         junction_char - single character string used to draw line junctions
         top_junction_char - single character string used to draw top line junctions
@@ -1606,7 +1693,17 @@ class PrettyTable:
         for field, width in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
                 continue
-            bits.append((width + lpad + rpad) * options["horizontal_char"])
+
+            line = (width + lpad + rpad) * options["horizontal_char"]
+
+            # If necessary, add column alignment characters (e.g. ":" for Markdown)
+            if self._horizontal_align_char:
+                if self._align[field] in ("l", "c"):
+                    line = self._horizontal_align_char + line[1:]
+                if self._align[field] in ("c", "r"):
+                    line = line[:-1] + self._horizontal_align_char
+
+            bits.append(line)
             if options["vrules"] == ALL:
                 bits.append(options[where + "junction_char"])
             else:
@@ -1868,6 +1965,7 @@ class PrettyTable:
             Allowed values: FRAME, ALL, NONE
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
+        custom_format - controls formatting of any column using callable
         padding_width - number of spaces on either side of column data (only used if
             left and right paddings are None)
         left_padding_width - number of spaces on left hand side of column data
@@ -1900,21 +1998,14 @@ class PrettyTable:
         open_tag = ["<table"]
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(
-                    ' {}="{}"'.format(attr_name, options["attributes"][attr_name])
-                )
+                open_tag.append(f' {attr_name}="{options["attributes"][attr_name]}"')
         open_tag.append(">")
         lines.append("".join(open_tag))
 
         # Title
         title = options["title"] or self._title
         if title:
-            cols = (
-                len(options["fields"]) if options["fields"] else len(self.field_names)
-            )
-            lines.append("    <tr>")
-            lines.append(f"        <td colspan={cols}>{title}</td>")
-            lines.append("    </tr>")
+            lines.append(f"    <caption>{title}</caption>")
 
         # Headers
         if options["header"]:
@@ -1974,21 +2065,14 @@ class PrettyTable:
                 open_tag.append(' frame="vsides" rules="cols"')
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(
-                    ' {}="{}"'.format(attr_name, options["attributes"][attr_name])
-                )
+                open_tag.append(f' {attr_name}="{options["attributes"][attr_name]}"')
         open_tag.append(">")
         lines.append("".join(open_tag))
 
         # Title
         title = options["title"] or self._title
         if title:
-            cols = (
-                len(options["fields"]) if options["fields"] else len(self.field_names)
-            )
-            lines.append("    <tr>")
-            lines.append(f"        <td colspan={cols}>{title}</td>")
-            lines.append("    </tr>")
+            lines.append(f"    <caption>{title}</caption>")
 
         # Headers
         if options["header"]:
@@ -2085,9 +2169,9 @@ class PrettyTable:
         else:
             wanted_fields = self._field_names
 
-        aligments = "".join([self._align[field] for field in wanted_fields])
+        alignments = "".join([self._align[field] for field in wanted_fields])
 
-        begin_cmd = "\\begin{tabular}{%s}" % aligments
+        begin_cmd = "\\begin{tabular}{%s}" % alignments
         lines.append(begin_cmd)
 
         # Headers
@@ -2118,16 +2202,16 @@ class PrettyTable:
         else:
             wanted_fields = self._field_names
 
-        wanted_aligments = [self._align[field] for field in wanted_fields]
+        wanted_alignments = [self._align[field] for field in wanted_fields]
         if options["border"] and options["vrules"] == ALL:
-            aligment_str = "|".join(wanted_aligments)
+            alignment_str = "|".join(wanted_alignments)
         else:
-            aligment_str = "".join(wanted_aligments)
+            alignment_str = "".join(wanted_alignments)
 
         if options["border"] and options["vrules"] in [ALL, FRAME]:
-            aligment_str = "|" + aligment_str + "|"
+            alignment_str = "|" + alignment_str + "|"
 
-        begin_cmd = "\\begin{tabular}{%s}" % aligment_str
+        begin_cmd = "\\begin{tabular}{%s}" % alignment_str
         lines.append(begin_cmd)
 
         if options["border"] and options["hrules"] in [ALL, FRAME]:
