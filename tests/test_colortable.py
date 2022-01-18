@@ -1,12 +1,78 @@
-from prettytable.colortable import Theme
+import pytest
 
-# Import table fixture from test_prettytable
-
-
-# Test colortable
+from prettytable import PrettyTable
+from prettytable.colortable import RESET_CODE, ColorTable, Theme
 
 
-# Test default and ocean theme
+@pytest.fixture
+def row_prettytable():
+    # Row by row...
+    row = PrettyTable()
+    row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    row.add_row(["Adelaide", 1295, 1158259, 600.5])
+    row.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    row.add_row(["Darwin", 112, 120900, 1714.7])
+    row.add_row(["Hobart", 1357, 205556, 619.5])
+    row.add_row(["Sydney", 2058, 4336374, 1214.8])
+    row.add_row(["Melbourne", 1566, 3806092, 646.9])
+    row.add_row(["Perth", 5386, 1554769, 869.4])
+    return row
+
+
+@pytest.fixture
+def row_colortable():
+    row = ColorTable()
+    row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    row.add_row(["Adelaide", 1295, 1158259, 600.5])
+    row.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    row.add_row(["Darwin", 112, 120900, 1714.7])
+    row.add_row(["Hobart", 1357, 205556, 619.5])
+    row.add_row(["Sydney", 2058, 4336374, 1214.8])
+    row.add_row(["Melbourne", 1566, 3806092, 646.9])
+    row.add_row(["Perth", 5386, 1554769, 869.4])
+    return row
+
+
+@pytest.fixture
+def color_theme():
+    return Theme(
+        default_color="31",
+        vertical_color="32",
+        horizontal_color="33",
+        junction_color="34",
+    )
+
+
+@pytest.fixture
+def char_theme():
+    return Theme(vertical_char=":", horizontal_char="~", junction_char="*")
+
+
+class TestColorTable:
+    def test_themeless(self, row_prettytable, row_colortable):
+        # Not worth the logic customizing the reset code
+        # For now we'll just get rid of it
+        assert (
+            row_colortable.get_string().replace(RESET_CODE, "")
+            == row_prettytable.get_string()
+        )
+
+    def test_theme_setter(self, color_theme):
+        table1 = ColorTable(theme=color_theme)
+
+        table2 = ColorTable()
+        table2.theme = color_theme
+
+        assert table1.theme == table2.theme
+
+        dict1 = table1.__dict__
+        dict2 = table2.__dict__
+
+        # So we don't compare functions
+        del dict1["_sort_key"]
+        del dict2["_sort_key"]
+
+        assert dict1 == dict2
 
 
 class TestFormatCode:
