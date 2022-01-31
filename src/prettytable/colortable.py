@@ -57,8 +57,7 @@ class ColorTable(PrettyTable):
         super().__init__(field_names=field_names, **kwargs)
         # TODO: Validate option
 
-        self._theme = kwargs.get("theme") or Themes.DEFAULT
-        self.update_theme()
+        self.theme = kwargs.get("theme") or Themes.DEFAULT
 
     @property
     def theme(self) -> Theme:
