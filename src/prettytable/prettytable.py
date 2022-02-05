@@ -72,7 +72,6 @@ def _get_size(text):
 
 class PrettyTable:
     def __init__(self, field_names=None, **kwargs):
-
         """Return a new PrettyTable instance
 
         Arguments:
@@ -188,6 +187,7 @@ class PrettyTable:
             "valign",
             "max_width",
             "min_width",
+            "none_format"
         ]
         for option in self._options:
             if option in kwargs:
@@ -199,6 +199,7 @@ class PrettyTable:
         self._start = kwargs["start"] or 0
         self._end = kwargs["end"] or None
         self._fields = kwargs["fields"] or None
+        self._none_format = {}
 
         if kwargs["header"] in (True, False):
             self._header = kwargs["header"]
@@ -227,6 +228,7 @@ class PrettyTable:
         self.int_format = kwargs["int_format"] or {}
         self.float_format = kwargs["float_format"] or {}
         self.custom_format = kwargs["custom_format"] or {}
+        self.none_format = kwargs["none_format"] or {}
 
         self._min_table_width = kwargs["min_table_width"] or None
         self._max_table_width = kwargs["max_table_width"] or None
@@ -342,6 +344,8 @@ class PrettyTable:
     def _validate_option(self, option, val):
         if option == "field_names":
             self._validate_field_names(val)
+        elif option == "none_format":
+            self._validate_none_format(val)
         elif option in (
             "start",
             "end",
@@ -424,6 +428,15 @@ class PrettyTable:
             assert len(val) == len(set(val))
         except AssertionError:
             raise Exception("Field names must be unique")
+
+    def _validate_none_format(self, val):
+        try:
+            if val is not None:
+                assert isinstance(val, str)
+        except AssertionError:
+            raise Exception(
+                "Replacement for None value must be a string if being supplied."
+            )
 
     def _validate_header_style(self, val):
         try:
@@ -546,6 +559,22 @@ class PrettyTable:
     def xhtml(self, val):
         self._validate_option("xhtml", val)
         self._xhtml = val
+
+    @property
+    def none_format(self):
+        return self._none_format
+
+    @none_format.setter
+    def none_format(self, val):
+        if not self._field_names:
+            self._none_format = {}
+        elif val is None or (isinstance(val, dict) and len(val) == 0):
+            for field in self._field_names:
+                self._none_format[field] = None
+        else:
+            self._validate_none_format(val)
+            for field in self._field_names:
+                self._none_format[field] = val
 
     @property
     def field_names(self):
@@ -1801,6 +1830,8 @@ class PrettyTable:
             lines = value.split("\n")
             new_lines = []
             for line in lines:
+                if line == 'None' and self.none_format[field] is not None:
+                    line = self.none_format[field]
                 if _str_block_width(line) > width:
                     line = textwrap.fill(line, width)
                 new_lines.append(line)
