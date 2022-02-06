@@ -106,29 +106,25 @@ class TestNoneOption:
     def test_no_value_replace_none(self):
         t = PrettyTable(["Field 1", "Field 2", "Field 3"])
         t.add_row(["value 1", None, "value 2"])
-        assert (
-            """
+        assert (t.get_string().strip() == """
 +---------+---------+---------+
 | Field 1 | Field 2 | Field 3 |
 +---------+---------+---------+
 | value 1 |   None  | value 2 |
 +---------+---------+---------+
 """.strip()
-            == t.get_string().strip()
         )
 
     def test_replace_none_all(self):
         t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="N/A")
         t.add_row(["value 1", None, "None"])
-        assert (
-            """
+        assert (t.get_string().strip() == """
 +---------+---------+---------+
 | Field 1 | Field 2 | Field 3 |
 +---------+---------+---------+
 | value 1 |   N/A   |   N/A   |
 +---------+---------+---------+
 """.strip()
-            == t.get_string().strip()
         )
 
     def test_replace_none_by_col(self):
@@ -136,7 +132,7 @@ class TestNoneOption:
         t.none_format["Field 2"] = "N/A"
         t.none_format["Field 3"] = ""
         t.add_row(["value 1", None, None])
-        assert (
+        assert (t.get_string().strip() ==
             """
 +---------+---------+---------+
 | Field 1 | Field 2 | Field 3 |
@@ -144,7 +140,6 @@ class TestNoneOption:
 | value 1 |   N/A   |         |
 +---------+---------+---------+
 """.strip()
-            == t.get_string().strip()
         )
 
 
