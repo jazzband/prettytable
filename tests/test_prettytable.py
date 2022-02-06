@@ -96,7 +96,7 @@ def mix_prettytable():
 
 class TestNoneOption:
     def test_none_char_valid_option(self):
-        t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="")
+        PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="")
 
     def test_none_char_invalid_option(self):
         with pytest.raises(Exception) as exc:
