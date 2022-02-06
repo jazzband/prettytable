@@ -119,7 +119,7 @@ class TestNoneOption:
 
     def test_replace_none_all(self):
         t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="N/A")
-        t.add_row(["value 1", None, None])
+        t.add_row(["value 1", None, "None"])
         assert (
             """
 +---------+---------+---------+
