@@ -96,47 +96,57 @@ def mix_prettytable():
 
 class TestNoneOption:
     def test_none_char_valid_option(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'], none_format="")
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="")
 
     def test_none_char_invalid_option(self):
         with pytest.raises(Exception) as exc:
-            t = PrettyTable(['Field 1', 'Field 2', 'Field 3'], none_format=2)
+            t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format=2)
             assert "must be a string." in exc.value
 
     def test_no_value_replace_none(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
-        t.add_row(['value 1', None, 'value 2'])
-        assert """
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+        t.add_row(["value 1", None, "value 2"])
+        assert (
+            """
 +---------+---------+---------+
 | Field 1 | Field 2 | Field 3 |
 +---------+---------+---------+
 | value 1 |   None  | value 2 |
 +---------+---------+---------+
-""".strip() == t.get_string().strip()
+""".strip()
+            == t.get_string().strip()
+        )
 
     def test_replace_none_all(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'], none_format="N/A")
-        t.add_row(['value 1', None, None])
-        assert """
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="N/A")
+        t.add_row(["value 1", None, None])
+        assert (
+            """
 +---------+---------+---------+
 | Field 1 | Field 2 | Field 3 |
 +---------+---------+---------+
 | value 1 |   N/A   |   N/A   |
 +---------+---------+---------+
-""".strip() == t.get_string().strip()
+""".strip()
+            == t.get_string().strip()
+        )
 
     def test_replace_none_by_col(self):
-        t = PrettyTable(['Field 1', 'Field 2', 'Field 3'])
-        t.none_format['Field 2'] = 'N/A'
-        t.none_format['Field 3'] = ''
-        t.add_row(['value 1', None, None])
-        assert """
+        t = PrettyTable(["Field 1", "Field 2", "Field 3"])
+        t.none_format["Field 2"] = "N/A"
+        t.none_format["Field 3"] = ""
+        t.add_row(["value 1", None, None])
+        assert (
+            """
 +---------+---------+---------+
 | Field 1 | Field 2 | Field 3 |
 +---------+---------+---------+
 | value 1 |   N/A   |         |
 +---------+---------+---------+
-""".strip() == t.get_string().strip()
+""".strip()
+            == t.get_string().strip()
+        )
+
 
 class TestBuildEquivalence:
     """Make sure that building a table row-by-row and column-by-column yield the same
