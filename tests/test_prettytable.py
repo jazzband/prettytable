@@ -100,7 +100,7 @@ class TestNoneOption:
 
     def test_none_char_invalid_option(self):
         with pytest.raises(Exception) as exc:
-            t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format=2)
+            PrettyTable(["Field 1", "Field 2", "Field 3"], none_format=2)
             assert "must be a string." in exc.value
 
     def test_no_value_replace_none(self):
