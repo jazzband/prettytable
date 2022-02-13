@@ -43,11 +43,6 @@ def color_theme():
     )
 
 
-@pytest.fixture
-def char_theme():
-    return Theme(vertical_char=":", horizontal_char="~", junction_char="*")
-
-
 class TestColorTable:
     def test_themeless(self, row_prettytable, row_colortable):
         # Not worth the logic customizing the reset code
