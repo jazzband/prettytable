@@ -495,6 +495,46 @@ print(x.get_string(border=False))
 print(x)
 ```
 
+### Changing the appearance of your table - with _colors_!
+
+PrettyTable has the functionality of printing your table with ANSI color codes. This
+includes support for most Windows versions through
+[Colorama](https://pypi.org/project/colorama/). To get started, import the `ColorTable`
+class instead of `PrettyTable`.
+
+```diff
+-from prettytable import PrettyTable
++from prettytable.colortable import ColorTable
+```
+
+The `ColorTable` class can be used the same as `PrettyTable`, but it adds an extra
+property. You can now specify a custom _theme_ that will format your table with colors.
+
+```python
+from prettytable.colortable import ColorTable, Themes
+
+x = ColorTable(theme=Themes.OCEAN)
+
+print(x)
+```
+
+#### Creating a custom theme
+
+The `Theme` class allows you to customize both the characters and colors used in your
+table.
+
+| Argument                                                   | Description                                               |
+| ---------------------------------------------------------- | --------------------------------------------------------- |
+| `default_color`                                            | The color to use as default                               |
+| `vertical_char`, `horizontal_char`, and `junction_char`    | The characters used for creating the outline of the table |
+| `vertical_color`, `horizontal_color`, and `junction_color` | The colors used to style each character.                  |
+
+> **Note:** Colors are formatted with the `Theme.format_code(s: str)` function. It
+> accepts a string. If the string starts with an escape code (like `\x1b`) then it will
+> return the given string. If the string is just whitespace, it will return `""`. If the
+> string is a number (like `"34"`), it will automatically format it into an escape code.
+> I recommend you look into the source code for more information.
+
 ### Displaying your table in JSON
 
 PrettyTable will also print your tables in JSON, as a list of fields and an array of
