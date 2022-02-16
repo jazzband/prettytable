@@ -1830,7 +1830,7 @@ class PrettyTable:
             lines = value.split("\n")
             new_lines = []
             for line in lines:
-                if line == "None" and self.none_format[field] is not None:
+                if line == "None" and self.none_format.get(field) is not None:
                     line = self.none_format[field]
                 if _str_block_width(line) > width:
                     line = textwrap.fill(line, width)

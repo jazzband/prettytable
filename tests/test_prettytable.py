@@ -117,6 +117,20 @@ class TestNoneOption:
 """.strip()
         )
 
+    def test_no_value_replace_none_with_default_field_names(self):
+        t = PrettyTable()
+        t.add_row(["value 1", "None", "value 2"])
+        assert (
+            t.get_string().strip()
+            == """
++---------+---------+---------+
+| Field 1 | Field 2 | Field 3 |
++---------+---------+---------+
+| value 1 |   None  | value 2 |
++---------+---------+---------+
+""".strip()
+        )
+
     def test_replace_none_all(self):
         t = PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="N/A")
         t.add_row(["value 1", None, "None"])
