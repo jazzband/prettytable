@@ -117,7 +117,7 @@ class TestNoneOption:
 """.strip()
         )
 
-    def test_no_value_replace_none_string(self):
+    def test_no_value_replace_none_with_default_field_names(self):
         t = PrettyTable()
         t.add_row(["value 1", "None", "value 2"])
         assert (
