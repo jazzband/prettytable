@@ -99,7 +99,7 @@ class TestNoneOption:
         PrettyTable(["Field 1", "Field 2", "Field 3"], none_format="")
 
     def test_none_char_invalid_option(self):
-        with pytest.raises(Exception) as exc:
+        with pytest.raises(TypeError) as exc:
             PrettyTable(["Field 1", "Field 2", "Field 3"], none_format=2)
             assert "must be a string." in exc.value
 
@@ -229,11 +229,11 @@ class TestDeleteColumn:
 
         assert with_del.get_string() == without_row.get_string()
 
-    def test_delete_illegal_column_raises_exception(self):
+    def test_delete_illegal_column_raises_error(self):
         table = PrettyTable()
         table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
 
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             table.del_column("City not-a-name")
 
 
@@ -1298,7 +1298,7 @@ value 7         value8         value9
 
         # Act / Assert
         # This is an hrule style, not a table style
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             t.set_style(ALL)
 
     @pytest.mark.parametrize(
@@ -1456,7 +1456,7 @@ class TestHtmlConstructor:
     def test_HtmlOneFailOnMany(self, city_data_prettytable: PrettyTable):
         html_string = city_data_prettytable.get_html_string()
         html_string += city_data_prettytable.get_html_string()
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             from_html_one(html_string)
 
 
@@ -1693,7 +1693,7 @@ class TestCustomFormatter:
         assert len(pt.custom_format) == 1
 
     def test_init_custom_format_throw_error_is_not_callable(self):
-        with pytest.raises(Exception) as e:
+        with pytest.raises(ValueError) as e:
             PrettyTable(custom_format={"col1": "{:.2}"})
 
         assert "Invalid value for custom_format.col1. Must be a function." in str(
@@ -1713,7 +1713,7 @@ class TestCustomFormatter:
 
     def test_set_custom_format_invalid_type_throw_error(self):
         pt = PrettyTable()
-        with pytest.raises(Exception) as e:
+        with pytest.raises(TypeError) as e:
             pt.custom_format = "Some String"
         assert "The custom_format property need to be a dictionary or callable" in str(
             e.value
