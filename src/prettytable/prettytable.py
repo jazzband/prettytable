@@ -1803,6 +1803,8 @@ class PrettyTable:
                 fieldname = field.lower()
             else:
                 fieldname = field
+            if _str_block_width(fieldname) > width:
+                fieldname = fieldname[:width]
             bits.append(
                 " " * lpad
                 + self._justify(fieldname, width, self._align[field])
