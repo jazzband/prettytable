@@ -1233,12 +1233,10 @@ class TestStyle:
             ),
             pytest.param(
                 PLAIN_COLUMNS,
-                """
-Field 1        Field 2        Field 3
-value 1         value2         value3
-value 4         value5         value6
-value 7         value8         value9
-""",  # noqa: W291
+"Field 1        Field 2        Field 3        \n" +
+"value 1         value2         value3        \n" +
+"value 4         value5         value6        \n" +
+"value 7         value8         value9",
                 id="PLAIN_COLUMNS",
             ),
             pytest.param(
