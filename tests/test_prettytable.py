@@ -1234,9 +1234,9 @@ class TestStyle:
             pytest.param(
                 PLAIN_COLUMNS,
                 """
-Field 1        Field 2        Field 3        
-value 1         value2         value3        
-value 4         value5         value6        
+Field 1        Field 2        Field 3
+value 1         value2         value3
+value 4         value5         value6
 value 7         value8         value9
 """,  # noqa: W291
                 id="PLAIN_COLUMNS",
@@ -1791,3 +1791,21 @@ class TestRepr:
 
     def test_jupyter_repr(self, row_prettytable: PrettyTable):
         assert row_prettytable._repr_html_() == row_prettytable.get_html_string()
+
+
+class TestMaxTableWidth:
+    def test_max_table_width(self):
+        pt = PrettyTable()
+        pt.max_table_width = 5
+        pt.add_row([0])
+
+        assert (
+            pt.get_string().strip()
+            == """
++-----+
+| Fie |
++-----+
+|  0  |
++-----+
+""".strip()
+        )
