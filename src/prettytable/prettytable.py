@@ -1510,6 +1510,9 @@ class PrettyTable:
         for row in rows:
             for index, value in enumerate(row):
                 fieldname = self.field_names[index]
+                if self.none_format.get(fieldname) is not None:
+                    if value == 'None' or value is None:
+                        value = self.none_format.get(fieldname)
                 if fieldname in self.max_width:
                     widths[index] = max(
                         widths[index],
@@ -1836,6 +1839,8 @@ class PrettyTable:
             for line in lines:
                 if line == "None" and self.none_format.get(field) is not None:
                     line = self.none_format[field]
+                    if len(line) > width:
+                        width = len(line)
                 if _str_block_width(line) > width:
                     line = textwrap.fill(line, width)
                 new_lines.append(line)
