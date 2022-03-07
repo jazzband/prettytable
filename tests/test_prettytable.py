@@ -161,6 +161,51 @@ class TestNoneOption:
 """.strip()
         )
 
+    def test_replace_none_recompute_width(self):
+        t = PrettyTable()
+        t.add_row([None])
+        t.none_format = "0123456789"
+        assert (
+            t.get_string().strip()
+            == """
++------------+
+|  Field 1   |
++------------+
+| 0123456789 |
++------------+
+""".strip()
+        )
+
+    def test_replace_none_maintain_width_on_recompute(self):
+        t = PrettyTable()
+        t.add_row(["Hello"])
+        t.none_format = "0123456789"
+        assert (
+            t.get_string().strip()
+            == """
++---------+
+| Field 1 |
++---------+
+|  Hello  |
++---------+
+""".strip()
+        )
+
+    def test_replace_none_recompute_width_multi_column(self):
+        t = PrettyTable()
+        t.add_row(["Hello", None, "World"])
+        t.none_format = "0123456789"
+        assert (
+            t.get_string().strip()
+            == """
++---------+------------+---------+
+| Field 1 |  Field 2   | Field 3 |
++---------+------------+---------+
+|  Hello  | 0123456789 |  World  |
++---------+------------+---------+
+""".strip()
+        )
+
 
 class TestBuildEquivalence:
     """Make sure that building a table row-by-row and column-by-column yield the same
