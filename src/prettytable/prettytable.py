@@ -59,6 +59,7 @@ ORGMODE = 14
 DOUBLE_BORDER = 15
 SINGLE_BORDER = 16
 RANDOM = 20
+BASE_ALIGN_VALUE = "base_align_value"
 
 _re = re.compile(r"\033\[[0-9;]*m|\033\(B")
 
@@ -601,6 +602,9 @@ class PrettyTable:
             for old_name in old_names:
                 if old_name not in self._align:
                     self._align.pop(old_name)
+        elif self._align:
+            for field_name in self._field_names:
+                self._align[field_name] = self._align[BASE_ALIGN_VALUE]
         else:
             self.align = "c"
         if self._valign and old_names:
@@ -622,15 +626,19 @@ class PrettyTable:
 
     @align.setter
     def align(self, val):
-        if not self._field_names:
-            self._align = {}
-        elif val is None or (isinstance(val, dict) and len(val) == 0):
-            for field in self._field_names:
-                self._align[field] = "c"
+        if val is None or (isinstance(val, dict) and len(val) == 0):
+            if not self._field_names:
+                self._align = {BASE_ALIGN_VALUE : "c"}
+            else:
+                for field in self._field_names:
+                    self._align[field] = "c"
         else:
             self._validate_align(val)
-            for field in self._field_names:
-                self._align[field] = val
+            if not self._field_names:
+                self._align = {BASE_ALIGN_VALUE : val}
+            else:
+                for field in self._field_names:
+                    self._align[field] = val
 
     @property
     def valign(self):
@@ -2206,7 +2214,7 @@ class PrettyTable:
             ]
         else:
             wanted_fields = self._field_names
-
+            
         alignments = "".join([self._align[field] for field in wanted_fields])
 
         begin_cmd = "\\begin{tabular}{%s}" % alignments

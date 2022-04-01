@@ -328,6 +328,55 @@ class TestFieldNameLessTable:
 
 
 @pytest.fixture(scope="function")
+def aligned_before_table():
+    x = PrettyTable()
+    x.align = "r"
+    x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    x.add_row(["Adelaide", 1295, 1158259, 600.5])
+    x.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    x.add_row(["Darwin", 112, 120900, 1714.7])
+    x.add_row(["Hobart", 1357, 205556, 619.5])
+    x.add_row(["Sydney", 2058, 4336374, 1214.8])
+    x.add_row(["Melbourne", 1566, 3806092, 646.9])
+    x.add_row(["Perth", 5386, 1554769, 869.4])
+    return x
+
+
+@pytest.fixture(scope="function")
+def aligned_after_table():
+    x = PrettyTable()
+    x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    x.add_row(["Adelaide", 1295, 1158259, 600.5])
+    x.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    x.add_row(["Darwin", 112, 120900, 1714.7])
+    x.add_row(["Hobart", 1357, 205556, 619.5])
+    x.add_row(["Sydney", 2058, 4336374, 1214.8])
+    x.add_row(["Melbourne", 1566, 3806092, 646.9])
+    x.add_row(["Perth", 5386, 1554769, 869.4])
+    x.align = "r"
+    return x
+
+class TestAlignment:
+
+    """Make sure alignment works regardless of when it was set"""
+
+    def test_aligned_ascii(self, aligned_before_table: prettytable, aligned_after_table: prettytable):
+        before = aligned_before_table.get_string()
+        after = aligned_after_table.get_string()
+        assert before == after
+
+    def test_aligned_html(self, aligned_before_table: prettytable, aligned_after_table: prettytable):
+        before = aligned_before_table.get_html_string()
+        after = aligned_after_table.get_html_string()
+        assert before == after
+
+    def test_aligned_latex(self, aligned_before_table: prettytable, aligned_after_table: prettytable):
+        before = aligned_before_table.get_latex_string()
+        after = aligned_after_table.get_latex_string()
+        assert before == after
+
+
+@pytest.fixture(scope="function")
 def city_data_prettytable():
     """Just build the Australian capital city data example table."""
     pt = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
