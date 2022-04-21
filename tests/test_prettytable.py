@@ -356,21 +356,28 @@ def aligned_after_table():
     x.align = "r"
     return x
 
+
 class TestAlignment:
 
     """Make sure alignment works regardless of when it was set"""
 
-    def test_aligned_ascii(self, aligned_before_table: prettytable, aligned_after_table: prettytable):
+    def test_aligned_ascii(
+        self, aligned_before_table: prettytable, aligned_after_table: prettytable
+    ):
         before = aligned_before_table.get_string()
         after = aligned_after_table.get_string()
         assert before == after
 
-    def test_aligned_html(self, aligned_before_table: prettytable, aligned_after_table: prettytable):
+    def test_aligned_html(
+        self, aligned_before_table: prettytable, aligned_after_table: prettytable
+    ):
         before = aligned_before_table.get_html_string()
         after = aligned_after_table.get_html_string()
         assert before == after
 
-    def test_aligned_latex(self, aligned_before_table: prettytable, aligned_after_table: prettytable):
+    def test_aligned_latex(
+        self, aligned_before_table: prettytable, aligned_after_table: prettytable
+    ):
         before = aligned_before_table.get_latex_string()
         after = aligned_after_table.get_latex_string()
         assert before == after

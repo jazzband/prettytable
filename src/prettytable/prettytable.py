@@ -628,14 +628,14 @@ class PrettyTable:
     def align(self, val):
         if val is None or (isinstance(val, dict) and len(val) == 0):
             if not self._field_names:
-                self._align = {BASE_ALIGN_VALUE : "c"}
+                self._align = {BASE_ALIGN_VALUE: "c"}
             else:
                 for field in self._field_names:
                     self._align[field] = "c"
         else:
             self._validate_align(val)
             if not self._field_names:
-                self._align = {BASE_ALIGN_VALUE : val}
+                self._align = {BASE_ALIGN_VALUE: val}
             else:
                 for field in self._field_names:
                     self._align[field] = val
@@ -2214,7 +2214,7 @@ class PrettyTable:
             ]
         else:
             wanted_fields = self._field_names
-            
+
         alignments = "".join([self._align[field] for field in wanted_fields])
 
         begin_cmd = "\\begin{tabular}{%s}" % alignments
