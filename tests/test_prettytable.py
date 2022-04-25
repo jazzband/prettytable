@@ -1908,3 +1908,76 @@ class TestMaxTableWidth:
 +-----+
 """.strip()
         )
+
+
+
+class TestPreservingInternalBorders:
+    def test_internal_border_preserved(self):
+        pt = helper_table(3)
+        pt.border = False
+        pt.preserve_internal_border = True
+
+        assert (
+            pt.get_string().strip()
+            == """
+ Field 1 | Field 2 | Field 3  
+---------+---------+---------
+ value 1 |  value2 |  value3  
+ value 4 |  value5 |  value6  
+ value 7 |  value8 |  value9 
+""".strip()
+        )
+
+    def test_internal_border_preserved_latex(self):
+        pt = helper_table(3)
+        pt.border = False
+        pt.format = True
+        pt.preserve_internal_border = True
+
+        assert (
+            pt.get_latex_string().strip()==
+            ("\\begin{tabular}{c|c|c}\r\n"
+            "Field 1 & Field 2 & Field 3 \\\\\r\n"
+            "value 1 & value2 & value3 \\\\\r\n"
+            "value 4 & value5 & value6 \\\\\r\n"
+            "value 7 & value8 & value9 \\\\\r\n"
+            "\\end{tabular}"))
+   
+        
+    def test_internal_border_preserved_html(self):
+        pt = helper_table(3)
+        pt.format = True
+        pt.border = False
+        pt.preserve_internal_border = True
+
+        assert (
+            pt.get_html_string().strip()
+            == """
+<table rules="cols">
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 1</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value2</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value3</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 4</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value5</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value6</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value 7</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value8</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">value9</td>
+        </tr>
+    </tbody>
+</table>
+""".strip()
+        )

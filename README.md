@@ -402,7 +402,9 @@ whatever you prefer. The `set_style` method just does this automatically for you
 The options are these:
 
 - `border` - A boolean option (must be `True` or `False`). Controls whether a border is
-  drawn around the table.
+  drawn inside and around the table.
+- `preserve_internal_border` - A boolean option (must be `True` or `False`). Controls 
+  whether borders are still drawn within the table even when border = False.
 - `header` - A boolean option (must be `True` or `False`). Controls whether the first
   row of the table is a header showing the names of all the fields.
 - `hrules` - Controls printing of horizontal rules after rows. Allowed values: `FRAME`,
