@@ -864,7 +864,7 @@ class PrettyTable:
 
         Arguments:
 
-        preserve_internal_border - print a border inside the table even if 
+        preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)"""
         return self._preserve_internal_border
 
@@ -1650,7 +1650,7 @@ class PrettyTable:
         fields - names of fields (columns) to include
         header - print a header showing field names (True or False)
         border - print a border around the table (True or False)
-        preserve_internal_border - print a border inside the table even if 
+        preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
             Allowed values: ALL, FRAME, HEADER, NONE
@@ -1798,8 +1798,9 @@ class PrettyTable:
                 lines.append(self._stringify_hrule(options, "top_"))
         bits = []
         endpoint = (
-            options["vertical_char"] if options["vrules"] in (ALL, FRAME) 
-            and options["border"] else " "
+            options["vertical_char"]
+            if options["vrules"] in (ALL, FRAME) and options["border"]
+            else " "
         )
         bits.append(endpoint)
         title = " " * lpad + title + " " * rpad
@@ -1860,7 +1861,7 @@ class PrettyTable:
 
         # If only preserve_internal_border is true, then we just appended
         # a vertical character at the end when we wanted a space
-        if not options["border"] and  options["preserve_internal_border"]:
+        if not options["border"] and options["preserve_internal_border"]:
             bits.pop()
             bits.append(" ")
         # If vrules is FRAME, then we just appended a space at the end
@@ -1868,8 +1869,9 @@ class PrettyTable:
         if options["border"] and options["vrules"] == FRAME:
             bits.pop()
             bits.append(options["vertical_char"])
-        if ((options["border"] or options["preserve_internal_border"]) 
-            and options["hrules"] != NONE):
+        if (options["border"] or options["preserve_internal_border"]) and options[
+            "hrules"
+        ] != NONE:
             bits.append("\n")
             bits.append(self._hrule)
         return "".join(bits)
@@ -1935,7 +1937,7 @@ class PrettyTable:
                     + self._justify(line, width, self._align[field])
                     + " " * rpad
                 )
-                if options["border"] or options ["preserve_internal_border"]:
+                if options["border"] or options["preserve_internal_border"]:
                     if options["vrules"] == ALL:
                         bits[y].append(self.vertical_char)
                     else:
@@ -1944,7 +1946,7 @@ class PrettyTable:
 
         # If only preserve_internal_border is true, then we just appended
         # a vertical character at the end when we wanted a space
-        if not options["border"] and  options["preserve_internal_border"]:
+        if not options["border"] and options["preserve_internal_border"]:
             bits[-1].pop()
             bits[-1].append(" ")
 
@@ -2233,7 +2235,7 @@ class PrettyTable:
         fields - names of fields (columns) to include
         header - print a header showing field names (True or False)
         border - print a border around the table (True or False)
-        preserve_internal_border - print a border inside the table even if 
+        preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
             Allowed values: ALL, FRAME, HEADER, NONE
@@ -2317,8 +2319,9 @@ class PrettyTable:
         # Headers
         if options["header"]:
             lines.append(" & ".join(wanted_fields) + " \\\\")
-        if ((options["border"] or options["preserve_internal_border"])
-            and options["hrules"] in [ALL, HEADER]):
+        if (options["border"] or options["preserve_internal_border"]) and options[
+            "hrules"
+        ] in [ALL, HEADER]:
             lines.append("\\hline")
 
         # Data

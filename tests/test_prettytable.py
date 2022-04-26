@@ -1910,7 +1910,6 @@ class TestMaxTableWidth:
         )
 
 
-
 class TestPreservingInternalBorders:
     def test_internal_border_preserved(self):
         pt = helper_table(3)
@@ -1934,16 +1933,15 @@ class TestPreservingInternalBorders:
         pt.format = True
         pt.preserve_internal_border = True
 
-        assert (
-            pt.get_latex_string().strip()==
-            ("\\begin{tabular}{c|c|c}\r\n"
+        assert pt.get_latex_string().strip() == (
+            "\\begin{tabular}{c|c|c}\r\n"
             "Field 1 & Field 2 & Field 3 \\\\\r\n"
             "value 1 & value2 & value3 \\\\\r\n"
             "value 4 & value5 & value6 \\\\\r\n"
             "value 7 & value8 & value9 \\\\\r\n"
-            "\\end{tabular}"))
-   
-        
+            "\\end{tabular}"
+        )
+
     def test_internal_border_preserved_html(self):
         pt = helper_table(3)
         pt.format = True

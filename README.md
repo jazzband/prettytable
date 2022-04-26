@@ -403,7 +403,7 @@ The options are these:
 
 - `border` - A boolean option (must be `True` or `False`). Controls whether a border is
   drawn inside and around the table.
-- `preserve_internal_border` - A boolean option (must be `True` or `False`). Controls 
+- `preserve_internal_border` - A boolean option (must be `True` or `False`). Controls
   whether borders are still drawn within the table even when border = False.
 - `header` - A boolean option (must be `True` or `False`). Controls whether the first
   row of the table is a header showing the names of all the fields.
