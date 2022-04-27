@@ -486,9 +486,7 @@ class TestOptionAttribute:
 
     def test_preserve_internal_border(self):
         pt = PrettyTable(preserve_internal_border=True)
-        assert (
-            pt.preserve_internal_border == True
-        )
+        assert pt.preserve_internal_border == True
 
 
 @pytest.fixture(scope="module")
@@ -1930,7 +1928,7 @@ class TestPreservingInternalBorders:
  value 1 |  value2 |  value3  
  value 4 |  value5 |  value6  
  value 7 |  value8 |  value9 
-""".strip() # noqa: W291
+""".strip()  # noqa: W291
         )
 
     def test_internal_border_preserved_latex(self):
