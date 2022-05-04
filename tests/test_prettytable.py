@@ -486,7 +486,7 @@ class TestOptionAttribute:
 
     def test_preserve_internal_border(self):
         pt = PrettyTable(preserve_internal_border=True)
-        assert pt.preserve_internal_border == True
+        assert pt.preserve_internal_border is True
 
 
 @pytest.fixture(scope="module")
