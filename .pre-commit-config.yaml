@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.1
+    rev: v2.32.1
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
@@ -28,7 +28,7 @@ repos:
       - id: python-check-blanket-noqa
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.2.0
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
@@ -37,6 +37,7 @@ repos:
     rev: v1.20.1
     hooks:
       - id: setup-cfg-fmt
+        args: [--max-py-version=3.11]
 
   - repo: https://github.com/tox-dev/tox-ini-fmt
     rev: 0.5.2
