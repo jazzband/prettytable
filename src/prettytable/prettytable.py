@@ -2217,8 +2217,14 @@ class PrettyTable:
                     continue
                 lines.append(
                     '            <th style="padding-left: %dem; padding-right: %dem; text-align: %s">%s</th>'  # noqa: E501
-                    % (lpad, rpad, {"l": "left", "r": "right", "c": "center"}
-                        [self._header_align[field]], escape(field).replace("\n", linebreak))  # noqa: E501
+                    % (
+                        lpad,
+                        rpad,
+                        {"l": "left", "r": "right", "c": "center"}[
+                            self._header_align[field]
+                        ],
+                        escape(field).replace("\n", linebreak),
+                    )  # noqa: E501
                 )
             lines.append("        </tr>")
             lines.append("    </thead>")

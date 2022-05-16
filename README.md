@@ -297,16 +297,16 @@ gives:
 
 ##### Other alignment
 
-You can also change the alignment of the headers of the columns using the `header_align` attribute in the same way as the `align` attribute.
+You can also change the alignment of the headers of the columns using the `header_align`
+attribute in the same way as the `align` attribute.
 
 ```python
 x.header_align["City name"] = "l"
 print(x)
 ```
 
-The valign attribute works in the same way as the other align attributes for
-controlling vertical alignment. 
-
+The valign attribute works in the same way as the other align attributes for controlling
+vertical alignment.
 
 ##### Sorting your table by a field
 
