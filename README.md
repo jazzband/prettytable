@@ -305,9 +305,9 @@ x.header_align["City name"] = "l"
 print(x)
 ```
 
-The `valign` attribute works in the same way as the other align attributes for controlling
-vertical alignment. It accepts the values `"t"`, `"m"` and `"b"` for top, middle, and
-bottom respectively.
+The `valign` attribute works in the same way as the other align attributes for
+controlling vertical alignment. It accepts the values `"t"`, `"m"` and `"b"` for top,
+middle, and bottom respectively.
 
 ##### Sorting your table by a field
 
