@@ -71,6 +71,19 @@ def _get_size(text):
     return width, height
 
 
+class TableRow:
+    def __init__(self, data, end_section=False):
+        self.data = data
+        self.end_section = end_section
+        self.sort_field = ""
+
+    def __lt__(self, other):
+        return self.sort_field < other.sort_field
+
+    def __eq__(self, other):
+        return self.sort_field == other.sort_field
+
+
 class PrettyTable:
     def __init__(self, field_names=None, **kwargs):
         """Return a new PrettyTable instance
@@ -304,7 +317,7 @@ class PrettyTable:
             if self._field_names:
                 return len(self._field_names)
             elif self._rows:
-                return len(self._rows[0])
+                return len(self._rows.data[0])
             else:
                 return 0
         else:
@@ -319,9 +332,9 @@ class PrettyTable:
         setattr(new, "_align", getattr(self, "_align"))
         if isinstance(index, slice):
             for row in self._rows[index]:
-                new.add_row(row)
+                new.add_row(row.data, row.end_section)
         elif isinstance(index, int):
-            new.add_row(self._rows[index])
+            new.add_row(self._rows[index].data, self._rows[index].end_section)
         else:
             raise IndexError(f"Index {index} is invalid, must be an integer or slice")
         return new
@@ -429,7 +442,7 @@ class PrettyTable:
                 )
         if self._rows:
             try:
-                assert len(val) == len(self._rows[0])
+                assert len(val) == len(self._rows[0].data)
             except AssertionError:
                 raise ValueError(
                     "Field name list has incorrect number of values, "
@@ -1431,7 +1444,7 @@ class PrettyTable:
         for row in rows:
             self.add_row(row)
 
-    def add_row(self, row):
+    def add_row(self, row, end_section=False):
 
         """Add a row to the table
 
@@ -1447,7 +1460,7 @@ class PrettyTable:
             )
         if not self._field_names:
             self.field_names = [f"Field {n + 1}" for n in range(0, len(row))]
-        self._rows.append(list(row))
+        self._rows.append(TableRow(list(row), end_section))
 
     def del_row(self, row_index):
 
@@ -1488,8 +1501,8 @@ class PrettyTable:
             self._header_align[fieldname] = header_align
             for i in range(0, len(column)):
                 if len(self._rows) < i + 1:
-                    self._rows.append([])
-                self._rows[i].append(column[i])
+                    self._rows.append(TableRow([]))
+                self._rows[i].data.append(column[i])
         else:
             raise ValueError(
                 f"Column length {len(column)} does not match number of rows "
@@ -1505,7 +1518,7 @@ class PrettyTable:
         self._valign[fieldname] = self.valign
         self._header_align[fieldname] = self.header_align
         for i, row in enumerate(self._rows):
-            row.insert(0, i + 1)
+            row.data.insert(0, i + 1)
 
     def del_column(self, fieldname):
 
@@ -1525,7 +1538,7 @@ class PrettyTable:
         col_index = self._field_names.index(fieldname)
         del self._field_names[col_index]
         for row in self._rows:
-            del row[col_index]
+            del row.data[col_index]
 
     def clear_rows(self):
 
@@ -1579,7 +1592,7 @@ class PrettyTable:
             widths = len(self.field_names) * [0]
 
         for row in rows:
-            for index, value in enumerate(row):
+            for index, value in enumerate(row.data):
                 fieldname = self.field_names[index]
                 if self.none_format.get(fieldname) is not None:
                     if value == "None" or value is None:
@@ -1652,11 +1665,10 @@ class PrettyTable:
         if options["sortby"]:
             sortindex = self._field_names.index(options["sortby"])
             # Decorate
-            rows = [[row[sortindex]] + row for row in rows]
+            for row in rows:
+                row.sort_field = row.data[sortindex]
             # Sort
             rows.sort(reverse=options["reversesort"], key=options["sort_key"])
-            # Undecorate
-            rows = [row[1:] for row in rows]
 
         # Slice if necessary
         if not options["oldsortslice"]:
@@ -1665,10 +1677,9 @@ class PrettyTable:
         return rows
 
     def _format_row(self, row):
-        return [
-            self._format_value(field, value)
-            for (field, value) in zip(self._field_names, row)
-        ]
+        for i in range(0, len(row.data)):
+            row.data[i] = self._format_value(self.field_names[i], row.data[i])
+        return row
 
     def _format_rows(self, rows):
         return [self._format_row(row) for row in rows]
@@ -1763,6 +1774,8 @@ class PrettyTable:
         # Add rows
         for row in formatted_rows[:-1]:
             lines.append(self._stringify_row(row, options, self._hrule))
+            if row.end_section:
+                lines.append(self._stringify_hrule(options, where="bottom_"))
         if formatted_rows:
             lines.append(
                 self._stringify_row(
@@ -1917,7 +1930,7 @@ class PrettyTable:
     def _stringify_row(self, row, options, hrule):
 
         for (index, field, value, width) in zip(
-            range(0, len(row)), self._field_names, row, self._widths
+            range(0, len(row.data)), self._field_names, row.data, self._widths
         ):
             # Enforce max widths
             lines = value.split("\n")
@@ -1930,10 +1943,10 @@ class PrettyTable:
                 new_lines.append(line)
             lines = new_lines
             value = "\n".join(lines)
-            row[index] = value
+            row.data[index] = value
 
         row_height = 0
-        for c in row:
+        for c in row.data:
             h = _get_size(c)[1]
             if h > row_height:
                 row_height = h
@@ -1948,7 +1961,7 @@ class PrettyTable:
                 else:
                     bits[y].append(" ")
 
-        for (field, value, width) in zip(self._field_names, row, self._widths):
+        for (field, value, width) in zip(self._field_names, row.data, self._widths):
 
             valign = self._valign[field]
             lines = value.split("\n")
@@ -2041,7 +2054,7 @@ class PrettyTable:
         if options.get("header"):
             csv_writer.writerow(self._field_names)
         for row in self._get_rows(options):
-            csv_writer.writerow(row)
+            csv_writer.writerow(row.data)
 
         return csv_buffer.getvalue()
 
@@ -2069,7 +2082,7 @@ class PrettyTable:
         if options.get("header"):
             objects.append(self.field_names)
         for row in self._get_rows(options):
-            objects.append(dict(zip(self._field_names, row)))
+            objects.append(dict(zip(self._field_names, row.data)))
 
         return json.dumps(objects, **json_options)
 
@@ -2158,7 +2171,7 @@ class PrettyTable:
         formatted_rows = self._format_rows(rows)
         for row in formatted_rows:
             lines.append("        <tr>")
-            for field, datum in zip(self._field_names, row):
+            for field, datum in zip(self._field_names, row.data):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
@@ -2245,7 +2258,7 @@ class PrettyTable:
         for row in formatted_rows:
             lines.append("        <tr>")
             for field, datum, align, valign in zip(
-                self._field_names, row, aligns, valigns
+                self._field_names, row.data, aligns, valigns
             ):
                 if options["fields"] and field not in options["fields"]:
                     continue
@@ -2326,7 +2339,7 @@ class PrettyTable:
         formatted_rows = self._format_rows(rows)
         for row in formatted_rows:
             wanted_data = [
-                d for f, d in zip(self._field_names, row) if f in wanted_fields
+                d for f, d in zip(self._field_names, row.data) if f in wanted_fields
             ]
             lines.append(" & ".join(wanted_data) + " \\\\")
 
@@ -2375,7 +2388,7 @@ class PrettyTable:
         rows = self._get_rows(options)
         for row in formatted_rows:
             wanted_data = [
-                d for f, d in zip(self._field_names, row) if f in wanted_fields
+                d for f, d in zip(self._field_names, row.data) if f in wanted_fields
             ]
             lines.append(" & ".join(wanted_data) + " \\\\")
             if options["border"] and options["hrules"] == ALL:
