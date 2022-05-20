@@ -370,9 +370,9 @@ instance of the data in the `sort_by` column.
 
 #### Adding sections to a table
 
-You can divide your table into different sections using the `end_section` argument.
-This will add a dividing line into the table under the row who has this field set. So
-we can set up a table like this:
+You can divide your table into different sections using the `end_section` argument. This
+will add a dividing line into the table under the row who has this field set. So we can
+set up a table like this:
 
 ```python
 x = PrettyTable()
