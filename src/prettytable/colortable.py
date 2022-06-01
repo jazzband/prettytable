@@ -23,7 +23,7 @@ class Theme:
         horizontal_color: str = "",
         junction_char: str = "+",
         junction_color: str = "",
-    ):
+    ) -> None:
         self.default_color = Theme.format_code(default_color)
         self.vertical_char = vertical_char
         self.vertical_color = Theme.format_code(vertical_color)
@@ -53,7 +53,7 @@ class Themes:
 
 
 class ColorTable(PrettyTable):
-    def __init__(self, field_names=None, **kwargs):
+    def __init__(self, field_names=None, **kwargs) -> None:
         super().__init__(field_names=field_names, **kwargs)
         # TODO: Validate option
 
