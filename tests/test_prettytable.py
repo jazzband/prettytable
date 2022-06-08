@@ -523,7 +523,7 @@ class TestBasic:
     def test_table_rows(self, city_data_prettytable: PrettyTable) -> None:
         rows = city_data_prettytable.rows
         assert len(rows) == 7
-        assert rows[0].data == ["Adelaide", 1295, 1158259, 600.5]
+        assert rows[0] == ["Adelaide", 1295, 1158259, 600.5]
 
     def _test_no_blank_lines(self, table: prettytable):
         string = table.get_string()
@@ -734,7 +734,8 @@ class TestSorting:
     def test_sort_key(self, city_data_prettytable: PrettyTable):
         # Test sorting by length of city name
         def key(vals):
-            return len(vals.sort_field)
+            vals[0] = len(vals[0])
+            return vals
 
         city_data_prettytable.sortby = "City name"
         city_data_prettytable.sort_key = key
@@ -1956,13 +1957,9 @@ class TestRowEndSection:
         v = 1
         for row in range(4):
             if row % 2 == 0:
-                pt.add_row(
-                    [f"value {v}", f"value{v+1}", f"value{v+2}"], end_section=True
-                )
+                pt.add_row([f"value {v}", f"value{v+1}", f"value{v+2}"], divider=True)
             else:
-                pt.add_row(
-                    [f"value {v}", f"value{v+1}", f"value{v+2}"], end_section=False
-                )
+                pt.add_row([f"value {v}", f"value{v+1}", f"value{v+2}"], divider=False)
             v += 3
         assert (
             pt.get_string().strip()

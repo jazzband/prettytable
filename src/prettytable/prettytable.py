@@ -71,19 +71,6 @@ def _get_size(text):
     return width, height
 
 
-class TableRow:
-    def __init__(self, data, end_section=False):
-        self.data = data
-        self.end_section = end_section
-        self.sort_field = ""
-
-    def __lt__(self, other):
-        return self.sort_field < other.sort_field
-
-    def __eq__(self, other):
-        return self.sort_field == other.sort_field
-
-
 class PrettyTable:
     def __init__(self, field_names=None, **kwargs) -> None:
         """Return a new PrettyTable instance
@@ -146,6 +133,7 @@ class PrettyTable:
         # Data
         self._field_names = []
         self._rows = []
+        self._dividers = []
         self.align = {}
         self.valign = {}
         self.header_align = {}
@@ -317,7 +305,7 @@ class PrettyTable:
             if self._field_names:
                 return len(self._field_names)
             elif self._rows:
-                return len(self._rows.data[0])
+                return len(self._rows[0])
             else:
                 return 0
         else:
@@ -332,9 +320,9 @@ class PrettyTable:
         setattr(new, "_align", getattr(self, "_align"))
         if isinstance(index, slice):
             for row in self._rows[index]:
-                new.add_row(row.data, row.end_section)
+                new.add_row(row)
         elif isinstance(index, int):
-            new.add_row(self._rows[index].data, self._rows[index].end_section)
+            new.add_row(self._rows[index])
         else:
             raise IndexError(f"Index {index} is invalid, must be an integer or slice")
         return new
@@ -442,7 +430,7 @@ class PrettyTable:
                 )
         if self._rows:
             try:
-                assert len(val) == len(self._rows[0].data)
+                assert len(val) == len(self._rows[0])
             except AssertionError:
                 raise ValueError(
                     "Field name list has incorrect number of values, "
@@ -1444,7 +1432,7 @@ class PrettyTable:
         for row in rows:
             self.add_row(row)
 
-    def add_row(self, row, end_section=False):
+    def add_row(self, row, divider=False):
 
         """Add a row to the table
 
@@ -1460,7 +1448,8 @@ class PrettyTable:
             )
         if not self._field_names:
             self.field_names = [f"Field {n + 1}" for n in range(0, len(row))]
-        self._rows.append(TableRow(list(row), end_section))
+        self._rows.append(list(row))
+        self._dividers.append(divider)
 
     def del_row(self, row_index):
 
@@ -1476,6 +1465,7 @@ class PrettyTable:
                 f"table only has {len(self._rows)} rows"
             )
         del self._rows[row_index]
+        del self.dividers[row_index]
 
     def add_column(self, fieldname, column, align="c", valign="t", header_align="c"):
 
@@ -1501,8 +1491,9 @@ class PrettyTable:
             self._header_align[fieldname] = header_align
             for i in range(0, len(column)):
                 if len(self._rows) < i + 1:
-                    self._rows.append(TableRow([]))
-                self._rows[i].data.append(column[i])
+                    self._rows.append([])
+                    self._dividers.append(False)
+                self._rows[i].append(column[i])
         else:
             raise ValueError(
                 f"Column length {len(column)} does not match number of rows "
@@ -1518,7 +1509,7 @@ class PrettyTable:
         self._valign[fieldname] = self.valign
         self._header_align[fieldname] = self.header_align
         for i, row in enumerate(self._rows):
-            row.data.insert(0, i + 1)
+            row.insert(0, i + 1)
 
     def del_column(self, fieldname):
 
@@ -1538,13 +1529,14 @@ class PrettyTable:
         col_index = self._field_names.index(fieldname)
         del self._field_names[col_index]
         for row in self._rows:
-            del row.data[col_index]
+            del row[col_index]
 
     def clear_rows(self):
 
         """Delete all rows from the table but keep the current field names"""
 
         self._rows = []
+        self._dividers = []
 
     def clear(self):
 
@@ -1552,6 +1544,7 @@ class PrettyTable:
         styling options"""
 
         self._rows = []
+        self._dividers = []
         self._field_names = []
         self._widths = []
 
@@ -1592,7 +1585,7 @@ class PrettyTable:
             widths = len(self.field_names) * [0]
 
         for row in rows:
-            for index, value in enumerate(row.data):
+            for index, value in enumerate(row):
                 fieldname = self.field_names[index]
                 if self.none_format.get(fieldname) is not None:
                     if value == "None" or value is None:
@@ -1665,10 +1658,11 @@ class PrettyTable:
         if options["sortby"]:
             sortindex = self._field_names.index(options["sortby"])
             # Decorate
-            for row in rows:
-                row.sort_field = row.data[sortindex]
+            rows = [[row[sortindex]] + row for row in rows]
             # Sort
             rows.sort(reverse=options["reversesort"], key=options["sort_key"])
+            # Undecorate
+            rows = [row[1:] for row in rows]
 
         # Slice if necessary
         if not options["oldsortslice"]:
@@ -1676,10 +1670,29 @@ class PrettyTable:
 
         return rows
 
+    def _get_dividers(self, options):
+        """Return only those dividers that should be printed, based on slicing.
+
+        Arguments:
+
+        options - dictionary of option settings."""
+
+        if options["oldsortslice"]:
+            dividers = copy.deepcopy(self._dividers[options["start"] : options["end"]])
+        else:
+            dividers = copy.deepcopy(self._dividers)
+
+        if options["sortby"]:
+            for i in range(len(dividers)):
+                dividers[i] = False
+
+        return dividers
+
     def _format_row(self, row):
-        for i in range(0, len(row.data)):
-            row.data[i] = self._format_value(self.field_names[i], row.data[i])
-        return row
+        return [
+            self._format_value(field, value)
+            for (field, value) in zip(self._field_names, row)
+        ]
 
     def _format_rows(self, rows):
         return [self._format_row(row) for row in rows]
@@ -1748,6 +1761,7 @@ class PrettyTable:
 
         # Get the rows we need to print, taking into account slicing, sorting, etc.
         rows = self._get_rows(options)
+        dividers = self._get_dividers(options)
 
         # Turn all data in all rows into Unicode, formatted as desired
         formatted_rows = self._format_rows(rows)
@@ -1772,9 +1786,9 @@ class PrettyTable:
                 )
 
         # Add rows
-        for row in formatted_rows[:-1]:
+        for row, divider in zip(formatted_rows[:-1], dividers[:-1]):
             lines.append(self._stringify_row(row, options, self._hrule))
-            if row.end_section:
+            if divider:
                 lines.append(self._stringify_hrule(options, where="bottom_"))
         if formatted_rows:
             lines.append(
@@ -1930,7 +1944,7 @@ class PrettyTable:
     def _stringify_row(self, row, options, hrule):
 
         for (index, field, value, width) in zip(
-            range(0, len(row.data)), self._field_names, row.data, self._widths
+            range(0, len(row)), self._field_names, row, self._widths
         ):
             # Enforce max widths
             lines = value.split("\n")
@@ -1943,10 +1957,10 @@ class PrettyTable:
                 new_lines.append(line)
             lines = new_lines
             value = "\n".join(lines)
-            row.data[index] = value
+            row[index] = value
 
         row_height = 0
-        for c in row.data:
+        for c in row:
             h = _get_size(c)[1]
             if h > row_height:
                 row_height = h
@@ -1961,7 +1975,7 @@ class PrettyTable:
                 else:
                     bits[y].append(" ")
 
-        for (field, value, width) in zip(self._field_names, row.data, self._widths):
+        for (field, value, width) in zip(self._field_names, row, self._widths):
 
             valign = self._valign[field]
             lines = value.split("\n")
@@ -2054,7 +2068,7 @@ class PrettyTable:
         if options.get("header"):
             csv_writer.writerow(self._field_names)
         for row in self._get_rows(options):
-            csv_writer.writerow(row.data)
+            csv_writer.writerow(row)
 
         return csv_buffer.getvalue()
 
@@ -2082,7 +2096,7 @@ class PrettyTable:
         if options.get("header"):
             objects.append(self.field_names)
         for row in self._get_rows(options):
-            objects.append(dict(zip(self._field_names, row.data)))
+            objects.append(dict(zip(self._field_names, row)))
 
         return json.dumps(objects, **json_options)
 
@@ -2171,7 +2185,7 @@ class PrettyTable:
         formatted_rows = self._format_rows(rows)
         for row in formatted_rows:
             lines.append("        <tr>")
-            for field, datum in zip(self._field_names, row.data):
+            for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
@@ -2258,7 +2272,7 @@ class PrettyTable:
         for row in formatted_rows:
             lines.append("        <tr>")
             for field, datum, align, valign in zip(
-                self._field_names, row.data, aligns, valigns
+                self._field_names, row, aligns, valigns
             ):
                 if options["fields"] and field not in options["fields"]:
                     continue
@@ -2339,7 +2353,7 @@ class PrettyTable:
         formatted_rows = self._format_rows(rows)
         for row in formatted_rows:
             wanted_data = [
-                d for f, d in zip(self._field_names, row.data) if f in wanted_fields
+                d for f, d in zip(self._field_names, row) if f in wanted_fields
             ]
             lines.append(" & ".join(wanted_data) + " \\\\")
 
@@ -2388,7 +2402,7 @@ class PrettyTable:
         rows = self._get_rows(options)
         for row in formatted_rows:
             wanted_data = [
-                d for f, d in zip(self._field_names, row.data) if f in wanted_fields
+                d for f, d in zip(self._field_names, row) if f in wanted_fields
             ]
             lines.append(" & ".join(wanted_data) + " \\\\")
             if options["border"] and options["hrules"] == ALL:
