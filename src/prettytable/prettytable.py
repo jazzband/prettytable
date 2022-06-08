@@ -85,7 +85,7 @@ class TableRow:
 
 
 class PrettyTable:
-    def __init__(self, field_names=None, **kwargs):
+    def __init__(self, field_names=None, **kwargs) -> None:
         """Return a new PrettyTable instance
 
         Arguments:
@@ -2469,7 +2469,7 @@ def from_json(json_string, **kwargs):
 
 
 class TableHandler(HTMLParser):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         HTMLParser.__init__(self)
         self.kwargs = kwargs
         self.tables = []
