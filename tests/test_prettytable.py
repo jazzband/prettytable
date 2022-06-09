@@ -1961,13 +1961,12 @@ class TestRowEndSection:
             else:
                 pt.add_row([f"value {v}", f"value{v+1}", f"value{v+2}"], divider=False)
             v += 3
+        pt.del_row(0)
         assert (
             pt.get_string().strip()
             == """
 +----------+---------+---------+
 | Field 1  | Field 2 | Field 3 |
-+----------+---------+---------+
-| value 1  |  value2 |  value3 |
 +----------+---------+---------+
 | value 4  |  value5 |  value6 |
 | value 7  |  value8 |  value9 |
@@ -1976,6 +1975,23 @@ class TestRowEndSection:
 +----------+---------+---------+
 """.strip()
         )
+
+class TestClearing:
+    def test_clear_rows(self, row_prettytable: PrettyTable):
+        t = helper_table()
+        t.add_row(["a", "b", "c"], divider=True)
+        t.clear_rows()
+        assert t.rows == []
+        assert t.dividers == []
+        assert t.field_names == ["Field 1", "Field 2", "Field 3"]
+
+    def test_clear(self, row_prettytable: PrettyTable):
+        t = helper_table()
+        t.add_row(["a", "b", "c"], divider=True)
+        t.clear()
+        assert t.rows == []
+        assert t.dividers == []
+        assert t.field_names == []
 
 
 class TestPreservingInternalBorders:

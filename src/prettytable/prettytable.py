@@ -566,6 +566,10 @@ class PrettyTable:
         return self._rows[:]
 
     @property
+    def dividers(self):
+        return self._dividers[:]
+
+    @property
     def xhtml(self):
         """Print <br/> tags if True, <br> tags if False"""
         return self._xhtml
@@ -1432,7 +1436,7 @@ class PrettyTable:
         for row in rows:
             self.add_row(row)
 
-    def add_row(self, row, divider=False):
+    def add_row(self, row, *, divider=False):
 
         """Add a row to the table
 
@@ -1465,7 +1469,7 @@ class PrettyTable:
                 f"table only has {len(self._rows)} rows"
             )
         del self._rows[row_index]
-        del self.dividers[row_index]
+        del self._dividers[row_index]
 
     def add_column(self, fieldname, column, align="c", valign="t", header_align="c"):
 
@@ -1683,8 +1687,7 @@ class PrettyTable:
             dividers = copy.deepcopy(self._dividers)
 
         if options["sortby"]:
-            for i in range(len(dividers)):
-                dividers[i] = False
+            dividers = [False for divider in dividers]
 
         return dividers
 
