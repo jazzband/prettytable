@@ -402,6 +402,7 @@ to get a table like this:
 |   Sydney  | 2058 |  4336374   |      1214.8     |
 +-----------+------+------------+-----------------+
 ```
+
 Any added dividers will be removed if a table is sorted.
 
 ### Changing the appearance of your table - the easy way
