@@ -1976,6 +1976,7 @@ class TestRowEndSection:
 """.strip()
         )
 
+
 class TestClearing:
     def test_clear_rows(self, row_prettytable: PrettyTable):
         t = helper_table()
