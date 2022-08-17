@@ -1735,6 +1735,9 @@ def test_paginate():
     assert paginated.startswith(expected_page_1)
     assert "\f" in paginated
     assert paginated.endswith(expected_page_2)
+    paginated = t.paginate(page_length=4, line_break="\n")
+    assert "\f" not in paginated
+    assert "\n" in paginated
 
 
 def test_add_rows():

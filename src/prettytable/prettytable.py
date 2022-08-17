@@ -2004,7 +2004,7 @@ class PrettyTable:
 
         return "\n".join(bits)
 
-    def paginate(self, page_length=58, **kwargs):
+    def paginate(self, page_length=58, line_break="\f", **kwargs):
 
         pages = []
         kwargs["start"] = kwargs.get("start", 0)
@@ -2015,7 +2015,7 @@ class PrettyTable:
             if kwargs["end"] == true_end:
                 break
             kwargs["start"] += page_length
-        return "\f".join(pages)
+        return line_break.join(pages)
 
     ##############################
     # CSV STRING METHODS         #
