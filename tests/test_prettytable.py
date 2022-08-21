@@ -1736,6 +1736,13 @@ def test_paginate():
     assert "\f" in paginated
     assert paginated.endswith(expected_page_2)
 
+    # Act
+    paginated = t.paginate(page_length=4, line_break="\n")
+
+    # Assert
+    assert "\f" not in paginated
+    assert "\n" in paginated
+
 
 def test_add_rows():
     """A table created with multiple add_row calls
