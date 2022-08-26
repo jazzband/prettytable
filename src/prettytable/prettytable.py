@@ -1162,7 +1162,8 @@ class PrettyTable:
 
     @property
     def top_right_junction_char(self):
-        """The character used when printing table borders to draw top-right line junctions
+        """
+        The character used when printing table borders to draw top-right line junctions
 
         Arguments:
 
