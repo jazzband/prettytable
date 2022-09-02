@@ -331,7 +331,6 @@ class TestFieldNameLessTable:
 def aligned_before_table():
     x = PrettyTable()
     x.align = "r"
-    x.header_align = "r"
     x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
     x.add_row(["Adelaide", 1295, 1158259, 600.5])
     x.add_row(["Brisbane", 5905, 1857594, 1146.4])
@@ -355,7 +354,6 @@ def aligned_after_table():
     x.add_row(["Melbourne", 1566, 3806092, 646.9])
     x.add_row(["Perth", 5386, 1554769, 869.4])
     x.align = "r"
-    x.header_align = "r"
     return x
 
 
@@ -1432,41 +1430,6 @@ class TestStyle:
         t.align["Align left"] = "l"
         t.align["Align centre"] = "c"
         t.align["Align right"] = "r"
-
-        # Assert
-        result = t.get_string()
-        assert result.strip() == expected.strip()
-
-    @pytest.mark.parametrize(
-        "style, expected",
-        [
-            pytest.param(
-                DEFAULT,
-                """
-+---------+--------+--------+
-| L       |   C    |      R |
-+---------+--------+--------+
-| value 1 | value2 | value3 |
-| value 4 | value5 | value6 |
-| value 7 | value8 | value9 |
-+---------+--------+--------+
-""",
-                id="MARKDOWN",
-            ),
-        ],
-    )
-    def test_style_header_align(self, style, expected):
-        # Arrange
-        t = helper_table()
-        t.field_names = ["L", "C", "R"]
-
-        assert t.header_align["L"] == "c"
-
-        # Act
-        t.set_style(style)
-        t.header_align["L"] = "l"
-        t.header_align["C"] = "c"
-        t.header_align["R"] = "r"
 
         # Assert
         result = t.get_string()
