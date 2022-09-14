@@ -2405,7 +2405,7 @@ def from_json(json_string, **kwargs):
     table = PrettyTable(**kwargs)
     objects = json.loads(json_string)
     table.field_names = objects[0]
-    for obj in objects[1:]:
+    for obj in objects[0:]:
         row = [obj[key] for key in table.field_names]
         table.add_row(row)
     return table
