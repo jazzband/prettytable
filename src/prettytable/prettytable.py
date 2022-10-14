@@ -31,6 +31,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from __future__ import annotations
+
 import copy
 import csv
 import io
@@ -41,10 +43,10 @@ import re
 import textwrap
 from html import escape
 from html.parser import HTMLParser
+from typing import Any
 
 import wcwidth
 from _typeshed import Incomplete
-from typing import Any
 
 # hrule styles
 FRAME = 0
@@ -1431,7 +1433,9 @@ class PrettyTable:
             )
         del self._rows[row_index]
 
-    def add_column(self, fieldname, column, align: str="c", valign: str="t") -> None:
+    def add_column(
+        self, fieldname, column, align: str = "c", valign: str = "t"
+    ) -> None:
 
         """Add a column to the table.
 
@@ -1461,7 +1465,7 @@ class PrettyTable:
                 f"{len(self._rows)}"
             )
 
-    def add_autoindex(self, fieldname: str="Index"):
+    def add_autoindex(self, fieldname: str = "Index"):
         """Add an auto-incrementing index column to the table.
         Arguments:
         fieldname - name of the field to contain the new column of data"""
@@ -1969,7 +1973,7 @@ class PrettyTable:
 
         return "\n".join(bits)
 
-    def paginate(self, page_length: int=58, line_break: str="\f", **kwargs):
+    def paginate(self, page_length: int = 58, line_break: str = "\f", **kwargs):
 
         pages = []
         kwargs["start"] = kwargs.get("start", 0)
@@ -2361,7 +2365,7 @@ def _str_block_width(val):
 ##############################
 
 
-def from_csv(fp, field_names: Any | None=None, **kwargs):
+def from_csv(fp, field_names: Any | None = None, **kwargs):
     fmtparams = {}
     for param in [
         "delimiter",
