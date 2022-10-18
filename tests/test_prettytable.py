@@ -863,7 +863,7 @@ class TestBreakLine:
         ],
     )
     def test_break_line_ASCII(
-        self, rows: List[List[Any]], hrule: int, expected_result: str
+        self, rows: list[list[Any]], hrule: int, expected_result: str
     ):
         t = PrettyTable(["Field 1", "Field 2"])
         for row in rows:
