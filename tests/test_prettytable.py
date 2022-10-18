@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import datetime as dt
 import io
 import random
 import sqlite3
 from math import e, pi, sqrt
-from typing import Any, List
+from typing import Any
 
 import pytest
 
@@ -944,7 +946,7 @@ class TestBreakLine:
         ],
     )
     def test_break_line_ASCII(
-        self, rows: List[List[Any]], hrule: int, expected_result: str
+        self, rows: list[list[Any]], hrule: int, expected_result: str
     ):
         t = PrettyTable(["Field 1", "Field 2"])
         for row in rows:

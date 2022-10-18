@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .prettytable import PrettyTable
 
 try:
@@ -68,7 +70,7 @@ class ColorTable(PrettyTable):
         self._theme = value
         self.update_theme()
 
-    def update_theme(self):
+    def update_theme(self) -> None:
         theme = self._theme
 
         self._vertical_char = (
@@ -92,5 +94,5 @@ class ColorTable(PrettyTable):
             + theme.default_color
         )
 
-    def get_string(self, **kwargs):
+    def get_string(self, **kwargs) -> str:
         return super().get_string(**kwargs) + RESET_CODE

@@ -31,6 +31,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from __future__ import annotations
+
 import copy
 import csv
 import io
@@ -41,6 +43,7 @@ import re
 import textwrap
 from html import escape
 from html.parser import HTMLParser
+from typing import Any
 
 import wcwidth
 
@@ -608,11 +611,11 @@ class PrettyTable:
     # ATTRIBUTE MANAGEMENT       #
     ##############################
     @property
-    def rows(self):
+    def rows(self) -> list[Any]:
         return self._rows[:]
 
     @property
-    def xhtml(self):
+    def xhtml(self) -> bool:
         """Print <br/> tags if True, <br> tags if False"""
         return self._xhtml
 
@@ -1351,7 +1354,7 @@ class PrettyTable:
     # PRESET STYLE LOGIC         #
     ##############################
 
-    def set_style(self, style):
+    def set_style(self, style) -> None:
 
         if style == DEFAULT:
             self._set_default_style()
@@ -1471,7 +1474,7 @@ class PrettyTable:
     # DATA INPUT METHODS         #
     ##############################
 
-    def add_rows(self, rows):
+    def add_rows(self, rows) -> None:
 
         """Add rows to the table
 
@@ -1482,7 +1485,7 @@ class PrettyTable:
         for row in rows:
             self.add_row(row)
 
-    def add_row(self, row):
+    def add_row(self, row) -> None:
 
         """Add a row to the table
 
@@ -1500,7 +1503,7 @@ class PrettyTable:
             self.field_names = [f"Field {n + 1}" for n in range(0, len(row))]
         self._rows.append(list(row))
 
-    def del_row(self, row_index):
+    def del_row(self, row_index) -> None:
 
         """Delete a row from the table
 
@@ -1515,7 +1518,14 @@ class PrettyTable:
             )
         del self._rows[row_index]
 
-    def add_column(self, fieldname, column, align="c", valign="t", header_align=None):
+    def add_column(
+        self,
+        fieldname,
+        column,
+        align: str = "c",
+        valign: str = "t",
+        header_align: str = None,
+    ) -> None:
 
         """Add a column to the table.
 
@@ -1549,7 +1559,7 @@ class PrettyTable:
                 f"{len(self._rows)}"
             )
 
-    def add_autoindex(self, fieldname="Index"):
+    def add_autoindex(self, fieldname: str = "Index"):
         """Add an auto-incrementing index column to the table.
         Arguments:
         fieldname - name of the field to contain the new column of data"""
@@ -1560,7 +1570,7 @@ class PrettyTable:
         for i, row in enumerate(self._rows):
             row.insert(0, i + 1)
 
-    def del_column(self, fieldname):
+    def del_column(self, fieldname) -> None:
 
         """Delete a column from the table
 
@@ -1580,13 +1590,13 @@ class PrettyTable:
         for row in self._rows:
             del row[col_index]
 
-    def clear_rows(self):
+    def clear_rows(self) -> None:
 
         """Delete all rows from the table but keep the current field names"""
 
         self._rows = []
 
-    def clear(self):
+    def clear(self) -> None:
 
         """Delete all rows and field names from the table, maintaining nothing but
         styling options"""
@@ -1730,7 +1740,7 @@ class PrettyTable:
     # PLAIN TEXT STRING METHODS  #
     ##############################
 
-    def get_string(self, **kwargs):
+    def get_string(self, **kwargs) -> str:
 
         """Return string representation of table in current state.
 
@@ -2062,7 +2072,7 @@ class PrettyTable:
 
         return "\n".join(bits)
 
-    def paginate(self, page_length=58, line_break="\f", **kwargs):
+    def paginate(self, page_length: int = 58, line_break: str = "\f", **kwargs):
 
         pages = []
         kwargs["start"] = kwargs.get("start", 0)
@@ -2078,7 +2088,7 @@ class PrettyTable:
     ##############################
     # CSV STRING METHODS         #
     ##############################
-    def get_csv_string(self, **kwargs):
+    def get_csv_string(self, **kwargs) -> str:
 
         """Return string representation of CSV formatted table in the current state
 
@@ -2106,7 +2116,7 @@ class PrettyTable:
     ##############################
     # JSON STRING METHODS        #
     ##############################
-    def get_json_string(self, **kwargs):
+    def get_json_string(self, **kwargs) -> str:
 
         """Return string representation of JSON formatted table in the current state
 
@@ -2135,7 +2145,7 @@ class PrettyTable:
     # HTML STRING METHODS        #
     ##############################
 
-    def get_html_string(self, **kwargs):
+    def get_html_string(self, **kwargs) -> str:
         """Return string representation of HTML formatted version of table in current
         state.
 
@@ -2328,7 +2338,7 @@ class PrettyTable:
     # LATEX STRING METHODS       #
     ##############################
 
-    def get_latex_string(self, **kwargs):
+    def get_latex_string(self, **kwargs) -> str:
         """Return string representation of LaTex formatted version of table in current
         state.
 
@@ -2462,7 +2472,7 @@ def _str_block_width(val):
 ##############################
 
 
-def from_csv(fp, field_names=None, **kwargs):
+def from_csv(fp, field_names: Any | None = None, **kwargs):
     fmtparams = {}
     for param in [
         "delimiter",
@@ -2527,7 +2537,7 @@ class TableHandler(HTMLParser):
         self.is_last_row_header = False
         self.colspan = 0
 
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attrs) -> None:
         self.active = tag
         if tag == "th":
             self.is_last_row_header = True
@@ -2535,7 +2545,7 @@ class TableHandler(HTMLParser):
             if key == "colspan":
                 self.colspan = int(value)
 
-    def handle_endtag(self, tag):
+    def handle_endtag(self, tag) -> None:
         if tag in ["th", "td"]:
             stripped_content = self.last_content.strip()
             self.last_row.append(stripped_content)
@@ -2556,7 +2566,7 @@ class TableHandler(HTMLParser):
         self.last_content = " "
         self.active = None
 
-    def handle_data(self, data):
+    def handle_data(self, data) -> None:
         self.last_content += data
 
     def generate_table(self, rows):
@@ -2577,7 +2587,7 @@ class TableHandler(HTMLParser):
                 table.add_row(row[0])
         return table
 
-    def make_fields_unique(self, fields):
+    def make_fields_unique(self, fields) -> None:
         """
         iterates over the row and make each field unique
         """
