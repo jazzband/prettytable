@@ -46,7 +46,6 @@ from html.parser import HTMLParser
 from typing import Any
 
 import wcwidth
-from _typeshed import Incomplete
 
 # hrule styles
 FRAME = 0
