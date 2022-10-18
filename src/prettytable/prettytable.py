@@ -107,7 +107,7 @@ def validate_header_align(val):
 # Validate values when setting for individual fields
 class Alignment(dict):
     def __init__(self, align_type=ALIGN_TYPE_DEFAULT):
-        super(Alignment, self).__init__()
+        super().__init__()
 
         self.align_type = align_type
         if align_type == ALIGN_TYPE_VERTICAL:

@@ -398,9 +398,11 @@ class TestAlignment:
         table.add_row(["Adelaide", 1295, 1158259, 600.5])
         table.add_row(["Brisbane", 5905, 1857594, 1146.4])
         table.add_row(["Darwin", 112, 120900, 1714.7])
-        
+
         print(table.get_string())
-        assert(table.get_string() == """
+        assert (
+            table.get_string()
+            == """
 +----------+---------+---------+---------+
 | Field 1  | Field 2 | Field 3 | Field 4 |
 +----------+---------+---------+---------+
@@ -408,7 +410,8 @@ class TestAlignment:
 | Brisbane |   5905  | 1857594 |  1146.4 |
 |  Darwin  |   112   |  120900 |  1714.7 |
 +----------+---------+---------+---------+
-""".strip())
+""".strip()
+        )
 
     def test_alignment_validation(self, aligned_before_table: prettytable):
         with pytest.raises(ValueError) as e:
@@ -426,26 +429,26 @@ class TestAlignment:
     def test_alignment_assignment(
         self, aligned_before_table: prettytable, aligned_after_table: prettytable
     ):
-        #Act
+        # Act
         t = helper_table()
         t.valign = "b"
         t.align = "l"
         t.header_align = "r"
 
-        #Assert
+        # Assert
         for field in t.align:
             assert t.align[field] == "l"
         for field in t.valign:
             assert t.valign[field] == "b"
         for field in t.header_align:
-            assert t.header_align[field] == "r"     
+            assert t.header_align[field] == "r"
 
-        #Act
+        # Act
         t.valign = {"Field 1": "m", "Field 2": "m", "Field 3": "m"}
         t.align = {"Field 1": "l", "Field 2": "l", "Field 3": "l"}
-        t.header_align = {"Field 1": "l", "Field 2": "l", "Field 3": "l"}   
+        t.header_align = {"Field 1": "l", "Field 2": "l", "Field 3": "l"}
 
-        #Assert
+        # Assert
         for field in t.align:
             assert t.align[field] == "l"
         for field in t.valign:
@@ -453,19 +456,18 @@ class TestAlignment:
         for field in t.header_align:
             assert t.header_align[field] == "l"
 
-        #Act
+        # Act
         t.valign = {}
         t.align = {}
-        t.header_align = {}   
+        t.header_align = {}
 
-        #Assert
+        # Assert
         for field in t.align:
             assert t.align[field] == "c"
         for field in t.valign:
             assert t.valign[field] == "t"
         for field in t.header_align:
             assert t.header_align[field] == None
-
 
 
 @pytest.fixture(scope="function")
@@ -1555,6 +1557,7 @@ class TestStyle:
         # Assert
         result = t.get_string()
         assert result.strip() == expected.strip()
+
 
 class TestCsvOutput:
     def test_csv_output(self):
