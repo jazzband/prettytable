@@ -561,7 +561,7 @@ class PrettyTable:
     # ATTRIBUTE MANAGEMENT       #
     ##############################
     @property
-    def rows(self) -> list[Incomplete]:
+    def rows(self) -> list[Any]:
         return self._rows[:]
 
     @property
