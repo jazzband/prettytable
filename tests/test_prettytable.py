@@ -5,7 +5,7 @@ import io
 import random
 import sqlite3
 from math import e, pi, sqrt
-from typing import Any, List
+from typing import Any
 
 import pytest
 
