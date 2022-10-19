@@ -251,14 +251,14 @@ class PrettyTable:
         self._horizontal_char = kwargs["horizontal_char"] or "─"
         self._horizontal_align_char = kwargs["horizontal_align_char"]
         self._junction_char = kwargs["junction_char"] or "'┼'"
-        self._top_junction_char = kwargs["top_junction_char"] or '┬'
-        self._bottom_junction_char = kwargs["bottom_junction_char"] or '┴'
-        self._right_junction_char = kwargs["right_junction_char"] or '┤'
-        self._left_junction_char = kwargs["left_junction_char"] or '├'
-        self._top_right_junction_char = kwargs["top_right_junction_char"] or '┐'
-        self._top_left_junction_char = kwargs["top_left_junction_char"] or '┌'
-        self._bottom_right_junction_char = kwargs["bottom_right_junction_char"] or '┘'
-        self._bottom_left_junction_char = kwargs["bottom_left_junction_char"] or '└'
+        self._top_junction_char = kwargs["top_junction_char"] or "┬"
+        self._bottom_junction_char = kwargs["bottom_junction_char"] or "┴"
+        self._right_junction_char = kwargs["right_junction_char"] or "┤"
+        self._left_junction_char = kwargs["left_junction_char"] or "├"
+        self._top_right_junction_char = kwargs["top_right_junction_char"] or "┐"
+        self._top_left_junction_char = kwargs["top_left_junction_char"] or "┌"
+        self._bottom_right_junction_char = kwargs["bottom_right_junction_char"] or "┘"
+        self._bottom_left_junction_char = kwargs["bottom_left_junction_char"] or "└"
 
         if kwargs["print_empty"] in (True, False):
             self._print_empty = kwargs["print_empty"]
