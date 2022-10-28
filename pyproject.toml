@@ -1,8 +1,8 @@
 [build-system]
-build-backend = "setuptools.build_meta"
+build-backend = "hatchling.build"
 requires = [
-  "setuptools>=61.2",
-  "setuptools-scm",
+  "hatch-vcs",
+  "hatchling",
 ]
 
 [project]
@@ -47,15 +47,11 @@ Homepage = "https://github.com/jazzband/prettytable"
 Source = "https://github.com/jazzband/prettytable"
 
 
+[tool.hatch]
+version.source = "vcs"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+
 [tool.isort]
 profile = "black"
-
-[tool.setuptools]
-include-package-data = false
-
-[tool.setuptools.package-dir]
-"" = "src"
-
-[tool.setuptools.packages.find]
-where = [ "src",]
-namespaces = false
