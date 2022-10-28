@@ -1,0 +1,61 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=61.2",
+  "setuptools-scm",
+]
+
+[project]
+name = "prettytable"
+description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format"
+readme = "README.md"
+license = {text = "BSD (3 clause)"}
+maintainers = [{name ="Jazzband"}]
+authors = [{name = "Luke Maurits", email = "luke@maurits.id.au"}]
+requires-python = ">=3.7"
+dependencies = [
+  'importlib-metadata; python_version < "3.8"',
+  "wcwidth",
+]
+dynamic = [
+  "version",
+]
+classifiers = [
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Text Processing",
+  "Typing :: Typed",
+]
+[project.optional-dependencies]
+tests = [
+  "pytest",
+  "pytest-cov",
+  "pytest-lazy-fixture",
+]
+
+[project.urls]
+Homepage = "https://github.com/jazzband/prettytable"
+Source = "https://github.com/jazzband/prettytable"
+
+
+[tool.isort]
+profile = "black"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = [ "src",]
+namespaces = false
