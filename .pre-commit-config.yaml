@@ -1,12 +1,12 @@
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.38.2
+    rev: v3.1.0
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
 
   - repo: https://github.com/psf/black
-    rev: 22.8.0
+    rev: 22.10.0
     hooks:
       - id: black
         args: [--target-version=py37]
@@ -32,13 +32,18 @@ repos:
     rev: v4.3.0
     hooks:
       - id: check-merge-conflict
+      - id: check-toml
       - id: check-yaml
 
-  - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.0.0
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: 0.3.5
     hooks:
-      - id: setup-cfg-fmt
-        args: [--max-py-version=3.11, --include-version-classifiers]
+      - id: pyproject-fmt
+
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.10.1
+    hooks:
+      - id: validate-pyproject
 
   - repo: https://github.com/tox-dev/tox-ini-fmt
     rev: 0.5.2
@@ -46,7 +51,7 @@ repos:
       - id: tox-ini-fmt
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.0
+    rev: v3.0.0-alpha.4
     hooks:
       - id: prettier
         args: [--prose-wrap=always, --print-width=88]
