@@ -1585,11 +1585,11 @@ class PrettyTable:
             min_width = max(title_width, min_table_width)
             table_width = self._compute_table_width(options)
             if table_width < min_width:
-                # To make enough space for the title, all columns have to 
-                # grow enough that their combined widths (and the borders 
+                # To make enough space for the title, all columns have to
+                # grow enough that their combined widths (and the borders
                 # between them) are equal to the length of the title.
-                border_char_count = 3 * (len(widths) - 1) 
-                scale = 1.0 * (len(options['title']) - border_char_count) / sum(widths)
+                border_char_count = 3 * (len(widths) - 1)
+                scale = 1.0 * (len(options["title"]) - border_char_count) / sum(widths)
                 widths = [int(math.ceil(w * scale)) for w in widths]
                 self._widths = widths
 

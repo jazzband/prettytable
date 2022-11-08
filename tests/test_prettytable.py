@@ -555,10 +555,12 @@ class TestBasic:
         city_data_prettytable.title = "My table"
         self._test_all_length_equal(city_data_prettytable)
 
-    def test_all_lengths_equal_with_long_title(self, city_data_prettytable: PrettyTable):
+    def test_all_lengths_equal_with_long_title(
+        self, city_data_prettytable: PrettyTable
+    ):
         """All lines in a table should be of the same length, even with a long title."""
-        city_data_prettytable.title = "My table (75 characters wide) " + "="*45
-        self._test_all_length_equal(city_data_prettytable)        
+        city_data_prettytable.title = "My table (75 characters wide) " + "=" * 45
+        self._test_all_length_equal(city_data_prettytable)
 
     def test_no_blank_lines_without_border(self, city_data_prettytable: PrettyTable):
         """No table should ever have blank lines in it."""
