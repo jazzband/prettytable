@@ -76,62 +76,37 @@ def _get_size(text):
     return width, height
 
 
-##############################
-# ALIGNMENT VALIDATORS       #
-##############################
-
-
-def validate_align(val):
-    try:
-        assert val in ["l", "c", "r"]
-    except AssertionError:
-        raise ValueError(f"Alignment {val} is invalid, use l, c or r")
-
-
-def validate_valign(val):
-    try:
-        assert val in ["t", "m", "b", None]
-    except AssertionError:
-        raise ValueError(f"Alignment {val} is invalid, use t, m, b or None")
-
-
-def validate_header_align(val):
-    try:
-        assert val in ["l", "c", "r", None]
-    except AssertionError:
-        raise ValueError(f"Alignment {val} is invalid, use l, c, r or None")
-
-
-# A dict extension to manage field alignment. Used to:
-# Have global alingment sepreate from field alignments.
-# Validate values when setting for individual fields
-class Alignment(dict):
-    def __init__(self, align_type=ALIGN_TYPE_DEFAULT):
-        super().__init__()
-
-        self.align_type = align_type
-        if align_type == ALIGN_TYPE_VERTICAL:
-            self.alignment = "t"
-        elif align_type == ALIGN_TYPE_HEADER:
-            self.alignment = None
-        else:
-            self.alignment = "c"
-
-    def __setitem__(self, field_name, val):
-        if self.align_type == ALIGN_TYPE_VERTICAL:
-            validate_valign(val)
-        elif self.align_type == ALIGN_TYPE_HEADER:
-            validate_header_align(val)
-        else:
-            validate_align(val)
-        dict.__setitem__(self, field_name, val)
-
-    def __repr__(self):
-        dictrepr = dict.__repr__(self)
-        return dictrepr
-
-
 class PrettyTable:
+    # A dict extension to manage field alignment. Used to:
+    # * separate global alingment from field alignments.
+    # * validate values when setting individual fields
+    class _Alignment(dict):
+        def __init__(self, table: PrettyTable, align_type: str=ALIGN_TYPE_DEFAULT) -> None:
+            super().__init__()
+
+            self.table = table
+            self.align_type = align_type
+            if align_type == ALIGN_TYPE_VERTICAL:
+                self.alignment = "t"
+            elif align_type == ALIGN_TYPE_HEADER:
+                self.alignment = None
+            else:
+                self.alignment = "c"
+
+        def __setitem__(self, field_name: str, val: str) -> None:
+            if self.align_type == ALIGN_TYPE_VERTICAL:
+                self.table._validate_valign(val)
+            elif self.align_type == ALIGN_TYPE_HEADER:
+                self.table._validate_header_align(val)
+            else:
+                self.table._validate_align(val)
+            dict.__setitem__(self, field_name, val)
+
+        def __repr__(self) -> str:
+            return dict.__repr__(self)
+             
+
+
     def __init__(self, field_names=None, **kwargs) -> None:
         """Return a new PrettyTable instance
 
@@ -194,9 +169,9 @@ class PrettyTable:
         # Data
         self._field_names = []
         self._rows = []
-        self.align = Alignment(align_type=ALIGN_TYPE_DEFAULT)
-        self.valign = Alignment(align_type=ALIGN_TYPE_VERTICAL)
-        self.header_align = Alignment(align_type=ALIGN_TYPE_HEADER)
+        self.align = self._Alignment(self, align_type=ALIGN_TYPE_DEFAULT)
+        self.valign = self._Alignment(self, align_type=ALIGN_TYPE_VERTICAL)
+        self.header_align = self._Alignment(self, align_type=ALIGN_TYPE_HEADER)
         self.max_width = {}
         self.min_width = {}
         self.int_format = {}
@@ -512,6 +487,26 @@ class PrettyTable:
                 "Replacement for None value must be a string if being supplied."
             )
 
+    def _validate_align(self, val: str) -> None:
+        try:
+            assert val in ("l", "c", "r")
+        except AssertionError:
+            raise ValueError(f"Alignment {val} is invalid: use l, c or r")
+
+
+    def _validate_valign(self, val: str | None) -> None:
+        try:
+            assert val in ("t", "m", "b", None)
+        except AssertionError:
+            raise ValueError(f"Alignment {val} is invalid: use t, m, b or None")
+
+
+    def _validate_header_align(self, val: str | None) -> None:
+        try:
+            assert val in ("l", "c", "r", None)
+        except AssertionError:
+            raise ValueError(f"Alignment {val} is invalid: use l, c, r or None")
+
     def _validate_header_style(self, val):
         try:
             assert val in ("cap", "title", "upper", "lower", None)
@@ -686,7 +681,7 @@ class PrettyTable:
 
     @align.setter
     def align(self, val):
-        if isinstance(val, Alignment):
+        if isinstance(val, PrettyTable._Alignment):
             self._align = val
         elif val is None or (isinstance(val, dict) and len(val) == 0):
             if not self._field_names:
@@ -698,7 +693,7 @@ class PrettyTable:
             for field in val:
                 self._align[field] = val[field]
         else:
-            validate_align(val)
+            self._validate_align(val)
             self._align.alignment = val
             for field in self._field_names:
                 self._align[field] = val
@@ -713,7 +708,7 @@ class PrettyTable:
 
     @header_align.setter
     def header_align(self, val):
-        if isinstance(val, Alignment):
+        if isinstance(val, PrettyTable._Alignment):
             self._header_align = val
         elif val is None or (isinstance(val, dict) and len(val) == 0):
             if not self._field_names:
@@ -725,7 +720,7 @@ class PrettyTable:
             for field in val:
                 self._header_align[field] = val[field]
         else:
-            validate_header_align(val)
+            self._validate_header_align(val)
             self._header_align.alignment = val
             for field in self._field_names:
                 self._header_align[field] = val
@@ -740,7 +735,7 @@ class PrettyTable:
 
     @valign.setter
     def valign(self, val):
-        if isinstance(val, Alignment):
+        if isinstance(val, PrettyTable._Alignment):
             self._valign = val
         elif val is None or (isinstance(val, dict) and len(val) == 0):
             if not self._field_names:
@@ -752,7 +747,7 @@ class PrettyTable:
             for field in val:
                 self._valign[field] = val[field]
         else:
-            validate_valign(val)
+            self._validate_valign(val)
             self._valign.alignment = val
             for field in self._field_names:
                 self._valign[field] = val
@@ -1542,9 +1537,9 @@ class PrettyTable:
             "c" for centre and "r" for right"""
 
         if len(self._rows) in (0, len(column)):
-            validate_align(align)
-            validate_header_align(header_align)
-            validate_valign(valign)
+            self._validate_align(align)
+            self._validate_header_align(header_align)
+            self._validate_valign(valign)
             self._field_names.append(fieldname)
             self._align[fieldname] = align
             self._header_align[fieldname] = header_align or self._header_align.alignment
@@ -1942,8 +1937,6 @@ class PrettyTable:
                 align = self._header_align[field]
             elif field in self._align:
                 align = self._align[field]
-            else:
-                align = self._align.alignment
             if self._header_style == "cap":
                 fieldname = field.capitalize()
             elif self._header_style == "title":

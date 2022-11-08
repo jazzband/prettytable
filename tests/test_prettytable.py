@@ -451,6 +451,7 @@ class TestAlignment:
         # Assert
         for field in t.align:
             assert t.align[field] == "l"
+            assert repr(t.align) == "{'Field 1': 'l', 'Field 2': 'l', 'Field 3': 'l'}"
         for field in t.valign:
             assert t.valign[field] == "m"
         for field in t.header_align:
@@ -467,7 +468,7 @@ class TestAlignment:
         for field in t.valign:
             assert t.valign[field] == "t"
         for field in t.header_align:
-            assert t.header_align[field] == None
+            assert t.header_align[field] is None
 
 
 @pytest.fixture(scope="function")
@@ -1546,7 +1547,7 @@ class TestStyle:
         t = helper_table()
         t.field_names = ["L", "C", "R"]
 
-        assert t.header_align["L"] == None
+        assert t.header_align["L"] is None
 
         # Act
         t.set_style(style)
