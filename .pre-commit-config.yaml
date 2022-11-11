@@ -61,6 +61,8 @@ repos:
     rev: "v0.982"
     hooks:
       - id: mypy
+        args: [--pretty, --show-error-codes]
+        exclude: ^tests/
 
 ci:
   autoupdate_schedule: quarterly
