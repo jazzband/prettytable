@@ -1583,16 +1583,18 @@ class PrettyTable:
                 title_width = 0
             min_table_width = self.min_table_width or 0
             min_width = max(title_width, min_table_width)
-            if options['border']:
+            if options["border"]:
                 borders = len(widths) + 1
             else:
-                if options['preserve_internal_border']:
+                if options["preserve_internal_border"]:
                     borders = len(widths) - 1
                 else:
                     borders = 0
 
             # substract padding for each column and borders
-            min_width -= (sum([sum(self._get_padding_widths(options)) for _ in widths]) + borders)
+            min_width -= (
+                sum([sum(self._get_padding_widths(options)) for _ in widths]) + borders
+            )
             # what is being scaled is content so we sum column widths
             content_width = sum(widths) or 1
 

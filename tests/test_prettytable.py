@@ -1911,64 +1911,106 @@ class TestRepr:
     def test_jupyter_repr(self, row_prettytable: PrettyTable):
         assert row_prettytable._repr_html_() == row_prettytable.get_html_string()
 
+
 class TestMinTableWidth:
     def test_even_min_table_width_one_column(self):
         for i in range(15):
             x = prettytable.PrettyTable()
             x.field_names = ["Test table"]
-            x.add_row(['X'*i])
+            x.add_row(["X" * i])
             desired_width = 20
             x.min_table_width = desired_width
             t = x.get_string()
             print(t)
-            assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width, desired_width, desired_width, desired_width])
-    
+            assert [len(x) for x in t.split("\n")] == [
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+            ]
+
     def test_odd_min_table_width_one_column(self):
         for i in range(16):
             x = prettytable.PrettyTable()
             x.field_names = ["Test table"]
-            x.add_row(['X'*i])
+            x.add_row(["X" * i])
             desired_width = 21
             x.min_table_width = desired_width
             t = x.get_string()
             print(t)
-            assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width, desired_width, desired_width, desired_width])
+            assert [len(x) for x in t.split("\n")] == [
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+            ]
+
     def test_even_min_table_width_two_column(self):
         for i in range(18):
             x = prettytable.PrettyTable()
             x.field_names = ["Test table", "Test table 2"]
-            x.add_row(['X'*i, ''])
+            x.add_row(["X" * i, ""])
             desired_width = 40
             x.min_table_width = desired_width
             t = x.get_string()
-            assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width, desired_width, desired_width, desired_width])
+            assert [len(x) for x in t.split("\n")] == [
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+            ]
+
     def test_odd_min_table_width_two_column(self):
         for i in range(19):
             x = prettytable.PrettyTable()
             x.field_names = ["Test table", "Test table 2"]
-            x.add_row(['X'*i, ''])
+            x.add_row(["X" * i, ""])
             desired_width = 41
             x.min_table_width = desired_width
             t = x.get_string()
-            assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width, desired_width, desired_width, desired_width])
+            assert [len(x) for x in t.split("\n")] == [
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+            ]
+
     def test_even_min_table_width_three_column(self):
         for i in range(15):
             x = prettytable.PrettyTable()
             x.field_names = ["Test table", "Test col 2", "Test col 3"]
-            x.add_row(['X'*i, '', ''])
+            x.add_row(["X" * i, "", ""])
             desired_width = 50
             x.min_table_width = desired_width
             t = x.get_string()
-            assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width, desired_width, desired_width, desired_width])
+            assert [len(x) for x in t.split("\n")] == [
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+            ]
+
     def test_odd_min_table_width_three_column(self):
         for i in range(15):
             x = prettytable.PrettyTable()
             x.field_names = ["Test table", "Test col 2", "Test col 3"]
-            x.add_row(['X'*i, '', ''])
+            x.add_row(["X" * i, "", ""])
             desired_width = 51
             x.min_table_width = desired_width
             t = x.get_string()
-            assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width, desired_width, desired_width, desired_width])
+            assert [len(x) for x in t.split("\n")] == [
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+                desired_width,
+            ]
+
 
 class TestMaxTableWidth:
     def test_max_table_width(self):
