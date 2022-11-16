@@ -1913,43 +1913,57 @@ class TestRepr:
 
 
 class TestMinTableWidth:
-    @pytest.mark.parametrize("loops, fields, desired_width, border, internal_border", 
-    [
-        (15, ["Test table"], 20, True, False),
-        (16, ["Test table"], 21, True, False),
-        (18, ["Test table", "Test table 2"], 40, True, False),
-        (19, ["Test table", "Test table 2"], 41, True, False),
-        (21, ["Test table", "Test col 2", "Test col 3"], 50, True, False),
-        (22, ["Test table", "Test col 2", "Test col 3"], 51, True, False),
-        (19, ["Test table"], 20, False, False),
-        (20, ["Test table"], 21, False, False),
-        (25, ["Test table", "Test table 2"], 40, False, False),
-        (26, ["Test table", "Test table 2"], 41, False, False),
-        (25, ["Test table", "Test col 2", "Test col 3"], 50, False, False),
-        (26, ["Test table", "Test col 2", "Test col 3"], 51, False, False),
-        (18, ["Test table"], 20, False, True),
-        (19, ["Test table"], 21, False, True),
-        (23, ["Test table", "Test table 2"], 40, False, True),
-        (24, ["Test table", "Test table 2"], 41, False, True),
-        (22, ["Test table", "Test col 2", "Test col 3"], 50, False, True),
-        (23, ["Test table", "Test col 2", "Test col 3"], 51, False, True),
-    ])
-    def test_min_table_width(self, loops, fields, desired_width, border, internal_border):
-        for col_width  in range(loops):
+    @pytest.mark.parametrize(
+        "loops, fields, desired_width, border, internal_border",
+        [
+            (15, ["Test table"], 20, True, False),
+            (16, ["Test table"], 21, True, False),
+            (18, ["Test table", "Test table 2"], 40, True, False),
+            (19, ["Test table", "Test table 2"], 41, True, False),
+            (21, ["Test table", "Test col 2", "Test col 3"], 50, True, False),
+            (22, ["Test table", "Test col 2", "Test col 3"], 51, True, False),
+            (19, ["Test table"], 20, False, False),
+            (20, ["Test table"], 21, False, False),
+            (25, ["Test table", "Test table 2"], 40, False, False),
+            (26, ["Test table", "Test table 2"], 41, False, False),
+            (25, ["Test table", "Test col 2", "Test col 3"], 50, False, False),
+            (26, ["Test table", "Test col 2", "Test col 3"], 51, False, False),
+            (18, ["Test table"], 20, False, True),
+            (19, ["Test table"], 21, False, True),
+            (23, ["Test table", "Test table 2"], 40, False, True),
+            (24, ["Test table", "Test table 2"], 41, False, True),
+            (22, ["Test table", "Test col 2", "Test col 3"], 50, False, True),
+            (23, ["Test table", "Test col 2", "Test col 3"], 51, False, True),
+        ],
+    )
+    def test_min_table_width(
+        self, loops, fields, desired_width, border, internal_border
+    ):
+        for col_width in range(loops):
             x = prettytable.PrettyTable()
             x.border = border
             x.preserve_internal_border = internal_border
             x.field_names = fields
-            x.add_row(['X'*col_width] + ['' for _ in range(len(fields)-1)])
+            x.add_row(["X" * col_width] + ["" for _ in range(len(fields) - 1)])
             x.min_table_width = desired_width
             t = x.get_string()
             if border == False and internal_border == False:
-                assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width])
+                assert [len(x) for x in t.split("\n")] == [desired_width, desired_width]
             elif border == False and internal_border == True:
-                assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width - 1, desired_width])
+                assert [len(x) for x in t.split("\n")] == [
+                    desired_width,
+                    desired_width - 1,
+                    desired_width,
+                ]
             else:
-                assert ([len(x) for x in t.split('\n')] == [desired_width, desired_width, desired_width, desired_width, desired_width])
-    
+                assert [len(x) for x in t.split("\n")] == [
+                    desired_width,
+                    desired_width,
+                    desired_width,
+                    desired_width,
+                    desired_width,
+                ]
+
 
 class TestMaxTableWidth:
     def test_max_table_width(self):
