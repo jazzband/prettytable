@@ -1947,9 +1947,9 @@ class TestMinTableWidth:
             x.add_row(["X" * col_width] + ["" for _ in range(len(fields) - 1)])
             x.min_table_width = desired_width
             t = x.get_string()
-            if border == False and internal_border == False:
+            if border is False and internal_border is False:
                 assert [len(x) for x in t.split("\n")] == [desired_width, desired_width]
-            elif border == False and internal_border == True:
+            elif border is False and internal_border is True:
                 assert [len(x) for x in t.split("\n")] == [
                     desired_width,
                     desired_width - 1,
