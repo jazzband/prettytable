@@ -1585,11 +1585,10 @@ class PrettyTable:
             min_width = max(title_width, min_table_width)
             if options["border"]:
                 borders = len(widths) + 1
+            elif options["preserve_internal_border"]:
+                borders = len(widths)
             else:
-                if options["preserve_internal_border"]:
-                    borders = len(widths)
-                else:
-                    borders = 0
+                borders = 0
 
             # Subtract padding for each column and borders
             min_width -= (
