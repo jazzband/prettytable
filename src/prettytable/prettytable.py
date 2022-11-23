@@ -1583,14 +1583,26 @@ class PrettyTable:
                 title_width = 0
             min_table_width = self.min_table_width or 0
             min_width = max(title_width, min_table_width)
-            table_width = self._compute_table_width(options)
-            if table_width < min_width:
-                # To make enough space for the title, all columns have to
-                # grow enough that their combined widths (and the borders
-                # between them) are equal to the length of the title.
-                border_char_count = 3 * (len(widths) - 1)
-                scale = 1.0 * (len(options["title"]) - border_char_count) / sum(widths)
-                widths = [int(math.ceil(w * scale)) for w in widths]
+            if options["border"]:
+                borders = len(widths) + 1
+            elif options["preserve_internal_border"]:
+                borders = len(widths)
+            else:
+                borders = 0
+
+            # Subtract padding for each column and borders
+            min_width -= (
+                sum([sum(self._get_padding_widths(options)) for _ in widths]) + borders
+            )
+            # What is being scaled is content so we sum column widths
+            content_width = sum(widths) or 1
+
+            if content_width < min_width:
+                # Grow widths in proportion
+                scale = 1.0 * min_width / content_width
+                widths = [int(math.floor(w * scale)) for w in widths]
+                if sum(widths) < min_width:
+                    widths[-1] += min_width - sum(widths)
                 self._widths = widths
 
     def _get_padding_widths(self, options):
