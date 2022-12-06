@@ -412,10 +412,10 @@ The options are these:
   `prettytable` module so make sure you import them or use `prettytable.FRAME` etc.
 - `vrules` - Controls printing of vertical rules between columns. Allowed values:
   `FRAME`, `ALL`, `NONE`.
-- `int_format` - A string which controls the way integer data is printed. This works
-  like: `print("%<int_format>d" % data)`
-- `float_format` - A string which controls the way floating point data is printed. This
-  works like: `print("%<float_format>f" % data)`
+- `int_format` - A string which controls the way integer values are printed. This works
+  like: `format(value, int_format)`
+- `float_format` - A string which controls the way floating point values are printed.
+  This works like: `format(value, float_format)`
 - `custom_format` - A Dictionary of field and callable. This allows you to set any
   format you want `pf.custom_format["my_col_int"] = ()lambda f, v: f"{v:,}"`. The type
   of the callable if `callable[[str, Any], str]`
