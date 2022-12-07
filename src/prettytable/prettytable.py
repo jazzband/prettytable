@@ -488,9 +488,9 @@ class PrettyTable:
         try:
             assert isinstance(val, str)
             if not val[-1].isalpha():
-                val = f"{val}d"
+                val += "d"
             format(1, val)  # format an example int
-        except AssertionError:
+        except (AssertionError, ValueError):
             raise ValueError(
                 f"Invalid value for {name}. Must be an integer format string."
             )
@@ -501,7 +501,7 @@ class PrettyTable:
         try:
             assert isinstance(val, str)
             if not val[-1].isalpha():
-                val = f"{val}f"
+                val += "f"
             format(1.2, val)  # format an example float
         except (AssertionError, ValueError):
             raise ValueError(
