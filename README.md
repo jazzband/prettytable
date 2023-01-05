@@ -8,6 +8,25 @@
 [![codecov](https://codecov.io/gh/jazzband/prettytable/branch/master/graph/badge.svg)](https://codecov.io/gh/jazzband/prettytable)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
+PrettyTable's main goal is to let you print tables in an attractive ASCII form, like
+this:
+
+```
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Adelaide  | 1295 |  1158259   |      600.5      |
+| Brisbane  | 5905 |  1857594   |      1146.4     |
+| Darwin    | 112  |   120900   |      1714.7     |
+| Hobart    | 1357 |   205556   |      619.5      |
+| Melbourne | 1566 |  3806092   |      646.9      |
+| Perth     | 5386 |  1554769   |      869.4      |
+| Sydney    | 2058 |  4336374   |      1214.8     |
++-----------+------+------------+-----------------+
+```
+
+You can print tables like this to `stdout` or get string representations of them.
+
 ## Installation
 
 Install via pip:
