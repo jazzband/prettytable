@@ -25,8 +25,6 @@ this:
 +-----------+------+------------+-----------------+
 ```
 
-You can print tables like this to `stdout` or get string representations of them.
-
 ## Installation
 
 Install via pip:
