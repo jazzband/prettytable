@@ -8,8 +8,7 @@
 [![codecov](https://codecov.io/gh/jazzband/prettytable/branch/master/graph/badge.svg)](https://codecov.io/gh/jazzband/prettytable)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-PrettyTable's main goal is to let you print tables in an attractive ASCII form, like
-this:
+PrettyTable lets you print tables in an attractive ASCII form:
 
 ```
 +-----------+------+------------+-----------------+
