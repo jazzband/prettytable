@@ -81,7 +81,9 @@ class PrettyTable:
     # * separate global alingment from field alignments.
     # * validate values when setting individual fields
     class _Alignment(dict):
-        def __init__(self, table: PrettyTable, align_type: str=ALIGN_TYPE_DEFAULT) -> None:
+        def __init__(
+            self, table: PrettyTable, align_type: str = ALIGN_TYPE_DEFAULT
+        ) -> None:
             super().__init__()
 
             self.table = table
@@ -104,8 +106,6 @@ class PrettyTable:
 
         def __repr__(self) -> str:
             return dict.__repr__(self)
-             
-
 
     def __init__(self, field_names=None, **kwargs) -> None:
         """Return a new PrettyTable instance
@@ -493,13 +493,11 @@ class PrettyTable:
         except AssertionError:
             raise ValueError(f"Alignment {val} is invalid: use l, c or r")
 
-
     def _validate_valign(self, val: str | None) -> None:
         try:
             assert val in ("t", "m", "b", None)
         except AssertionError:
             raise ValueError(f"Alignment {val} is invalid: use t, m, b or None")
-
 
     def _validate_header_align(self, val: str | None) -> None:
         try:
