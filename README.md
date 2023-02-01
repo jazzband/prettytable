@@ -311,6 +311,21 @@ gives:
 +-----------+------+------------+-----------------+
 ```
 
+##### Other alignment
+
+You can also change the alignment of the headers of the columns using the `header_align`
+attribute in the same way as the `align` attribute. If this is not set, it will default
+to the same value as `align`.
+
+```python
+x.header_align["City name"] = "l"
+print(x)
+```
+
+The `valign` attribute works in the same way as the other align attributes for
+controlling vertical alignment. It accepts the values `"t"`, `"m"` and `"b"` for top,
+middle, and bottom respectively.
+
 ##### Sorting your table by a field
 
 You can make sure that your ASCII tables are produced with the data sorted by one

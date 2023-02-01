@@ -333,6 +333,9 @@ class TestFieldNameLessTable:
 def aligned_before_table():
     x = PrettyTable()
     x.align = "r"
+    x.header_align = "r"
+    x.header_align["City name"] = "l"
+    x.valign = "b"
     x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
     x.add_row(["Adelaide", 1295, 1158259, 600.5])
     x.add_row(["Brisbane", 5905, 1857594, 1146.4])
@@ -356,6 +359,9 @@ def aligned_after_table():
     x.add_row(["Melbourne", 1566, 3806092, 646.9])
     x.add_row(["Perth", 5386, 1554769, 869.4])
     x.align = "r"
+    x.header_align = "r"
+    x.header_align["City name"] = "l"
+    x.valign = "b"
     return x
 
 
@@ -383,6 +389,86 @@ class TestAlignment:
         before = aligned_before_table.get_latex_string()
         after = aligned_after_table.get_latex_string()
         assert before == after
+
+    def test_aligned_headerless(self):
+        table = PrettyTable()
+        table.align = {}
+        table.header_align = {}
+        table.valign = {}
+        table.add_row(["Adelaide", 1295, 1158259, 600.5])
+        table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+        table.add_row(["Darwin", 112, 120900, 1714.7])
+
+        print(table.get_string())
+        assert (
+            table.get_string()
+            == """
++----------+---------+---------+---------+
+| Field 1  | Field 2 | Field 3 | Field 4 |
++----------+---------+---------+---------+
+| Adelaide |   1295  | 1158259 |  600.5  |
+| Brisbane |   5905  | 1857594 |  1146.4 |
+|  Darwin  |   112   |  120900 |  1714.7 |
++----------+---------+---------+---------+
+""".strip()
+        )
+
+    def test_alignment_validation(self, aligned_before_table: prettytable):
+        with pytest.raises(ValueError) as e:
+            aligned_before_table.align = "q"
+        assert "use l, c or r" in str(e.value)
+
+        with pytest.raises(ValueError) as e:
+            aligned_before_table.valign["City name"] = "q"
+        assert "use t, m, b or None" in str(e.value)
+
+        with pytest.raises(ValueError) as e:
+            aligned_before_table.header_align["City name"] = "q"
+        assert "use l, c, r or None" in str(e.value)
+
+    def test_alignment_assignment(
+        self, aligned_before_table: prettytable, aligned_after_table: prettytable
+    ):
+        # Act
+        t = helper_table()
+        t.valign = "b"
+        t.align = "l"
+        t.header_align = "r"
+
+        # Assert
+        for field in t.align:
+            assert t.align[field] == "l"
+        for field in t.valign:
+            assert t.valign[field] == "b"
+        for field in t.header_align:
+            assert t.header_align[field] == "r"
+
+        # Act
+        t.valign = {"Field 1": "m", "Field 2": "m", "Field 3": "m"}
+        t.align = {"Field 1": "l", "Field 2": "l", "Field 3": "l"}
+        t.header_align = {"Field 1": "l", "Field 2": "l", "Field 3": "l"}
+
+        # Assert
+        for field in t.align:
+            assert t.align[field] == "l"
+            assert repr(t.align) == "{'Field 1': 'l', 'Field 2': 'l', 'Field 3': 'l'}"
+        for field in t.valign:
+            assert t.valign[field] == "m"
+        for field in t.header_align:
+            assert t.header_align[field] == "l"
+
+        # Act
+        t.valign = {}
+        t.align = {}
+        t.header_align = {}
+
+        # Assert
+        for field in t.align:
+            assert t.align[field] == "c"
+        for field in t.valign:
+            assert t.valign[field] == "t"
+        for field in t.header_align:
+            assert t.header_align[field] is None
 
 
 @pytest.fixture(scope="function")
@@ -1035,6 +1121,7 @@ class TestHtmlOutput:
 
     def test_HtmlOutputFormatted(self):
         t = helper_table()
+        t.header_align["Field 1"] = "r"
         result = t.get_html_string(format=True)
         assert (
             result.strip()
@@ -1042,7 +1129,7 @@ class TestHtmlOutput:
 <table frame="box" rules="cols">
     <thead>
         <tr>
-            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: right">Field 1</th>
             <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
             <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
         </tr>
@@ -1439,6 +1526,41 @@ class TestStyle:
         t.align["Align left"] = "l"
         t.align["Align centre"] = "c"
         t.align["Align right"] = "r"
+
+        # Assert
+        result = t.get_string()
+        assert result.strip() == expected.strip()
+
+    @pytest.mark.parametrize(
+        "style, expected",
+        [
+            pytest.param(
+                DEFAULT,
+                """
++---------+--------+--------+
+| L       |   C    |      R |
++---------+--------+--------+
+| value 1 | value2 | value3 |
+| value 4 | value5 | value6 |
+| value 7 | value8 | value9 |
++---------+--------+--------+
+""",
+                id="MARKDOWN",
+            ),
+        ],
+    )
+    def test_style_header_align(self, style, expected):
+        # Arrange
+        t = helper_table()
+        t.field_names = ["L", "C", "R"]
+
+        assert t.header_align["L"] is None
+
+        # Act
+        t.set_style(style)
+        t.header_align["L"] = "l"
+        t.header_align["C"] = "c"
+        t.header_align["R"] = "r"
 
         # Assert
         result = t.get_string()
