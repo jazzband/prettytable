@@ -4,13 +4,11 @@ from .prettytable import PrettyTable
 
 try:
     from colorama import init
+
+    init()
 except ImportError:
-    # Do nothing if not installed
-    def init():
-        pass
+    pass
 
-
-init()
 
 RESET_CODE = "\x1b[0m"
 
@@ -34,6 +32,7 @@ class Theme:
         self.junction_char = junction_char
         self.junction_color = Theme.format_code(junction_color)
 
+    @staticmethod
     def format_code(s: str) -> str:
         """Takes string and intelligently puts it into an ANSI escape sequence"""
         if s.strip() == "":

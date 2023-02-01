@@ -45,7 +45,7 @@ from html import escape
 from html.parser import HTMLParser
 from typing import Any
 
-import wcwidth
+import wcwidth  # type: ignore
 
 # hrule styles
 FRAME = 0
@@ -167,8 +167,8 @@ class PrettyTable:
         self.encoding = kwargs.get("encoding", "UTF-8")
 
         # Data
-        self._field_names = []
-        self._rows = []
+        self._field_names: list[str] = []
+        self._rows: list[list] = []
         self.align = self._Alignment(self, align_type=ALIGN_TYPE_DEFAULT)
         self.valign = self._Alignment(self, align_type=ALIGN_TYPE_VERTICAL)
         self.header_align = self._Alignment(self, align_type=ALIGN_TYPE_HEADER)
@@ -181,7 +181,7 @@ class PrettyTable:
         if field_names:
             self.field_names = field_names
         else:
-            self._widths = []
+            self._widths: list[int] = []
 
         # Options
         self._options = [
@@ -241,7 +241,7 @@ class PrettyTable:
         self._start = kwargs["start"] or 0
         self._end = kwargs["end"] or None
         self._fields = kwargs["fields"] or None
-        self._none_format = {}
+        self._none_format: dict[None, None] = {}
 
         if kwargs["header"] in (True, False):
             self._header = kwargs["header"]
@@ -1674,11 +1674,26 @@ class PrettyTable:
                 title_width = 0
             min_table_width = self.min_table_width or 0
             min_width = max(title_width, min_table_width)
-            table_width = self._compute_table_width(options)
-            if table_width < min_width:
+            if options["border"]:
+                borders = len(widths) + 1
+            elif options["preserve_internal_border"]:
+                borders = len(widths)
+            else:
+                borders = 0
+
+            # Subtract padding for each column and borders
+            min_width -= (
+                sum([sum(self._get_padding_widths(options)) for _ in widths]) + borders
+            )
+            # What is being scaled is content so we sum column widths
+            content_width = sum(widths) or 1
+
+            if content_width < min_width:
                 # Grow widths in proportion
-                scale = 1.0 * min_width / table_width
-                widths = [int(math.ceil(w * scale)) for w in widths]
+                scale = 1.0 * min_width / content_width
+                widths = [int(math.floor(w * scale)) for w in widths]
+                if sum(widths) < min_width:
+                    widths[-1] += min_width - sum(widths)
                 self._widths = widths
 
     def _get_padding_widths(self, options):
@@ -2121,7 +2136,7 @@ class PrettyTable:
         """
 
         options = self._get_options(kwargs)
-        json_options = dict(indent=4, separators=(",", ": "), sort_keys=True)
+        json_options: Any = dict(indent=4, separators=(",", ": "), sort_keys=True)
         json_options.update(
             {key: value for key, value in kwargs.items() if key not in options}
         )
@@ -2521,9 +2536,9 @@ class TableHandler(HTMLParser):
     def __init__(self, **kwargs) -> None:
         HTMLParser.__init__(self)
         self.kwargs = kwargs
-        self.tables = []
-        self.last_row = []
-        self.rows = []
+        self.tables: list[list] = []
+        self.last_row: list[str] = []
+        self.rows: list[Any] = []
         self.max_row_width = 0
         self.active = None
         self.last_content = ""

@@ -2,9 +2,9 @@
 
 Jazzband guidelines: https://jazzband.co/about/releases
 
-- [ ] Get master to the appropriate code release state.
+- [ ] Get `main` to the appropriate code release state.
       [GitHub Actions](https://github.com/jazzband/prettytable/actions) should pass on
-      master.
+      `main`.
       [![GitHub Actions status](https://github.com/jazzband/prettytable/workflows/Test/badge.svg)](https://github.com/jazzband/prettytable/actions)
 
 - [ ] Edit release draft, adjust text if needed:
