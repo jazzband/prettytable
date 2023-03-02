@@ -370,6 +370,43 @@ relevant row, in the column specified by the `sort_by` argument. The remaining n
 elements are the data in each of the table's columns, in order, including a repeated
 instance of the data in the `sort_by` column.
 
+#### Adding sections to a table
+
+You can divide your table into different sections using the `divider` argument. This
+will add a dividing line into the table under the row who has this field set. So we can
+set up a table like this:
+
+```python
+x = PrettyTable()
+x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+x.add_row(["Adelaide", 1295, 1158259, 600.5])
+x.add_row(["Brisbane", 5905, 1857594, 1146.4])
+x.add_row(["Darwin", 112, 120900, 1714.7])
+x.add_row(["Hobart", 1357, 205556, 619.5], divider=True)
+x.add_row(["Melbourne", 1566, 3806092, 646.9])
+x.add_row(["Perth", 5386, 1554769, 869.4])
+x.add_row(["Sydney", 2058, 4336374, 1214.8])
+```
+
+to get a table like this:
+
+```
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+|  Adelaide | 1295 |  1158259   |      600.5      |
+|  Brisbane | 5905 |  1857594   |      1146.4     |
+|   Darwin  | 112  |   120900   |      1714.7     |
+|   Hobart  | 1357 |   205556   |      619.5      |
++-----------+------+------------+-----------------+
+| Melbourne | 1566 |  3806092   |      646.9      |
+|   Perth   | 5386 |  1554769   |      869.4      |
+|   Sydney  | 2058 |  4336374   |      1214.8     |
++-----------+------+------------+-----------------+
+```
+
+Any added dividers will be removed if a table is sorted.
+
 ### Changing the appearance of your table - the easy way
 
 By default, PrettyTable produces ASCII tables that look like the ones used in SQL

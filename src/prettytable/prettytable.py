@@ -136,6 +136,7 @@ class PrettyTable:
         # Data
         self._field_names: list[str] = []
         self._rows: list[list] = []
+        self._dividers: list[bool] = []
         self.align = {}
         self.valign = {}
         self.max_width = {}
@@ -561,6 +562,10 @@ class PrettyTable:
     @property
     def rows(self) -> list[Any]:
         return self._rows[:]
+
+    @property
+    def dividers(self) -> list[bool]:
+        return self._dividers[:]
 
     @property
     def xhtml(self) -> bool:
@@ -1390,7 +1395,7 @@ class PrettyTable:
         for row in rows:
             self.add_row(row)
 
-    def add_row(self, row) -> None:
+    def add_row(self, row, *, divider=False) -> None:
         """Add a row to the table
 
         Arguments:
@@ -1406,6 +1411,7 @@ class PrettyTable:
         if not self._field_names:
             self.field_names = [f"Field {n + 1}" for n in range(0, len(row))]
         self._rows.append(list(row))
+        self._dividers.append(divider)
 
     def del_row(self, row_index) -> None:
         """Delete a row from the table
@@ -1420,6 +1426,7 @@ class PrettyTable:
                 f"table only has {len(self._rows)} rows"
             )
         del self._rows[row_index]
+        del self._dividers[row_index]
 
     def add_column(
         self, fieldname, column, align: str = "c", valign: str = "t"
@@ -1445,6 +1452,7 @@ class PrettyTable:
             for i in range(0, len(column)):
                 if len(self._rows) < i + 1:
                     self._rows.append([])
+                    self._dividers.append(False)
                 self._rows[i].append(column[i])
         else:
             raise ValueError(
@@ -1485,12 +1493,14 @@ class PrettyTable:
         """Delete all rows from the table but keep the current field names"""
 
         self._rows = []
+        self._dividers = []
 
     def clear(self) -> None:
         """Delete all rows and field names from the table, maintaining nothing but
         styling options"""
 
         self._rows = []
+        self._dividers = []
         self._field_names = []
         self._widths = []
 
@@ -1630,6 +1640,23 @@ class PrettyTable:
 
         return rows
 
+    def _get_dividers(self, options):
+        """Return only those dividers that should be printed, based on slicing.
+
+        Arguments:
+
+        options - dictionary of option settings."""
+
+        if options["oldsortslice"]:
+            dividers = copy.deepcopy(self._dividers[options["start"] : options["end"]])
+        else:
+            dividers = copy.deepcopy(self._dividers)
+
+        if options["sortby"]:
+            dividers = [False for divider in dividers]
+
+        return dividers
+
     def _format_row(self, row):
         return [
             self._format_value(field, value)
@@ -1702,6 +1729,7 @@ class PrettyTable:
 
         # Get the rows we need to print, taking into account slicing, sorting, etc.
         rows = self._get_rows(options)
+        dividers = self._get_dividers(options)
 
         # Turn all data in all rows into Unicode, formatted as desired
         formatted_rows = self._format_rows(rows)
@@ -1726,8 +1754,10 @@ class PrettyTable:
                 )
 
         # Add rows
-        for row in formatted_rows[:-1]:
+        for row, divider in zip(formatted_rows[:-1], dividers[:-1]):
             lines.append(self._stringify_row(row, options, self._hrule))
+            if divider:
+                lines.append(self._stringify_hrule(options, where="bottom_"))
         if formatted_rows:
             lines.append(
                 self._stringify_row(
