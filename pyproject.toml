@@ -13,13 +13,6 @@ license = {text = "BSD (3 clause)"}
 maintainers = [{name ="Jazzband"}]
 authors = [{name = "Luke Maurits", email = "luke@maurits.id.au"}]
 requires-python = ">=3.7"
-dependencies = [
-  'importlib-metadata; python_version < "3.8"',
-  "wcwidth",
-]
-dynamic = [
-  "version",
-]
 classifiers = [
   "License :: OSI Approved :: BSD License",
   "Programming Language :: Python",
@@ -35,17 +28,22 @@ classifiers = [
   "Topic :: Text Processing",
   "Typing :: Typed",
 ]
+dynamic = [
+  "version",
+]
+dependencies = [
+  'importlib-metadata; python_version < "3.8"',
+  "wcwidth",
+]
 [project.optional-dependencies]
 tests = [
   "pytest",
   "pytest-cov",
   "pytest-lazy-fixture",
 ]
-
 [project.urls]
 Homepage = "https://github.com/jazzband/prettytable"
 Source = "https://github.com/jazzband/prettytable"
-
 
 [tool.hatch]
 version.source = "vcs"
