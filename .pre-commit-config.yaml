@@ -1,23 +1,24 @@
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.32.1
+    rev: v3.3.1
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 22.12.0
     hooks:
       - id: black
         args: [--target-version=py37]
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+    rev: 5.11.4
     hooks:
       - id: isort
+        args: [--add-import=from __future__ import annotations]
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 6.0.0
     hooks:
       - id: flake8
         additional_dependencies: [flake8-2020, flake8-implicit-str-concat]
@@ -28,16 +29,21 @@ repos:
       - id: python-check-blanket-noqa
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.2.0
+    rev: v4.4.0
     hooks:
       - id: check-merge-conflict
+      - id: check-toml
       - id: check-yaml
 
-  - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.20.1
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: 0.4.1
     hooks:
-      - id: setup-cfg-fmt
-        args: [--max-py-version=3.11]
+      - id: pyproject-fmt
+
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.10.1
+    hooks:
+      - id: validate-pyproject
 
   - repo: https://github.com/tox-dev/tox-ini-fmt
     rev: 0.5.2
@@ -45,11 +51,19 @@ repos:
       - id: tox-ini-fmt
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.6.2
+    rev: v3.0.0-alpha.4
     hooks:
       - id: prettier
         args: [--prose-wrap=always, --print-width=88]
         exclude: ^.github/ISSUE_TEMPLATE/bug_report.md$
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v0.991"
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-colorama, types-setuptools]
+        args: [--pretty, --show-error-codes]
+        exclude: ^tests/
 
 ci:
   autoupdate_schedule: quarterly

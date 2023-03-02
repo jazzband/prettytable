@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .prettytable import (
     ALL,
     DEFAULT,
@@ -47,6 +49,6 @@ try:
     import importlib.metadata as importlib_metadata
 except ImportError:
     # <Python 3.7 and lower
-    import importlib_metadata
+    import importlib_metadata  # type: ignore
 
 __version__ = importlib_metadata.version(__name__)

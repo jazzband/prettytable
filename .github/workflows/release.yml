@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - master
+      - main
   release:
     types:
       - published
@@ -20,11 +20,11 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.x"
           cache: pip
-          cache-dependency-path: "setup.py"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -33,13 +33,12 @@ jobs:
 
       - name: Build package
         run: |
-          python setup.py --version
           python -m build
           twine check --strict dist/*
 
       - name: Upload packages to Jazzband
         if: github.event.action == 'published'
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: jazzband
           password: ${{ secrets.JAZZBAND_RELEASE_KEY }}
