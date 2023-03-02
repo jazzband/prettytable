@@ -42,6 +42,7 @@ tests = [
   "pytest-lazy-fixture",
 ]
 [project.urls]
+Changelog = "https://github.com/jazzband/prettytable/releases"
 Homepage = "https://github.com/jazzband/prettytable"
 Source = "https://github.com/jazzband/prettytable"
 
