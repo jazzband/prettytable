@@ -1738,7 +1738,6 @@ def test_add_rows():
 
 
 def test_autoindex():
-
     """Testing that a table with a custom index row is
     equal to the one produced by the function
     .add_autoindex()
