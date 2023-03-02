@@ -134,7 +134,6 @@ class PrettyTable:
         self.encoding = kwargs.get("encoding", "UTF-8")
 
         # Data
-
         self._field_names: list[str] = []
         self._rows: list[list] = []
         self._dividers: list[bool] = []
