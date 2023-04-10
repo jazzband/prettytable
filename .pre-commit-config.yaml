@@ -48,7 +48,7 @@ repos:
       - id: validate-pyproject
 
   - repo: https://github.com/tox-dev/tox-ini-fmt
-    rev: 1.0.0
+    rev: 1.3.0
     hooks:
       - id: tox-ini-fmt
 
@@ -60,7 +60,7 @@ repos:
         exclude: ^.github/ISSUE_TEMPLATE/bug_report.md$
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: "v1.1.1"
+    rev: "v1.2.0"
     hooks:
       - id: mypy
         additional_dependencies: [types-colorama, types-setuptools]
