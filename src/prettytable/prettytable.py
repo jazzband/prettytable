@@ -1511,6 +1511,27 @@ class PrettyTable:
     def copy(self):
         return copy.deepcopy(self)
 
+    def get_output(self, format: str = "text", **kwargs) -> str:
+        """Return string representation of specified format of table in current state.
+
+        Arguments:
+        format - resulting table format
+        kwargs - passed through to function that performs formatting
+        """
+        if format == "text":
+            return self.get_string(**kwargs)
+        if format == "html":
+            return self.get_html_string(**kwargs)
+        if format == "json":
+            return self.get_json_string(**kwargs)
+        if format == "csv":
+            return self.get_csv_string(**kwargs)
+        if format == "latex":
+            return self.get_latex_string(**kwargs)
+        raise ValueError(
+            f"Invalid format {format}. Must be one of: text, html, json, csv, or latex"
+        )
+
     ##############################
     # MISC PRIVATE METHODS       #
     ##############################
