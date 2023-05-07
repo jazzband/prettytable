@@ -1529,7 +1529,8 @@ class PrettyTable:
         if out_format == "latex":
             return self.get_latex_string(**kwargs)
         raise ValueError(
-            f"Invalid format {out_format}. Must be one of: text, html, json, csv, or latex"
+            f"Invalid format {out_format}. "
+            "Must be one of: text, html, json, csv, or latex"
         )
 
     ##############################
