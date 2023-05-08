@@ -1511,7 +1511,7 @@ class PrettyTable:
     def copy(self):
         return copy.deepcopy(self)
 
-    def get_output(self, out_format: str = "text", **kwargs) -> str:
+    def get_formatted_string(self, out_format: str = "text", **kwargs) -> str:
         """Return string representation of specified format of table in current state.
 
         Arguments:
