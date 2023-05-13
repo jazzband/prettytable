@@ -206,7 +206,7 @@ your table to a file or insert it into a GUI.
 The table can be displayed in several different formats using `get_formatted_string` by
 changing the `out_format=<text|html|json|csv|latex>`. This function passes through
 arguments to the functions that render the table, so additional arguments can be given.
-The provides an easy means to let a user choose the output formatting.
+This provides a way to let a user choose the output formatting.
 
 ```python
 def my_cli_function(table_format: str = 'text'):
