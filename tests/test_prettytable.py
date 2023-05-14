@@ -2095,3 +2095,50 @@ class TestPreservingInternalBorders:
 </table>
 """.strip()  # noqa: E501
         )
+
+
+class TestGeneralOutput:
+    def test_text(self):
+        t = helper_table()
+        assert t.get_formatted_string("text") == t.get_string()
+        # test with default arg, too
+        assert t.get_formatted_string() == t.get_string()
+        # args passed through
+        assert t.get_formatted_string(border=False) == t.get_string(border=False)
+
+    def test_csv(self):
+        t = helper_table()
+        assert t.get_formatted_string("csv") == t.get_csv_string()
+        # args passed through
+        assert t.get_formatted_string("csv", border=False) == t.get_csv_string(
+            border=False
+        )
+
+    def test_json(self):
+        t = helper_table()
+        assert t.get_formatted_string("json") == t.get_json_string()
+        # args passed through
+        assert t.get_formatted_string("json", border=False) == t.get_json_string(
+            border=False
+        )
+
+    def test_html(self):
+        t = helper_table()
+        assert t.get_formatted_string("html") == t.get_html_string()
+        # args passed through
+        assert t.get_formatted_string("html", border=False) == t.get_html_string(
+            border=False
+        )
+
+    def test_latex(self):
+        t = helper_table()
+        assert t.get_formatted_string("latex") == t.get_latex_string()
+        # args passed through
+        assert t.get_formatted_string("latex", border=False) == t.get_latex_string(
+            border=False
+        )
+
+    def test_invalid(self):
+        t = helper_table()
+        with pytest.raises(ValueError):
+            t.get_formatted_string("pdf")
