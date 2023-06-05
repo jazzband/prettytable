@@ -12,13 +12,12 @@ readme = "README.md"
 license = {text = "BSD (3 clause)"}
 maintainers = [{name ="Jazzband"}]
 authors = [{name = "Luke Maurits", email = "luke@maurits.id.au"}]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
   "License :: OSI Approved :: BSD License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -33,7 +32,6 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  'importlib-metadata; python_version < "3.8"',
   "wcwidth",
 ]
 [project.optional-dependencies]
