@@ -8,6 +8,9 @@ jobs:
   label:
     runs-on: ubuntu-latest
 
+    permissions:
+      issues: write
+
     steps:
       - uses: mheap/github-action-required-labels@v4
         with:
