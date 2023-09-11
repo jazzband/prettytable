@@ -9,13 +9,16 @@ on:
       - published
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     if: github.repository_owner == 'jazzband'
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
