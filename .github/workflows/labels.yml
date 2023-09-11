@@ -1,5 +1,8 @@
 name: Sync labels
 
+permissions:
+  pull-requests: write
+
 on:
   push:
     branches:
