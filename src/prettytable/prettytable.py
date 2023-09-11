@@ -486,8 +486,10 @@ class PrettyTable:
             return
         try:
             assert isinstance(val, str)
-            assert val.isdigit()
-        except AssertionError:
+            if not val[-1].isalpha():
+                val += "d"
+            format(1, val)  # format an example int
+        except (AssertionError, ValueError):
             raise ValueError(
                 f"Invalid value for {name}. Must be an integer format string."
             )
@@ -497,16 +499,10 @@ class PrettyTable:
             return
         try:
             assert isinstance(val, str)
-            assert "." in val
-            bits = val.split(".")
-            assert len(bits) <= 2
-            assert bits[0] == "" or bits[0].isdigit()
-            assert (
-                bits[1] == ""
-                or bits[1].isdigit()
-                or (bits[1][-1] == "f" and bits[1].rstrip("f").isdigit())
-            )
-        except AssertionError:
+            if not val[-1].isalpha():
+                val += "f"
+            format(1.2, val)  # format an example float
+        except (AssertionError, ValueError):
             raise ValueError(
                 f"Invalid value for {name}. Must be a float format string."
             )
@@ -1479,9 +1475,9 @@ class PrettyTable:
 
         if fieldname not in self._field_names:
             raise ValueError(
-                "Can't delete column %r which is not a field name of this table."
-                " Field names are: %s"
-                % (fieldname, ", ".join(map(repr, self._field_names)))
+                f"Can't delete column {fieldname!r} which is not a field name "
+                "of this table. Field names are: "
+                + ", ".join(map(repr, self._field_names))
             )
 
         col_index = self._field_names.index(fieldname)
@@ -1539,9 +1535,15 @@ class PrettyTable:
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            return ("%%%sd" % self._int_format[field]) % value
+            int_format = self._int_format.get(field, "")
+            if not int_format[-1:].isalpha():
+                int_format += "d"
+            return format(value, int_format)
         elif isinstance(value, float) and field in self._float_format:
-            return ("%%%sf" % self._float_format[field]) % value
+            float_format = self._float_format.get(field, "")
+            if not float_format[-1:].isalpha():
+                float_format += "f"
+            return format(value, float_format)
 
         formatter = self._custom_format.get(field, (lambda f, v: str(v)))
         return formatter(field, value)
@@ -2157,9 +2159,8 @@ class PrettyTable:
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
-                lines.append(
-                    "            <th>%s</th>" % escape(field).replace("\n", linebreak)
-                )
+                field = escape(field).replace("\n", linebreak)
+                lines.append(f"            <th>{field}</th>")
             lines.append("        </tr>")
             lines.append("    </thead>")
 
@@ -2172,9 +2173,8 @@ class PrettyTable:
             for field, datum in zip(self._field_names, row):
                 if options["fields"] and field not in options["fields"]:
                     continue
-                lines.append(
-                    "            <td>%s</td>" % escape(datum).replace("\n", linebreak)
-                )
+                datum = escape(datum).replace("\n", linebreak)
+                lines.append(f"            <td>{datum}</td>")
             lines.append("        </tr>")
         lines.append("    </tbody>")
         lines.append("</table>")
@@ -2227,9 +2227,10 @@ class PrettyTable:
             for field in self._field_names:
                 if options["fields"] and field not in options["fields"]:
                     continue
+                field = escape(field).replace("\n", linebreak)
                 lines.append(
-                    '            <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
-                    % (lpad, rpad, escape(field).replace("\n", linebreak))
+                    f'            <th style="padding-left: {lpad}em; '
+                    f'padding-right: {rpad}em; text-align: center">{field}</th>'
                 )
             lines.append("        </tr>")
             lines.append("    </thead>")
@@ -2254,15 +2255,11 @@ class PrettyTable:
             ):
                 if options["fields"] and field not in options["fields"]:
                     continue
+                datum = escape(datum).replace("\n", linebreak)
                 lines.append(
-                    '            <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
-                    % (
-                        lpad,
-                        rpad,
-                        align,
-                        valign,
-                        escape(datum).replace("\n", linebreak),
-                    )
+                    f'            <td style="padding-left: {lpad}em; '
+                    f"padding-right: {rpad}em; text-align: {align}; "
+                    f'vertical-align: {valign}">{datum}</td>'
                 )
             lines.append("        </tr>")
         lines.append("    </tbody>")
@@ -2319,7 +2316,7 @@ class PrettyTable:
 
         alignments = "".join([self._align[field] for field in wanted_fields])
 
-        begin_cmd = "\\begin{tabular}{%s}" % alignments
+        begin_cmd = f"\\begin{{tabular}}{{{alignments}}}"
         lines.append(begin_cmd)
 
         # Headers
@@ -2361,7 +2358,7 @@ class PrettyTable:
         if options["border"] and options["vrules"] in [ALL, FRAME]:
             alignment_str = "|" + alignment_str + "|"
 
-        begin_cmd = "\\begin{tabular}{%s}" % alignment_str
+        begin_cmd = f"\\begin{{tabular}}{{{alignment_str}}}"
         lines.append(begin_cmd)
         if options["border"] and options["hrules"] in [ALL, FRAME]:
             lines.append("\\hline")

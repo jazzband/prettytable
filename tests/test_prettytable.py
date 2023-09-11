@@ -618,29 +618,53 @@ class TestBasic:
         city_data_prettytable.set_style(MSWORD_FRIENDLY)
         self._test_all_length_equal(city_data_prettytable)
 
-    def test_no_blank_lines_with_int_format(self, city_data_prettytable: PrettyTable):
+    @pytest.mark.parametrize("int_format", ["04", "04d", "#06x", "5,"])
+    def test_no_blank_lines_with_int_format(
+        self, city_data_prettytable: PrettyTable, int_format: str
+    ):
         """No table should ever have blank lines in it."""
-        city_data_prettytable.int_format = "04"
+        city_data_prettytable.int_format = int_format
         self._test_no_blank_lines(city_data_prettytable)
 
+    @pytest.mark.parametrize("int_format", ["04", "04d", "#06x", "5,"])
     def test_all_lengths_equal_with_int_format(
-        self, city_data_prettytable: PrettyTable
+        self, city_data_prettytable: PrettyTable, int_format: str
     ):
         """All lines in a table should be of the same length."""
-        city_data_prettytable.int_format = "04"
+        city_data_prettytable.int_format = int_format
         self._test_all_length_equal(city_data_prettytable)
 
-    def test_no_blank_lines_with_float_format(self, city_data_prettytable: PrettyTable):
+    @pytest.mark.parametrize("int_format", [4, "04i", "5s"])
+    def test_invalid_int_format(
+        self, city_data_prettytable: PrettyTable, int_format: str
+    ):
+        """Ensure ValueError is raised for invalid formats."""
+        with pytest.raises(ValueError, match="Invalid value for int_format"):
+            city_data_prettytable.int_format = int_format
+
+    @pytest.mark.parametrize("float_format", ["6.2", "6.2f", "7.4G", "8,.2"])
+    def test_no_blank_lines_with_float_format(
+        self, city_data_prettytable: PrettyTable, float_format: str
+    ):
         """No table should ever have blank lines in it."""
-        city_data_prettytable.float_format = "6.2f"
+        city_data_prettytable.float_format = float_format
         self._test_no_blank_lines(city_data_prettytable)
 
+    @pytest.mark.parametrize("float_format", ["6.2", "6.2f", "7.4G", "8,.2"])
     def test_all_lengths_equal_with_float_format(
-        self, city_data_prettytable: PrettyTable
+        self, city_data_prettytable: PrettyTable, float_format: str
     ):
         """All lines in a table should be of the same length."""
-        city_data_prettytable.float_format = "6.2f"
+        city_data_prettytable.float_format = float_format
         self._test_all_length_equal(city_data_prettytable)
+
+    @pytest.mark.parametrize("float_format", [4, "04d", "5s"])
+    def test_invalid_float_format(
+        self, city_data_prettytable: PrettyTable, float_format: str
+    ):
+        """Ensure ValueError is raised for invalid formats."""
+        with pytest.raises(ValueError, match="Invalid value for float_format"):
+            city_data_prettytable.float_format = float_format
 
     def test_no_blank_lines_from_csv(self, city_data_from_csv: PrettyTable):
         """No table should ever have blank lines in it."""
