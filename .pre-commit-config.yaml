@@ -5,8 +5,8 @@ repos:
       - id: pyupgrade
         args: [--py38-plus]
 
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 23.9.1
     hooks:
       - id: black
 
@@ -21,22 +21,23 @@ repos:
     hooks:
       - id: flake8
         additional_dependencies:
-          [flake8-2020, flake8-errmsg, flake8-implicit-str-concat]
+          [flake8-2020, flake8-errmsg, flake8-implicit-str-concat, flake8-logging]
 
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
       - id: python-check-blanket-noqa
-      - id: python-no-log-warn
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
       - id: check-case-conflict
+      - id: check-executables-have-shebangs
       - id: check-merge-conflict
       - id: check-json
       - id: check-toml
       - id: check-yaml
+      - id: debug-statements
       - id: end-of-file-fixer
       - id: trailing-whitespace
         exclude: .github/ISSUE_TEMPLATE/bug_report.md|tests/test_prettytable.py
