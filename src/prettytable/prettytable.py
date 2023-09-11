@@ -2139,14 +2139,16 @@ class PrettyTable:
         open_tag = ["<table"]
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(f' {attr_name}="{options["attributes"][attr_name]}"')
+                open_tag.append(
+                    f' {escape(attr_name)}="{escape(options["attributes"][attr_name])}"'
+                )
         open_tag.append(">")
         lines.append("".join(open_tag))
 
         # Title
         title = options["title"] or self._title
         if title:
-            lines.append(f"    <caption>{title}</caption>")
+            lines.append(f"    <caption>{escape(title)}</caption>")
 
         # Headers
         if options["header"]:
@@ -2207,14 +2209,16 @@ class PrettyTable:
             open_tag.append(' rules="cols"')
         if options["attributes"]:
             for attr_name in options["attributes"]:
-                open_tag.append(f' {attr_name}="{options["attributes"][attr_name]}"')
+                open_tag.append(
+                    f' {escape(attr_name)}="{escape(options["attributes"][attr_name])}"'
+                )
         open_tag.append(">")
         lines.append("".join(open_tag))
 
         # Title
         title = options["title"] or self._title
         if title:
-            lines.append(f"    <caption>{title}</caption>")
+            lines.append(f"    <caption>{escape(title)}</caption>")
 
         # Headers
         if options["header"]:

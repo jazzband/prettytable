@@ -1070,13 +1070,13 @@ class TestHtmlOutput:
 
     def test_HtmlOutputWithTitle(self):
         t = helper_table()
-        t.title = "Title"
-        result = t.get_html_string()
+        t.title = "Title & Title"
+        result = t.get_html_string(attributes={"bgcolor": "red", "a<b": "1<2"})
         assert (
             result.strip()
             == """
-<table>
-    <caption>Title</caption>
+<table bgcolor="red" a&lt;b="1&lt;2">
+    <caption>Title &amp; Title</caption>
     <thead>
         <tr>
             <th>Field 1</th>
@@ -1107,13 +1107,15 @@ class TestHtmlOutput:
 
     def test_HtmlOutputFormattedWithTitle(self):
         t = helper_table()
-        t.title = "Title"
-        result = t.get_html_string(format=True)
+        t.title = "Title & Title"
+        result = t.get_html_string(
+            attributes={"bgcolor": "red", "a<b": "1<2"}, format=True
+        )
         assert (
             result.strip()
             == """
-<table frame="box" rules="cols">
-    <caption>Title</caption>
+<table frame="box" rules="cols" bgcolor="red" a&lt;b="1&lt;2">
+    <caption>Title &amp; Title</caption>
     <thead>
         <tr>
             <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
