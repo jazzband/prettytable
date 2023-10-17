@@ -1793,7 +1793,7 @@ class PrettyTable:
         for row, divider in zip(formatted_rows[:-1], dividers[:-1]):
             lines.append(self._stringify_row(row, options, self._hrule))
             if divider:
-                lines.append(self._stringify_hrule(options, where="bottom_"))
+                lines.append(self._stringify_hrule(options, where=""))
         if formatted_rows:
             lines.append(
                 self._stringify_row(
