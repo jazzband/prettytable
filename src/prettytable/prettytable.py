@@ -1394,15 +1394,16 @@ class PrettyTable:
     # DATA INPUT METHODS         #
     ##############################
 
-    def add_rows(self, rows) -> None:
+    def add_rows(self, rows, gridline=False) -> None:
         """Add rows to the table
 
         Arguments:
 
         rows - rows of data, should be an iterable of lists, each list with as many
-        elements as the table has fields"""
+        elements as the table has fields
+        gridline - It will make a Excel like representation, just like a grid"""
         for row in rows:
-            self.add_row(row)
+            self.add_row(row,divider=gridline)
 
     def add_row(self, row, *, divider=False) -> None:
         """Add a row to the table
