@@ -1403,7 +1403,7 @@ class PrettyTable:
         elements as the table has fields
         gridline - It will make a Excel like representation, just like a grid"""
         for row in rows:
-            self.add_row(row,divider=gridline)
+            self.add_row(row, divider=gridline)
 
     def add_row(self, row, *, divider=False) -> None:
         """Add a row to the table
