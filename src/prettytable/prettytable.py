@@ -1836,9 +1836,9 @@ class PrettyTable:
             # If necessary, add column alignment characters (e.g. ":" for Markdown)
             if self._horizontal_align_char:
                 if self._align[field] in ("l", "c"):
-                    line = self._horizontal_align_char + line[1:]
+                    line = " " + self._horizontal_align_char + line[2:]
                 if self._align[field] in ("c", "r"):
-                    line = line[:-1] + self._horizontal_align_char
+                    line = line[:-2] + self._horizontal_align_char + " "
 
             bits.append(line)
             if options["vrules"] == ALL:
