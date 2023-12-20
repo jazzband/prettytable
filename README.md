@@ -429,21 +429,21 @@ slightly harder (see later).
 #### Setting a table style
 
 You can set the style for your table using the `set_style` method before any calls to
-`print` or `get_string`. Here's how to print a table in a format which works nicely with
-Microsoft Word's "Convert to table" feature:
+`print` or `get_string`. Here's how to print a table in Markdown format:
 
 ```python
-from prettytable import MSWORD_FRIENDLY
-table.set_style(MSWORD_FRIENDLY)
+from prettytable import MARKDOWN
+table.set_style(MARKDOWN)
 print(table)
 ```
 
-In addition to `MSWORD_FRIENDLY` you can use these in-built styles for your tables:
+In addition to `MARKDOWN` you can use these in-built styles:
 
 - `DEFAULT` - The default look, used to undo any style changes you may have made
 - `PLAIN_COLUMNS` - A borderless style that works well with command line programs for
   columnar data
-- `MARKDOWN` - A style that follows Markdown syntax
+- `MSWORD_FRIENDLY` - A format which works nicely with Microsoft Word's "Convert to
+  table" feature
 - `ORGMODE` - A table style that fits [Org mode](https://orgmode.org/) syntax
 - `SINGLE_BORDER` and `DOUBLE_BORDER` - Styles that use continuous single/double border
   lines with Box drawing characters for a fancier display on terminal
