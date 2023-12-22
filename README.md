@@ -46,7 +46,7 @@ Let's suppose you have a shiny new PrettyTable:
 
 ```python
 from prettytable import PrettyTable
-x = PrettyTable()
+table = PrettyTable()
 ```
 
 and you want to put some data into it. You have a few options.
@@ -58,14 +58,14 @@ the `field_names` attribute, and then add the rows one at a time using the `add_
 method:
 
 ```python
-x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-x.add_row(["Adelaide", 1295, 1158259, 600.5])
-x.add_row(["Brisbane", 5905, 1857594, 1146.4])
-x.add_row(["Darwin", 112, 120900, 1714.7])
-x.add_row(["Hobart", 1357, 205556, 619.5])
-x.add_row(["Sydney", 2058, 4336374, 1214.8])
-x.add_row(["Melbourne", 1566, 3806092, 646.9])
-x.add_row(["Perth", 5386, 1554769, 869.4])
+table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+table.add_row(["Adelaide", 1295, 1158259, 600.5])
+table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+table.add_row(["Darwin", 112, 120900, 1714.7])
+table.add_row(["Hobart", 1357, 205556, 619.5])
+table.add_row(["Sydney", 2058, 4336374, 1214.8])
+table.add_row(["Melbourne", 1566, 3806092, 646.9])
+table.add_row(["Perth", 5386, 1554769, 869.4])
 ```
 
 #### All rows at once
@@ -73,8 +73,8 @@ x.add_row(["Perth", 5386, 1554769, 869.4])
 When you have a list of rows, you can add them in one go with `add_rows`:
 
 ```python
-x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-x.add_rows(
+table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+table.add_rows(
     [
         ["Adelaide", 1295, 1158259, 600.5],
         ["Brisbane", 5905, 1857594, 1146.4],
@@ -94,12 +94,12 @@ method, which takes two arguments - a string which is the name for the field the
 you are adding corresponds to, and a list or tuple which contains the column data:
 
 ```python
-x.add_column("City name",
+table.add_column("City name",
 ["Adelaide","Brisbane","Darwin","Hobart","Sydney","Melbourne","Perth"])
-x.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
-x.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092,
+table.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
+table.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092,
 1554769])
-x.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9,
+table.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9,
 869.4])
 ```
 
@@ -177,30 +177,30 @@ You can print tables like this to `stdout` or get string representations of them
 To print a table in ASCII form, you can just do this:
 
 ```python
-print(x)
+print(table)
 ```
 
-The old `x.printt()` method from versions 0.5 and earlier has been removed.
+The old `table.printt()` method from versions 0.5 and earlier has been removed.
 
 To pass options changing the look of the table, use the `get_string()` method documented
 below:
 
 ```python
-print(x.get_string())
+print(table.get_string())
 ```
 
 #### Stringing
 
 If you don't want to actually print your table in ASCII form but just get a string
-containing what _would_ be printed if you use `print(x)`, you can use the `get_string`
-method:
+containing what _would_ be printed if you use `print(table)`, you can use the
+`get_string` method:
 
 ```python
-mystring = x.get_string()
+mystring = table.get_string()
 ```
 
 This string is guaranteed to look exactly the same as what would be printed by doing
-`print(x)`. You can now do all the usual things you can do with a string, like write
+`print(table)`. You can now do all the usual things you can do with a string, like write
 your table to a file or insert it into a GUI.
 
 The table can be displayed in several different formats using `get_formatted_string` by
@@ -211,18 +211,18 @@ This provides a way to let a user choose the output formatting.
 ```python
 def my_cli_function(table_format: str = 'text'):
   ...
-  print(x.get_formatted_string(table_format))
+  print(table.get_formatted_string(table_format))
 ```
 
 #### Controlling which data gets displayed
 
-If you like, you can restrict the output of `print(x)` or `x.get_string` to only the
-fields or rows you like.
+If you like, you can restrict the output of `print(table)` or `table.get_string` to only
+the fields or rows you like.
 
 The `fields` argument to these methods takes a list of field names to be printed:
 
 ```python
-print(x.get_string(fields=["City name", "Population"]))
+print(table.get_string(fields=["City name", "Population"]))
 ```
 
 gives:
@@ -247,7 +247,7 @@ respectively. Note that the indexing works like Python list slicing - to print t
 is row 1) and set `end` to 4 (the index of the 4th row, plus 1):
 
 ```python
-print(x.get_string(start=1, end=4))
+print(table.get_string(start=1, end=4))
 ```
 
 prints:
@@ -273,8 +273,8 @@ character string to the `align` attribute. The allowed strings are `"l"`, `"r"` 
 `"c"` for left, right and centre alignment, respectively:
 
 ```python
-x.align = "r"
-print(x)
+table.align = "r"
+print(table)
 ```
 
 gives:
@@ -299,11 +299,11 @@ You can also change the alignment of individual columns based on the correspondi
 name by treating the `align` attribute as if it were a dictionary.
 
 ```python
-x.align["City name"] = "l"
-x.align["Area"] = "c"
-x.align["Population"] = "r"
-x.align["Annual Rainfall"] = "c"
-print(x)
+table.align["City name"] = "l"
+table.align["Area"] = "c"
+table.align["Population"] = "r"
+table.align["Annual Rainfall"] = "c"
+print(table)
 ```
 
 gives:
@@ -332,7 +332,7 @@ For example, to print the example table we built earlier of Australian capital c
 data, so that the most populated city comes last, we can do this:
 
 ```python
-print(x.get_string(sortby="Population"))
+print(table.get_string(sortby="Population"))
 ```
 
 to get:
@@ -358,18 +358,18 @@ If you _always_ want your tables to be sorted in a certain way, you can make the
 long-term like this:
 
 ```python
-x.sortby = "Population"
-print(x)
-print(x)
-print(x)
+table.sortby = "Population"
+print(table)
+print(table)
+print(table)
 ```
 
 All three tables printed by this code will be sorted by population (you could do
-`x.reversesort = True` as well, if you wanted). The behaviour will persist until you
+`table.reversesort = True` as well, if you wanted). The behaviour will persist until you
 turn it off:
 
 ```python
-x.sortby = None
+table.sortby = None
 ```
 
 If you want to specify a custom sorting function, you can use the `sort_key` keyword
@@ -388,15 +388,15 @@ will add a dividing line into the table under the row who has this field set. So
 set up a table like this:
 
 ```python
-x = PrettyTable()
-x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-x.add_row(["Adelaide", 1295, 1158259, 600.5])
-x.add_row(["Brisbane", 5905, 1857594, 1146.4])
-x.add_row(["Darwin", 112, 120900, 1714.7])
-x.add_row(["Hobart", 1357, 205556, 619.5], divider=True)
-x.add_row(["Melbourne", 1566, 3806092, 646.9])
-x.add_row(["Perth", 5386, 1554769, 869.4])
-x.add_row(["Sydney", 2058, 4336374, 1214.8])
+table = PrettyTable()
+table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+table.add_row(["Adelaide", 1295, 1158259, 600.5])
+table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+table.add_row(["Darwin", 112, 120900, 1714.7])
+table.add_row(["Hobart", 1357, 205556, 619.5], divider=True)
+table.add_row(["Melbourne", 1566, 3806092, 646.9])
+table.add_row(["Perth", 5386, 1554769, 869.4])
+table.add_row(["Sydney", 2058, 4336374, 1214.8])
 ```
 
 to get a table like this:
@@ -429,21 +429,21 @@ slightly harder (see later).
 #### Setting a table style
 
 You can set the style for your table using the `set_style` method before any calls to
-`print` or `get_string`. Here's how to print a table in a format which works nicely with
-Microsoft Word's "Convert to table" feature:
+`print` or `get_string`. Here's how to print a table in Markdown format:
 
 ```python
-from prettytable import MSWORD_FRIENDLY
-x.set_style(MSWORD_FRIENDLY)
-print(x)
+from prettytable import MARKDOWN
+table.set_style(MARKDOWN)
+print(table)
 ```
 
-In addition to `MSWORD_FRIENDLY` you can use these in-built styles for your tables:
+In addition to `MARKDOWN` you can use these in-built styles:
 
 - `DEFAULT` - The default look, used to undo any style changes you may have made
 - `PLAIN_COLUMNS` - A borderless style that works well with command line programs for
   columnar data
-- `MARKDOWN` - A style that follows Markdown syntax
+- `MSWORD_FRIENDLY` - A format which works nicely with Microsoft Word's "Convert to
+  table" feature
 - `ORGMODE` - A table style that fits [Org mode](https://orgmode.org/) syntax
 - `SINGLE_BORDER` and `DOUBLE_BORDER` - Styles that use continuous single/double border
   lines with Box drawing characters for a fancier display on terminal
@@ -501,17 +501,17 @@ option for the long term just by changing the appropriate attributes. If you nev
 your tables to have borders you can do this:
 
 ```python
-x.border = False
-print(x)
-print(x)
-print(x)
+table.border = False
+print(table)
+print(table)
+print(table)
 ```
 
 Neither of the 3 tables printed by this will have borders, even if you do things like
 add extra rows in between them. The lack of borders will last until you do:
 
 ```python
-x.border = True
+table.border = True
 ```
 
 to turn them on again. This sort of long-term setting is exactly how `set_style` works.
@@ -522,12 +522,12 @@ table, you can specify them using keyword arguments to the constructor. For exam
 following two code blocks are equivalent:
 
 ```python
-x = PrettyTable()
-x.border = False
-x.header = False
-x.padding_width = 5
+table = PrettyTable()
+table.border = False
+table.header = False
+table.padding_width = 5
 
-x = PrettyTable(border=False, header=False, padding_width=5)
+table = PrettyTable(border=False, header=False, padding_width=5)
 ```
 
 #### Changing style options just once
@@ -538,9 +538,9 @@ those methods keyword arguments. To print two "normal" tables with one borderles
 between them, you could do this:
 
 ```python
-print(x)
-print(x.get_string(border=False))
-print(x)
+print(table)
+print(table.get_string(border=False))
+print(table)
 ```
 
 ### Changing the appearance of your table - with _colors_!
@@ -561,9 +561,9 @@ property. You can now specify a custom _theme_ that will format your table with 
 ```python
 from prettytable.colortable import ColorTable, Themes
 
-x = ColorTable(theme=Themes.OCEAN)
+table = ColorTable(theme=Themes.OCEAN)
 
-print(x)
+print(table)
 ```
 
 #### Creating a custom theme
@@ -635,7 +635,7 @@ to `get_html_string` method. Note that if you _always_ want to print formatted H
 can do:
 
 ```python
-x.format = True
+table.format = True
 ```
 
 and the setting will persist until you turn it off.
@@ -652,7 +652,7 @@ attributes like `id` and `class` that can be used for linking to your tables or
 customising their appearance using CSS. For example:
 
 ```python
-print(x.get_html_string(attributes={"id":"my_table", "class":"red_table"}))
+print(table.get_html_string(attributes={"id":"my_table", "class":"red_table"}))
 ```
 
 will print:
