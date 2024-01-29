@@ -35,7 +35,9 @@ dependencies = [
 ]
 [project.optional-dependencies]
 tests = [
-  "pytest",
+  # Temporarily pin pytest due to
+  # https://github.com/TvoroG/pytest-lazy-fixture/issues/65
+  "pytest<8",
   "pytest-cov",
   "pytest-lazy-fixture",
 ]
