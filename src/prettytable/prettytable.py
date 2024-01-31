@@ -36,7 +36,6 @@ from __future__ import annotations
 import io
 import math
 import re
-from html import escape
 from html.parser import HTMLParser
 from typing import Any
 
@@ -2147,6 +2146,8 @@ class PrettyTable:
         return string
 
     def _get_simple_html_string(self, options):
+        from html import escape
+
         lines = []
         if options["xhtml"]:
             linebreak = "<br/>"
@@ -2199,6 +2200,8 @@ class PrettyTable:
         return "\n".join(lines)
 
     def _get_formatted_html_string(self, options):
+        from html import escape
+
         lines = []
         lpad, rpad = self._get_padding_widths(options)
         if options["xhtml"]:
