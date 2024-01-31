@@ -37,7 +37,6 @@ import copy
 import csv
 import io
 import math
-import random
 import re
 import textwrap
 from html import escape
@@ -1378,6 +1377,8 @@ class PrettyTable:
 
     def _set_random_style(self):
         # Just for fun!
+        import random
+
         self.header = random.choice((True, False))
         self.border = random.choice((True, False))
         self._hrules = random.choice((ALL, FRAME, HEADER, NONE))
