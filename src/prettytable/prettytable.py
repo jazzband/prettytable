@@ -36,7 +36,6 @@ from __future__ import annotations
 import io
 import math
 import re
-import textwrap
 from html import escape
 from html.parser import HTMLParser
 from typing import Any
@@ -1946,6 +1945,8 @@ class PrettyTable:
         return "".join(bits)
 
     def _stringify_row(self, row, options, hrule):
+        import textwrap
+
         for index, field, value, width in zip(
             range(0, len(row)), self._field_names, row, self._widths
         ):
