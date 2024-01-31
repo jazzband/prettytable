@@ -40,8 +40,6 @@ from html import escape
 from html.parser import HTMLParser
 from typing import Any
 
-import wcwidth  # type: ignore
-
 # hrule styles
 FRAME = 0
 ALL = 1
@@ -2419,6 +2417,8 @@ class PrettyTable:
 
 
 def _str_block_width(val):
+    import wcwidth  # type: ignore
+
     return wcwidth.wcswidth(_re.sub("", val))
 
 
