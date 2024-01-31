@@ -33,7 +33,6 @@
 
 from __future__ import annotations
 
-import copy
 import io
 import math
 import re
@@ -1520,6 +1519,8 @@ class PrettyTable:
     ##############################
 
     def copy(self):
+        import copy
+
         return copy.deepcopy(self)
 
     def get_formatted_string(self, out_format: str = "text", **kwargs) -> str:
@@ -1653,6 +1654,7 @@ class PrettyTable:
         Arguments:
 
         options - dictionary of option settings."""
+        import copy
 
         if options["oldsortslice"]:
             rows = copy.deepcopy(self._rows[options["start"] : options["end"]])
@@ -1681,6 +1683,7 @@ class PrettyTable:
         Arguments:
 
         options - dictionary of option settings."""
+        import copy
 
         if options["oldsortslice"]:
             dividers = copy.deepcopy(self._dividers[options["start"] : options["end"]])
