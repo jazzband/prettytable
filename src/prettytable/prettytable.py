@@ -36,7 +36,6 @@ from __future__ import annotations
 import copy
 import csv
 import io
-import json
 import math
 import random
 import re
@@ -2082,6 +2081,7 @@ class PrettyTable:
         a PrettyTable formatting option (skip the header row) and indent as a
         json.dumps keyword argument.
         """
+        import json
 
         options = self._get_options(kwargs)
         json_options: Any = dict(indent=4, separators=(",", ": "), sort_keys=True)
@@ -2465,6 +2465,8 @@ def from_db_cursor(cursor, **kwargs):
 
 
 def from_json(json_string, **kwargs):
+    import json
+
     table = PrettyTable(**kwargs)
     objects = json.loads(json_string)
     table.field_names = objects[0]
