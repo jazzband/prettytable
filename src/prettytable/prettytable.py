@@ -34,7 +34,6 @@
 from __future__ import annotations
 
 import copy
-import csv
 import io
 import math
 import re
@@ -2055,6 +2054,7 @@ class PrettyTable:
         header as a PrettyTable formatting option (skip the header row) and
         delimiter as a csv.writer keyword argument.
         """
+        import csv
 
         options = self._get_options(kwargs)
         csv_options = {
@@ -2424,6 +2424,8 @@ def _str_block_width(val):
 
 
 def from_csv(fp, field_names: Any | None = None, **kwargs):
+    import csv
+
     fmtparams = {}
     for param in [
         "delimiter",
