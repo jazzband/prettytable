@@ -34,7 +34,6 @@
 from __future__ import annotations
 
 import io
-import math
 import re
 from html.parser import HTMLParser
 from typing import Any
@@ -1595,7 +1594,7 @@ class PrettyTable:
             if table_width > self._max_table_width:
                 # Shrink widths in proportion
                 scale = 1.0 * self._max_table_width / table_width
-                widths = [int(math.floor(w * scale)) for w in widths]
+                widths = [int(w * scale) for w in widths]
                 self._widths = widths
 
         # Are we under min_table_width or title width?
@@ -1627,7 +1626,7 @@ class PrettyTable:
             if content_width < min_width:
                 # Grow widths in proportion
                 scale = 1.0 * min_width / content_width
-                widths = [int(math.floor(w * scale)) for w in widths]
+                widths = [int(w * scale) for w in widths]
                 if sum(widths) < min_width:
                     widths[-1] += min_width - sum(widths)
                 self._widths = widths
