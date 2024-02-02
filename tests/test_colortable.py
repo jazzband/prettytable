@@ -9,30 +9,30 @@ from prettytable.colortable import RESET_CODE, ColorTable, Theme
 @pytest.fixture
 def row_prettytable() -> PrettyTable:
     # Row by row...
-    row = PrettyTable()
-    row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-    row.add_row(["Adelaide", 1295, 1158259, 600.5])
-    row.add_row(["Brisbane", 5905, 1857594, 1146.4])
-    row.add_row(["Darwin", 112, 120900, 1714.7])
-    row.add_row(["Hobart", 1357, 205556, 619.5])
-    row.add_row(["Sydney", 2058, 4336374, 1214.8])
-    row.add_row(["Melbourne", 1566, 3806092, 646.9])
-    row.add_row(["Perth", 5386, 1554769, 869.4])
-    return row
+    table = PrettyTable()
+    table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    table.add_row(["Adelaide", 1295, 1158259, 600.5])
+    table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    table.add_row(["Darwin", 112, 120900, 1714.7])
+    table.add_row(["Hobart", 1357, 205556, 619.5])
+    table.add_row(["Sydney", 2058, 4336374, 1214.8])
+    table.add_row(["Melbourne", 1566, 3806092, 646.9])
+    table.add_row(["Perth", 5386, 1554769, 869.4])
+    return table
 
 
 @pytest.fixture
 def row_colortable():
-    row = ColorTable()
-    row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-    row.add_row(["Adelaide", 1295, 1158259, 600.5])
-    row.add_row(["Brisbane", 5905, 1857594, 1146.4])
-    row.add_row(["Darwin", 112, 120900, 1714.7])
-    row.add_row(["Hobart", 1357, 205556, 619.5])
-    row.add_row(["Sydney", 2058, 4336374, 1214.8])
-    row.add_row(["Melbourne", 1566, 3806092, 646.9])
-    row.add_row(["Perth", 5386, 1554769, 869.4])
-    return row
+    table = ColorTable()
+    table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    table.add_row(["Adelaide", 1295, 1158259, 600.5])
+    table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    table.add_row(["Darwin", 112, 120900, 1714.7])
+    table.add_row(["Hobart", 1357, 205556, 619.5])
+    table.add_row(["Sydney", 2058, 4336374, 1214.8])
+    table.add_row(["Melbourne", 1566, 3806092, 646.9])
+    table.add_row(["Perth", 5386, 1554769, 869.4])
+    return table
 
 
 @pytest.fixture
