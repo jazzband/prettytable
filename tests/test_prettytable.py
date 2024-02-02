@@ -32,7 +32,7 @@ from prettytable import (
 )
 
 
-def helper_table(rows: int = 3):
+def helper_table(rows: int = 3) -> PrettyTable:
     t = PrettyTable(["Field 1", "Field 2", "Field 3"])
     v = 1
     for row in range(rows):
@@ -43,7 +43,7 @@ def helper_table(rows: int = 3):
 
 
 @pytest.fixture
-def row_prettytable():
+def row_prettytable() -> PrettyTable:
     # Row by row...
     row = PrettyTable()
     row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
@@ -58,7 +58,7 @@ def row_prettytable():
 
 
 @pytest.fixture
-def col_prettytable():
+def col_prettytable() -> PrettyTable:
     # Column by column...
     col = PrettyTable()
     col.add_column(
@@ -76,7 +76,7 @@ def col_prettytable():
 
 
 @pytest.fixture
-def mix_prettytable():
+def mix_prettytable() -> PrettyTable:
     # A mix of both!
     mix = PrettyTable()
     mix.field_names = ["City name", "Area"]
@@ -291,7 +291,7 @@ class TestDeleteColumn:
 
 
 @pytest.fixture(scope="function")
-def field_name_less_table():
+def field_name_less_table() -> PrettyTable:
     x = PrettyTable()
     x.add_row(["Adelaide", 1295, 1158259, 600.5])
     x.add_row(["Brisbane", 5905, 1857594, 1146.4])
@@ -335,7 +335,7 @@ class TestFieldNameLessTable:
 
 
 @pytest.fixture(scope="function")
-def aligned_before_table():
+def aligned_before_table() -> PrettyTable:
     x = PrettyTable()
     x.align = "r"
     x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
@@ -350,7 +350,7 @@ def aligned_before_table():
 
 
 @pytest.fixture(scope="function")
-def aligned_after_table():
+def aligned_after_table() -> PrettyTable:
     x = PrettyTable()
     x.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
     x.add_row(["Adelaide", 1295, 1158259, 600.5])
@@ -390,7 +390,7 @@ class TestAlignment:
 
 
 @pytest.fixture(scope="function")
-def city_data_prettytable():
+def city_data_prettytable() -> PrettyTable:
     """Just build the Australian capital city data example table."""
     pt = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
     pt.add_row(["Adelaide", 1295, 1158259, 600.5])
@@ -404,7 +404,7 @@ def city_data_prettytable():
 
 
 @pytest.fixture(scope="function")
-def city_data_from_csv():
+def city_data_from_csv() -> PrettyTable:
     csv_string = """City name, Area, Population, Annual Rainfall
     Sydney, 2058, 4336374, 1214.8
     Melbourne, 1566, 3806092, 646.9
@@ -803,7 +803,7 @@ class TestSorting:
 
 
 @pytest.fixture(scope="function")
-def float_pt():
+def float_pt() -> PrettyTable:
     pt = PrettyTable(["Constant", "Value"])
     pt.add_row(["Pi", pi])
     pt.add_row(["e", e])
@@ -1601,7 +1601,7 @@ class TestHtmlConstructor:
 
 
 @pytest.fixture
-def japanese_pretty_table():
+def japanese_pretty_table() -> PrettyTable:
     pt = PrettyTable(["Kanji", "Hiragana", "English"])
     pt.add_row(["神戸", "こうべ", "Kobe"])
     pt.add_row(["京都", "きょうと", "Kyoto"])
@@ -1615,7 +1615,7 @@ def japanese_pretty_table():
 
 
 @pytest.fixture
-def emoji_pretty_table():
+def emoji_pretty_table() -> PrettyTable:
     thunder1 = [
         '\033[38;5;226m _`/""\033[38;5;250m.-.    \033[0m',
         "\033[38;5;226m  ,\\_\033[38;5;250m(   ).  \033[0m",
@@ -1795,7 +1795,7 @@ def test_autoindex() -> None:
 
 
 @pytest.fixture(scope="function")
-def unpadded_pt():
+def unpadded_pt() -> PrettyTable:
     pt = PrettyTable(header=False, padding_width=0)
     pt.add_row("abc")
     pt.add_row("def")

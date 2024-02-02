@@ -7,7 +7,7 @@ from prettytable.colortable import RESET_CODE, ColorTable, Theme
 
 
 @pytest.fixture
-def row_prettytable():
+def row_prettytable() -> PrettyTable:
     # Row by row...
     row = PrettyTable()
     row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
@@ -36,7 +36,7 @@ def row_colortable():
 
 
 @pytest.fixture
-def color_theme():
+def color_theme() -> Theme:
     return Theme(
         default_color="31",
         vertical_color="32",
@@ -46,7 +46,9 @@ def color_theme():
 
 
 class TestColorTable:
-    def test_themeless(self, row_prettytable, row_colortable) -> None:
+    def test_themeless(
+        self, row_prettytable: PrettyTable, row_colortable: ColorTable
+    ) -> None:
         # Not worth the logic customizing the reset code
         # For now we'll just get rid of it
         assert (
@@ -54,7 +56,7 @@ class TestColorTable:
             == row_prettytable.get_string()
         )
 
-    def test_theme_setter(self, color_theme) -> None:
+    def test_theme_setter(self, color_theme: Theme) -> None:
         table1 = ColorTable(theme=color_theme)
 
         table2 = ColorTable()
