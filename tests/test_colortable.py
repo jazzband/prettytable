@@ -46,7 +46,7 @@ def color_theme():
 
 
 class TestColorTable:
-    def test_themeless(self, row_prettytable, row_colortable):
+    def test_themeless(self, row_prettytable, row_colortable) -> None:
         # Not worth the logic customizing the reset code
         # For now we'll just get rid of it
         assert (
@@ -54,7 +54,7 @@ class TestColorTable:
             == row_prettytable.get_string()
         )
 
-    def test_theme_setter(self, color_theme):
+    def test_theme_setter(self, color_theme) -> None:
         table1 = ColorTable(theme=color_theme)
 
         table2 = ColorTable()
@@ -73,22 +73,22 @@ class TestColorTable:
 
 
 class TestFormatCode:
-    def test_basic(self):
+    def test_basic(self) -> None:
         assert Theme.format_code("31") == "\x1b[31m"
 
-    def test_prefix(self):
+    def test_prefix(self) -> None:
         assert Theme.format_code("\x1b[35m") == "\x1b[35m"
 
-    def test_escapes(self):
+    def test_escapes(self) -> None:
         assert Theme.format_code("\033[41m") == "\x1b[41m"
         assert Theme.format_code("\u001b[41m") == "\x1b[41m"
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         assert Theme.format_code("") == ""
 
-    def test_stripped(self):
+    def test_stripped(self) -> None:
         assert Theme.format_code("\t\t     \t") == ""
 
-    def test_multiple(self):
+    def test_multiple(self) -> None:
         assert Theme.format_code("30;42") == "\x1b[30;42m"
         assert Theme.format_code("\x1b[30;42m") == "\x1b[30;42m"

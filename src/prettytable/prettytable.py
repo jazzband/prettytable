@@ -326,10 +326,10 @@ class PrettyTable:
             raise IndexError(msg)
         return new
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.get_string()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.get_string()
 
     def _repr_html_(self):
@@ -352,7 +352,7 @@ class PrettyTable:
     # Secondly, in the _get_options method, where keyword arguments are mixed with
     # persistent settings
 
-    def _validate_option(self, option, val):
+    def _validate_option(self, option, val) -> None:
         if option == "field_names":
             self._validate_field_names(val)
         elif option == "none_format":
@@ -582,7 +582,7 @@ class PrettyTable:
         return self._xhtml
 
     @xhtml.setter
-    def xhtml(self, val):
+    def xhtml(self, val) -> None:
         self._validate_option("xhtml", val)
         self._xhtml = val
 
@@ -612,7 +612,7 @@ class PrettyTable:
         return self._field_names
 
     @field_names.setter
-    def field_names(self, val):
+    def field_names(self, val) -> None:
         val = [str(x) for x in val]
         self._validate_option("field_names", val)
         old_names = None
@@ -648,7 +648,7 @@ class PrettyTable:
         return self._align
 
     @align.setter
-    def align(self, val):
+    def align(self, val) -> None:
         if val is None or (isinstance(val, dict) and len(val) == 0):
             if not self._field_names:
                 self._align = {BASE_ALIGN_VALUE: "c"}
@@ -672,7 +672,7 @@ class PrettyTable:
         return self._valign
 
     @valign.setter
-    def valign(self, val):
+    def valign(self, val) -> None:
         if not self._field_names:
             self._valign = {}
         elif val is None or (isinstance(val, dict) and len(val) == 0):
@@ -692,7 +692,7 @@ class PrettyTable:
         return self._max_width
 
     @max_width.setter
-    def max_width(self, val):
+    def max_width(self, val) -> None:
         if val is None or (isinstance(val, dict) and len(val) == 0):
             self._max_width = {}
         else:
@@ -709,7 +709,7 @@ class PrettyTable:
         return self._min_width
 
     @min_width.setter
-    def min_width(self, val):
+    def min_width(self, val) -> None:
         if val is None or (isinstance(val, dict) and len(val) == 0):
             self._min_width = {}
         else:
@@ -722,7 +722,7 @@ class PrettyTable:
         return self._min_table_width
 
     @min_table_width.setter
-    def min_table_width(self, val):
+    def min_table_width(self, val) -> None:
         self._validate_option("min_table_width", val)
         self._min_table_width = val
 
@@ -731,7 +731,7 @@ class PrettyTable:
         return self._max_table_width
 
     @max_table_width.setter
-    def max_table_width(self, val):
+    def max_table_width(self, val) -> None:
         self._validate_option("max_table_width", val)
         self._max_table_width = val
 
@@ -741,7 +741,7 @@ class PrettyTable:
         return self._fields
 
     @fields.setter
-    def fields(self, val):
+    def fields(self, val) -> None:
         self._validate_option("fields", val)
         self._fields = val
 
@@ -755,7 +755,7 @@ class PrettyTable:
         return self._title
 
     @title.setter
-    def title(self, val):
+    def title(self, val) -> None:
         self._title = str(val)
 
     @property
@@ -768,7 +768,7 @@ class PrettyTable:
         return self._start
 
     @start.setter
-    def start(self, val):
+    def start(self, val) -> None:
         self._validate_option("start", val)
         self._start = val
 
@@ -782,7 +782,7 @@ class PrettyTable:
         return self._end
 
     @end.setter
-    def end(self, val):
+    def end(self, val) -> None:
         self._validate_option("end", val)
         self._end = val
 
@@ -796,7 +796,7 @@ class PrettyTable:
         return self._sortby
 
     @sortby.setter
-    def sortby(self, val):
+    def sortby(self, val) -> None:
         self._validate_option("sortby", val)
         self._sortby = val
 
@@ -811,7 +811,7 @@ class PrettyTable:
         return self._reversesort
 
     @reversesort.setter
-    def reversesort(self, val):
+    def reversesort(self, val) -> None:
         self._validate_option("reversesort", val)
         self._reversesort = val
 
@@ -826,7 +826,7 @@ class PrettyTable:
         return self._sort_key
 
     @sort_key.setter
-    def sort_key(self, val):
+    def sort_key(self, val) -> None:
         self._validate_option("sort_key", val)
         self._sort_key = val
 
@@ -840,7 +840,7 @@ class PrettyTable:
         return self._header
 
     @header.setter
-    def header(self, val):
+    def header(self, val) -> None:
         self._validate_option("header", val)
         self._header = val
 
@@ -855,7 +855,7 @@ class PrettyTable:
         return self._header_style
 
     @header_style.setter
-    def header_style(self, val):
+    def header_style(self, val) -> None:
         self._validate_header_style(val)
         self._header_style = val
 
@@ -869,7 +869,7 @@ class PrettyTable:
         return self._border
 
     @border.setter
-    def border(self, val):
+    def border(self, val) -> None:
         self._validate_option("border", val)
         self._border = val
 
@@ -884,7 +884,7 @@ class PrettyTable:
         return self._preserve_internal_border
 
     @preserve_internal_border.setter
-    def preserve_internal_border(self, val):
+    def preserve_internal_border(self, val) -> None:
         self._validate_option("preserve_internal_border", val)
         self._preserve_internal_border = val
 
@@ -898,7 +898,7 @@ class PrettyTable:
         return self._hrules
 
     @hrules.setter
-    def hrules(self, val):
+    def hrules(self, val) -> None:
         self._validate_option("hrules", val)
         self._hrules = val
 
@@ -912,7 +912,7 @@ class PrettyTable:
         return self._vrules
 
     @vrules.setter
-    def vrules(self, val):
+    def vrules(self, val) -> None:
         self._validate_option("vrules", val)
         self._vrules = val
 
@@ -925,7 +925,7 @@ class PrettyTable:
         return self._int_format
 
     @int_format.setter
-    def int_format(self, val):
+    def int_format(self, val) -> None:
         if val is None or (isinstance(val, dict) and len(val) == 0):
             self._int_format = {}
         else:
@@ -942,7 +942,7 @@ class PrettyTable:
         return self._float_format
 
     @float_format.setter
-    def float_format(self, val):
+    def float_format(self, val) -> None:
         if val is None or (isinstance(val, dict) and len(val) == 0):
             self._float_format = {}
         else:
@@ -984,7 +984,7 @@ class PrettyTable:
         return self._padding_width
 
     @padding_width.setter
-    def padding_width(self, val):
+    def padding_width(self, val) -> None:
         self._validate_option("padding_width", val)
         self._padding_width = val
 
@@ -998,7 +998,7 @@ class PrettyTable:
         return self._left_padding_width
 
     @left_padding_width.setter
-    def left_padding_width(self, val):
+    def left_padding_width(self, val) -> None:
         self._validate_option("left_padding_width", val)
         self._left_padding_width = val
 
@@ -1012,7 +1012,7 @@ class PrettyTable:
         return self._right_padding_width
 
     @right_padding_width.setter
-    def right_padding_width(self, val):
+    def right_padding_width(self, val) -> None:
         self._validate_option("right_padding_width", val)
         self._right_padding_width = val
 
@@ -1026,7 +1026,7 @@ class PrettyTable:
         return self._vertical_char
 
     @vertical_char.setter
-    def vertical_char(self, val):
+    def vertical_char(self, val) -> None:
         val = str(val)
         self._validate_option("vertical_char", val)
         self._vertical_char = val
@@ -1041,7 +1041,7 @@ class PrettyTable:
         return self._horizontal_char
 
     @horizontal_char.setter
-    def horizontal_char(self, val):
+    def horizontal_char(self, val) -> None:
         val = str(val)
         self._validate_option("horizontal_char", val)
         self._horizontal_char = val
@@ -1056,7 +1056,7 @@ class PrettyTable:
         return self._bottom_left_junction_char or self.junction_char
 
     @horizontal_align_char.setter
-    def horizontal_align_char(self, val):
+    def horizontal_align_char(self, val) -> None:
         val = str(val)
         self._validate_option("horizontal_align_char", val)
         self._horizontal_align_char = val
@@ -1071,7 +1071,7 @@ class PrettyTable:
         return self._junction_char
 
     @junction_char.setter
-    def junction_char(self, val):
+    def junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("junction_char", val)
         self._junction_char = val
@@ -1086,7 +1086,7 @@ class PrettyTable:
         return self._top_junction_char or self.junction_char
 
     @top_junction_char.setter
-    def top_junction_char(self, val):
+    def top_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("top_junction_char", val)
         self._top_junction_char = val
@@ -1102,7 +1102,7 @@ class PrettyTable:
         return self._bottom_junction_char or self.junction_char
 
     @bottom_junction_char.setter
-    def bottom_junction_char(self, val):
+    def bottom_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("bottom_junction_char", val)
         self._bottom_junction_char = val
@@ -1118,7 +1118,7 @@ class PrettyTable:
         return self._right_junction_char or self.junction_char
 
     @right_junction_char.setter
-    def right_junction_char(self, val):
+    def right_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("right_junction_char", val)
         self._right_junction_char = val
@@ -1133,7 +1133,7 @@ class PrettyTable:
         return self._left_junction_char or self.junction_char
 
     @left_junction_char.setter
-    def left_junction_char(self, val):
+    def left_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("left_junction_char", val)
         self._left_junction_char = val
@@ -1150,7 +1150,7 @@ class PrettyTable:
         return self._top_right_junction_char or self.junction_char
 
     @top_right_junction_char.setter
-    def top_right_junction_char(self, val):
+    def top_right_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("top_right_junction_char", val)
         self._top_right_junction_char = val
@@ -1167,7 +1167,7 @@ class PrettyTable:
         return self._top_left_junction_char or self.junction_char
 
     @top_left_junction_char.setter
-    def top_left_junction_char(self, val):
+    def top_left_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("top_left_junction_char", val)
         self._top_left_junction_char = val
@@ -1184,7 +1184,7 @@ class PrettyTable:
         return self._bottom_right_junction_char or self.junction_char
 
     @bottom_right_junction_char.setter
-    def bottom_right_junction_char(self, val):
+    def bottom_right_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("bottom_right_junction_char", val)
         self._bottom_right_junction_char = val
@@ -1201,7 +1201,7 @@ class PrettyTable:
         return self._bottom_left_junction_char or self.junction_char
 
     @bottom_left_junction_char.setter
-    def bottom_left_junction_char(self, val):
+    def bottom_left_junction_char(self, val) -> None:
         val = str(val)
         self._validate_option("bottom_left_junction_char", val)
         self._bottom_left_junction_char = val
@@ -1216,7 +1216,7 @@ class PrettyTable:
         return self._format
 
     @format.setter
-    def format(self, val):
+    def format(self, val) -> None:
         self._validate_option("format", val)
         self._format = val
 
@@ -1231,7 +1231,7 @@ class PrettyTable:
         return self._print_empty
 
     @print_empty.setter
-    def print_empty(self, val):
+    def print_empty(self, val) -> None:
         self._validate_option("print_empty", val)
         self._print_empty = val
 
@@ -1246,7 +1246,7 @@ class PrettyTable:
         return self._attributes
 
     @attributes.setter
-    def attributes(self, val):
+    def attributes(self, val) -> None:
         self._validate_option("attributes", val)
         self._attributes = val
 
@@ -1256,7 +1256,7 @@ class PrettyTable:
         return self._oldsortslice
 
     @oldsortslice.setter
-    def oldsortslice(self, val):
+    def oldsortslice(self, val) -> None:
         self._validate_option("oldsortslice", val)
         self._oldsortslice = val
 
@@ -1299,11 +1299,11 @@ class PrettyTable:
             msg = "Invalid pre-set style"
             raise ValueError(msg)
 
-    def _set_orgmode_style(self):
+    def _set_orgmode_style(self) -> None:
         self._set_default_style()
         self.orgmode = True
 
-    def _set_markdown_style(self):
+    def _set_markdown_style(self) -> None:
         self.header = True
         self.border = True
         self._hrules = None
@@ -1314,7 +1314,7 @@ class PrettyTable:
         self.junction_char = "|"
         self._horizontal_align_char = ":"
 
-    def _set_default_style(self):
+    def _set_default_style(self) -> None:
         self.header = True
         self.border = True
         self._hrules = FRAME
@@ -1335,7 +1335,7 @@ class PrettyTable:
         self._bottom_right_junction_char = None
         self._bottom_left_junction_char = None
 
-    def _set_msword_style(self):
+    def _set_msword_style(self) -> None:
         self.header = True
         self.border = True
         self._hrules = NONE
@@ -1344,14 +1344,14 @@ class PrettyTable:
         self.right_padding_width = 1
         self.vertical_char = "|"
 
-    def _set_columns_style(self):
+    def _set_columns_style(self) -> None:
         self.header = True
         self.border = False
         self.padding_width = 1
         self.left_padding_width = 0
         self.right_padding_width = 8
 
-    def _set_double_border_style(self):
+    def _set_double_border_style(self) -> None:
         self.horizontal_char = "═"
         self.vertical_char = "║"
         self.junction_char = "╬"
@@ -1364,7 +1364,7 @@ class PrettyTable:
         self.bottom_right_junction_char = "╝"
         self.bottom_left_junction_char = "╚"
 
-    def _set_single_border_style(self):
+    def _set_single_border_style(self) -> None:
         self.horizontal_char = "─"
         self.vertical_char = "│"
         self.junction_char = "┼"
@@ -1377,7 +1377,7 @@ class PrettyTable:
         self.bottom_right_junction_char = "┘"
         self.bottom_left_junction_char = "└"
 
-    def _set_random_style(self):
+    def _set_random_style(self) -> None:
         # Just for fun!
         self.header = random.choice((True, False))
         self.border = random.choice((True, False))
@@ -1404,7 +1404,7 @@ class PrettyTable:
         for row in rows:
             self.add_row(row)
 
-    def add_row(self, row, *, divider=False) -> None:
+    def add_row(self, row, *, divider: bool = False) -> None:
         """Add a row to the table
 
         Arguments:
@@ -1472,7 +1472,7 @@ class PrettyTable:
             )
             raise ValueError(msg)
 
-    def add_autoindex(self, fieldname: str = "Index"):
+    def add_autoindex(self, fieldname: str = "Index") -> None:
         """Add an auto-incrementing index column to the table.
         Arguments:
         fieldname - name of the field to contain the new column of data"""
@@ -1570,7 +1570,7 @@ class PrettyTable:
                 table_width += self._widths[index] + per_col_padding
         return table_width
 
-    def _compute_widths(self, rows, options):
+    def _compute_widths(self, rows, options) -> None:
         if options["header"]:
             widths = [_get_size(field)[0] for field in self._field_names]
         else:
@@ -1815,7 +1815,7 @@ class PrettyTable:
 
         return "\n".join(lines)
 
-    def _stringify_hrule(self, options, where=""):
+    def _stringify_hrule(self, options, where: str = ""):
         if not options["border"] and not options["preserve_internal_border"]:
             return ""
         lpad, rpad = self._get_padding_widths(options)

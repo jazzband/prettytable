@@ -65,7 +65,7 @@ class ColorTable(PrettyTable):
         return self._theme
 
     @theme.setter
-    def theme(self, value: Theme):
+    def theme(self, value: Theme) -> None:
         self._theme = value
         self.update_theme()
 
