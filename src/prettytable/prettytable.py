@@ -33,19 +33,10 @@
 
 from __future__ import annotations
 
-import copy
-import csv
 import io
-import json
-import math
-import random
 import re
-import textwrap
-from html import escape
 from html.parser import HTMLParser
 from typing import Any
-
-import wcwidth  # type: ignore
 
 # hrule styles
 FRAME = 0
@@ -1379,6 +1370,8 @@ class PrettyTable:
 
     def _set_random_style(self) -> None:
         # Just for fun!
+        import random
+
         self.header = random.choice((True, False))
         self.border = random.choice((True, False))
         self._hrules = random.choice((ALL, FRAME, HEADER, NONE))
@@ -1521,6 +1514,8 @@ class PrettyTable:
     ##############################
 
     def copy(self):
+        import copy
+
         return copy.deepcopy(self)
 
     def get_formatted_string(self, out_format: str = "text", **kwargs) -> str:
@@ -1599,7 +1594,7 @@ class PrettyTable:
             if table_width > self._max_table_width:
                 # Shrink widths in proportion
                 scale = 1.0 * self._max_table_width / table_width
-                widths = [int(math.floor(w * scale)) for w in widths]
+                widths = [int(w * scale) for w in widths]
                 self._widths = widths
 
         # Are we under min_table_width or title width?
@@ -1631,7 +1626,7 @@ class PrettyTable:
             if content_width < min_width:
                 # Grow widths in proportion
                 scale = 1.0 * min_width / content_width
-                widths = [int(math.floor(w * scale)) for w in widths]
+                widths = [int(w * scale) for w in widths]
                 if sum(widths) < min_width:
                     widths[-1] += min_width - sum(widths)
                 self._widths = widths
@@ -1654,6 +1649,7 @@ class PrettyTable:
         Arguments:
 
         options - dictionary of option settings."""
+        import copy
 
         if options["oldsortslice"]:
             rows = copy.deepcopy(self._rows[options["start"] : options["end"]])
@@ -1682,6 +1678,7 @@ class PrettyTable:
         Arguments:
 
         options - dictionary of option settings."""
+        import copy
 
         if options["oldsortslice"]:
             dividers = copy.deepcopy(self._dividers[options["start"] : options["end"]])
@@ -1944,6 +1941,8 @@ class PrettyTable:
         return "".join(bits)
 
     def _stringify_row(self, row, options, hrule):
+        import textwrap
+
         for index, field, value, width in zip(
             range(0, len(row)), self._field_names, row, self._widths
         ):
@@ -2055,6 +2054,7 @@ class PrettyTable:
         header as a PrettyTable formatting option (skip the header row) and
         delimiter as a csv.writer keyword argument.
         """
+        import csv
 
         options = self._get_options(kwargs)
         csv_options = {
@@ -2082,6 +2082,7 @@ class PrettyTable:
         a PrettyTable formatting option (skip the header row) and indent as a
         json.dumps keyword argument.
         """
+        import json
 
         options = self._get_options(kwargs)
         json_options: Any = dict(indent=4, separators=(",", ": "), sort_keys=True)
@@ -2144,6 +2145,8 @@ class PrettyTable:
         return string
 
     def _get_simple_html_string(self, options):
+        from html import escape
+
         lines = []
         if options["xhtml"]:
             linebreak = "<br/>"
@@ -2196,6 +2199,8 @@ class PrettyTable:
         return "\n".join(lines)
 
     def _get_formatted_html_string(self, options):
+        from html import escape
+
         lines = []
         lpad, rpad = self._get_padding_widths(options)
         if options["xhtml"]:
@@ -2414,6 +2419,8 @@ class PrettyTable:
 
 
 def _str_block_width(val):
+    import wcwidth  # type: ignore
+
     return wcwidth.wcswidth(_re.sub("", val))
 
 
@@ -2423,6 +2430,8 @@ def _str_block_width(val):
 
 
 def from_csv(fp, field_names: Any | None = None, **kwargs):
+    import csv
+
     fmtparams = {}
     for param in [
         "delimiter",
@@ -2465,6 +2474,8 @@ def from_db_cursor(cursor, **kwargs):
 
 
 def from_json(json_string, **kwargs):
+    import json
+
     table = PrettyTable(**kwargs)
     objects = json.loads(json_string)
     table.field_names = objects[0]

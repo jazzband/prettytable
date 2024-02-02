@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from .prettytable import (
     ALL,
     DEFAULT,
@@ -44,6 +46,12 @@ __all__ = [
     "from_json",
 ]
 
-import importlib.metadata
 
-__version__ = importlib.metadata.version(__name__)
+def __getattr__(name: str) -> Any:
+    if name == "__version__":
+        import importlib.metadata
+
+        return importlib.metadata.version(__name__)
+
+    msg = f"module '{__name__}' has no attribute '{name}'"
+    raise AttributeError(msg)

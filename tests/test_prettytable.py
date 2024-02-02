@@ -32,6 +32,13 @@ from prettytable import (
 )
 
 
+def test_version() -> None:
+    assert isinstance(prettytable.__version__, str)
+    assert prettytable.__version__[0].isdigit()
+    assert prettytable.__version__.count(".") >= 2
+    assert prettytable.__version__[-1].isdigit()
+
+
 def helper_table(rows: int = 3) -> PrettyTable:
     table = PrettyTable(["Field 1", "Field 2", "Field 3"])
     v = 1
@@ -103,7 +110,7 @@ class TestNoneOption:
     def test_none_char_invalid_option(self) -> None:
         with pytest.raises(TypeError) as exc:
             PrettyTable(["Field 1", "Field 2", "Field 3"], none_format=2)
-            assert "must be a string." in exc.value
+        assert "must be a string" in str(exc.value)
 
     def test_no_value_replace_none(self) -> None:
         table = PrettyTable(["Field 1", "Field 2", "Field 3"])
@@ -2132,6 +2139,16 @@ class TestPreservingInternalBorders:
 
 
 class TestGeneralOutput:
+    def test_copy(self) -> None:
+        # Arrange
+        t = helper_table()
+
+        # Act
+        t_copy = t.copy()
+
+        # Assert
+        assert t.get_string() == t_copy.get_string()
+
     def test_text(self) -> None:
         t = helper_table()
         assert t.get_formatted_string("text") == t.get_string()
