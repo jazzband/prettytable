@@ -32,6 +32,13 @@ from prettytable import (
 )
 
 
+def test_version() -> None:
+    assert isinstance(prettytable.__version__, str)
+    assert prettytable.__version__[0].isdigit()
+    assert prettytable.__version__.count(".") >= 2
+    assert prettytable.__version__[-1].isdigit()
+
+
 def helper_table(rows=3):
     t = PrettyTable(["Field 1", "Field 2", "Field 3"])
     v = 1
