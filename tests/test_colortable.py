@@ -7,36 +7,36 @@ from prettytable.colortable import RESET_CODE, ColorTable, Theme
 
 
 @pytest.fixture
-def row_prettytable():
+def row_prettytable() -> PrettyTable:
     # Row by row...
-    row = PrettyTable()
-    row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-    row.add_row(["Adelaide", 1295, 1158259, 600.5])
-    row.add_row(["Brisbane", 5905, 1857594, 1146.4])
-    row.add_row(["Darwin", 112, 120900, 1714.7])
-    row.add_row(["Hobart", 1357, 205556, 619.5])
-    row.add_row(["Sydney", 2058, 4336374, 1214.8])
-    row.add_row(["Melbourne", 1566, 3806092, 646.9])
-    row.add_row(["Perth", 5386, 1554769, 869.4])
-    return row
+    table = PrettyTable()
+    table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    table.add_row(["Adelaide", 1295, 1158259, 600.5])
+    table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    table.add_row(["Darwin", 112, 120900, 1714.7])
+    table.add_row(["Hobart", 1357, 205556, 619.5])
+    table.add_row(["Sydney", 2058, 4336374, 1214.8])
+    table.add_row(["Melbourne", 1566, 3806092, 646.9])
+    table.add_row(["Perth", 5386, 1554769, 869.4])
+    return table
 
 
 @pytest.fixture
 def row_colortable():
-    row = ColorTable()
-    row.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
-    row.add_row(["Adelaide", 1295, 1158259, 600.5])
-    row.add_row(["Brisbane", 5905, 1857594, 1146.4])
-    row.add_row(["Darwin", 112, 120900, 1714.7])
-    row.add_row(["Hobart", 1357, 205556, 619.5])
-    row.add_row(["Sydney", 2058, 4336374, 1214.8])
-    row.add_row(["Melbourne", 1566, 3806092, 646.9])
-    row.add_row(["Perth", 5386, 1554769, 869.4])
-    return row
+    table = ColorTable()
+    table.field_names = ["City name", "Area", "Population", "Annual Rainfall"]
+    table.add_row(["Adelaide", 1295, 1158259, 600.5])
+    table.add_row(["Brisbane", 5905, 1857594, 1146.4])
+    table.add_row(["Darwin", 112, 120900, 1714.7])
+    table.add_row(["Hobart", 1357, 205556, 619.5])
+    table.add_row(["Sydney", 2058, 4336374, 1214.8])
+    table.add_row(["Melbourne", 1566, 3806092, 646.9])
+    table.add_row(["Perth", 5386, 1554769, 869.4])
+    return table
 
 
 @pytest.fixture
-def color_theme():
+def color_theme() -> Theme:
     return Theme(
         default_color="31",
         vertical_color="32",
@@ -46,7 +46,9 @@ def color_theme():
 
 
 class TestColorTable:
-    def test_themeless(self, row_prettytable, row_colortable):
+    def test_themeless(
+        self, row_prettytable: PrettyTable, row_colortable: ColorTable
+    ) -> None:
         # Not worth the logic customizing the reset code
         # For now we'll just get rid of it
         assert (
@@ -54,7 +56,7 @@ class TestColorTable:
             == row_prettytable.get_string()
         )
 
-    def test_theme_setter(self, color_theme):
+    def test_theme_setter(self, color_theme: Theme) -> None:
         table1 = ColorTable(theme=color_theme)
 
         table2 = ColorTable()
@@ -73,22 +75,22 @@ class TestColorTable:
 
 
 class TestFormatCode:
-    def test_basic(self):
+    def test_basic(self) -> None:
         assert Theme.format_code("31") == "\x1b[31m"
 
-    def test_prefix(self):
+    def test_prefix(self) -> None:
         assert Theme.format_code("\x1b[35m") == "\x1b[35m"
 
-    def test_escapes(self):
+    def test_escapes(self) -> None:
         assert Theme.format_code("\033[41m") == "\x1b[41m"
         assert Theme.format_code("\u001b[41m") == "\x1b[41m"
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         assert Theme.format_code("") == ""
 
-    def test_stripped(self):
+    def test_stripped(self) -> None:
         assert Theme.format_code("\t\t     \t") == ""
 
-    def test_multiple(self):
+    def test_multiple(self) -> None:
         assert Theme.format_code("30;42") == "\x1b[30;42m"
         assert Theme.format_code("\x1b[30;42m") == "\x1b[30;42m"
