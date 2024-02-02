@@ -2107,6 +2107,16 @@ class TestPreservingInternalBorders:
 
 
 class TestGeneralOutput:
+    def test_copy(self) -> None:
+        # Arrange
+        t = helper_table()
+
+        # Act
+        t_copy = t.copy()
+
+        # Assert
+        assert t.get_string() == t_copy.get_string()
+
     def test_text(self):
         t = helper_table()
         assert t.get_formatted_string("text") == t.get_string()
