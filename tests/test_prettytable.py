@@ -226,7 +226,7 @@ class TestBuildEquivalence:
             ),
         ],
     )
-    def test_equivalence_ASCII(self, left_hand: PrettyTable, right_hand: PrettyTable):
+    def test_equivalence_ascii(self, left_hand: PrettyTable, right_hand: PrettyTable):
         assert left_hand.get_string() == right_hand.get_string()
 
     @pytest.mark.parametrize(
@@ -242,7 +242,7 @@ class TestBuildEquivalence:
             ),
         ],
     )
-    def test_equivalence_HTML(self, left_hand: PrettyTable, right_hand: PrettyTable):
+    def test_equivalence_html(self, left_hand: PrettyTable, right_hand: PrettyTable):
         assert left_hand.get_html_string() == right_hand.get_html_string()
 
     @pytest.mark.parametrize(
@@ -301,12 +301,12 @@ class TestFieldNameLessTable:
 
     """Make sure that building and stringing a table with no fieldnames works fine"""
 
-    def test_can_string_ASCII(self, field_name_less_table: prettytable):
+    def test_can_string_ascii(self, field_name_less_table: prettytable):
         output = field_name_less_table.get_string()
         assert "|  Field 1  | Field 2 | Field 3 | Field 4 |" in output
         assert "|  Adelaide |   1295  | 1158259 |  600.5  |" in output
 
-    def test_can_string_HTML(self, field_name_less_table: prettytable):
+    def test_can_string_html(self, field_name_less_table: prettytable):
         output = field_name_less_table.get_html_string()
         assert "<th>Field 1</th>" in output
         assert "<td>Adelaide</td>" in output
@@ -791,7 +791,7 @@ class TestFloatFormat:
         float_pt.caching = False
         assert "." not in float_pt.get_string()
 
-    def test_round_to_5DP(self, float_pt: PrettyTable):
+    def test_round_to_5dp(self, float_pt: PrettyTable):
         float_pt.float_format = ".5f"
         string = float_pt.get_string()
         assert "3.14159" in string
@@ -802,7 +802,7 @@ class TestFloatFormat:
         assert "1.41421" in string
         assert "1.414213" not in string
 
-    def test_pad_with_2Zeroes(self, float_pt: PrettyTable):
+    def test_pad_with_2zeroes(self, float_pt: PrettyTable):
         float_pt.float_format = "06.2f"
         string = float_pt.get_string()
         assert "003.14" in string
@@ -869,7 +869,7 @@ class TestBreakLine:
             ),
         ],
     )
-    def test_break_line_ASCII(
+    def test_break_line_ascii(
         self, rows: list[list[Any]], hrule: int, expected_result: str
     ):
         t = PrettyTable(["Field 1", "Field 2"])
@@ -878,7 +878,7 @@ class TestBreakLine:
         result = t.get_string(hrules=hrule)
         assert result.strip() == expected_result.strip()
 
-    def test_break_line_HTML(self):
+    def test_break_line_html(self):
         t = PrettyTable(["Field 1", "Field 2"])
         t.add_row(["value 1", "value2\nsecond line"])
         t.add_row(["value 3", "value4"])
@@ -956,7 +956,7 @@ class TestFromDB:
 
 
 class TestJSONOutput:
-    def test_JSON_output(self):
+    def test_json_output(self):
         t = helper_table()
         result = t.get_json_string()
         assert (
@@ -986,7 +986,7 @@ class TestJSONOutput:
 ]""".strip()
         )
 
-    def test_JSON_output_options(self):
+    def test_json_output_options(self):
         t = helper_table()
         result = t.get_json_string(header=False, indent=None, separators=(",", ":"))
         assert (
@@ -998,7 +998,7 @@ class TestJSONOutput:
 
 
 class TestHtmlOutput:
-    def test_HtmlOutput(self):
+    def test_html_output(self):
         t = helper_table()
         result = t.get_html_string()
         assert (
@@ -1033,7 +1033,7 @@ class TestHtmlOutput:
 """.strip()
         )
 
-    def test_HtmlOutputFormatted(self):
+    def test_html_output_formatted(self):
         t = helper_table()
         result = t.get_html_string(format=True)
         assert (
@@ -1068,7 +1068,7 @@ class TestHtmlOutput:
 """.strip()  # noqa: E501
         )
 
-    def test_HtmlOutputWithTitle(self):
+    def test_html_output_with_title(self):
         t = helper_table()
         t.title = "Title & Title"
         result = t.get_html_string(attributes={"bgcolor": "red", "a<b": "1<2"})
@@ -1105,7 +1105,7 @@ class TestHtmlOutput:
 """.strip()
         )
 
-    def test_HtmlOutputFormattedWithTitle(self):
+    def test_html_output_formatted_with_title(self):
         t = helper_table()
         t.title = "Title & Title"
         result = t.get_html_string(
@@ -1148,7 +1148,7 @@ class TestHtmlOutput:
 class TestPositionalJunctions:
     """Verify different cases for positional-junction characters"""
 
-    def test_Default(self, city_data_prettytable: PrettyTable):
+    def test_default(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.set_style(DOUBLE_BORDER)
 
         assert (
@@ -1167,7 +1167,7 @@ class TestPositionalJunctions:
 ╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
         )
 
-    def test_NoHeader(self, city_data_prettytable: PrettyTable):
+    def test_no_header(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.set_style(DOUBLE_BORDER)
         city_data_prettytable.header = False
 
@@ -1185,7 +1185,7 @@ class TestPositionalJunctions:
 ╚═══════════╩══════╩═════════╩════════╝""".strip()
         )
 
-    def test_WithTitle(self, city_data_prettytable: PrettyTable):
+    def test_with_title(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.set_style(DOUBLE_BORDER)
         city_data_prettytable.title = "Title"
 
@@ -1207,7 +1207,7 @@ class TestPositionalJunctions:
 ╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
         )
 
-    def test_WithTitleNoHeader(self, city_data_prettytable: PrettyTable):
+    def test_with_title_no_header(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.set_style(DOUBLE_BORDER)
         city_data_prettytable.title = "Title"
         city_data_prettytable.header = False
@@ -1227,7 +1227,7 @@ class TestPositionalJunctions:
 ╚═══════════╩══════╩═════════╩════════╝""".strip()
         )
 
-    def test_HruleAll(self, city_data_prettytable: PrettyTable):
+    def test_hrule_all(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.set_style(DOUBLE_BORDER)
         city_data_prettytable.title = "Title"
         city_data_prettytable.hrules = ALL
@@ -1255,7 +1255,7 @@ class TestPositionalJunctions:
 ╚═══════════╩══════╩════════════╩═════════════════╝""".strip()
         )
 
-    def test_VrulesNone(self, city_data_prettytable: PrettyTable):
+    def test_vrules_none(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.set_style(DOUBLE_BORDER)
         city_data_prettytable.vrules = NONE
         assert (
@@ -1273,7 +1273,7 @@ class TestPositionalJunctions:
             "═══════════════════════════════════════════════════".strip()
         )
 
-    def test_VrulesFrameWithTitle(self, city_data_prettytable: PrettyTable):
+    def test_vrules_frame_with_title(self, city_data_prettytable: PrettyTable):
         city_data_prettytable.set_style(DOUBLE_BORDER)
         city_data_prettytable.vrules = FRAME
         city_data_prettytable.title = "Title"
@@ -1464,7 +1464,7 @@ class TestCsvOutput:
 
 
 class TestLatexOutput:
-    def testLatexOutput(self):
+    def test_latex_output(self):
         t = helper_table()
         assert t.get_latex_string() == (
             "\\begin{tabular}{ccc}\r\n"
@@ -1484,7 +1484,7 @@ class TestLatexOutput:
             "\\end{tabular}"
         )
 
-    def testLatexOutputFormatted(self):
+    def test_latex_output_formatted(self):
         t = helper_table()
         assert t.get_latex_string(format=True) == (
             "\\begin{tabular}{|c|c|c|}\r\n"
@@ -1536,7 +1536,7 @@ class TestLatexOutput:
             "\\end{tabular}"
         )
 
-    def testLatexOutputHeader(self):
+    def test_latex_output_header(self):
         t = helper_table()
         assert t.get_latex_string(format=True, hrules=HEADER) == (
             "\\begin{tabular}{|c|c|c|}\r\n"
@@ -1550,24 +1550,24 @@ class TestLatexOutput:
 
 
 class TestJSONConstructor:
-    def test_JSONAndBack(self, city_data_prettytable: PrettyTable):
+    def test_json_and_back(self, city_data_prettytable: PrettyTable):
         json_string = city_data_prettytable.get_json_string()
         new_table = from_json(json_string)
         assert new_table.get_string() == city_data_prettytable.get_string()
 
 
 class TestHtmlConstructor:
-    def test_HtmlAndBack(self, city_data_prettytable: PrettyTable):
+    def test_html_and_back(self, city_data_prettytable: PrettyTable):
         html_string = city_data_prettytable.get_html_string()
         new_table = from_html(html_string)[0]
         assert new_table.get_string() == city_data_prettytable.get_string()
 
-    def test_HtmlOneAndBack(self, city_data_prettytable: PrettyTable):
+    def test_html_one_and_back(self, city_data_prettytable: PrettyTable):
         html_string = city_data_prettytable.get_html_string()
         new_table = from_html_one(html_string)
         assert new_table.get_string() == city_data_prettytable.get_string()
 
-    def test_HtmlOneFailOnMany(self, city_data_prettytable: PrettyTable):
+    def test_html_one_fail_on_many(self, city_data_prettytable: PrettyTable):
         html_string = city_data_prettytable.get_html_string()
         html_string += city_data_prettytable.get_html_string()
         with pytest.raises(ValueError):
