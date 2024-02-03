@@ -8,6 +8,7 @@ from math import e, pi, sqrt
 from typing import Any
 
 import pytest
+from pytest_lazy_fixtures import lf
 
 import prettytable
 from prettytable import (
@@ -224,12 +225,12 @@ class TestBuildEquivalence:
         ["left_hand", "right_hand"],
         [
             (
-                pytest.lazy_fixture("row_prettytable"),
-                pytest.lazy_fixture("col_prettytable"),
+                lf("row_prettytable"),
+                lf("col_prettytable"),
             ),
             (
-                pytest.lazy_fixture("row_prettytable"),
-                pytest.lazy_fixture("mix_prettytable"),
+                lf("row_prettytable"),
+                lf("mix_prettytable"),
             ),
         ],
     )
@@ -242,12 +243,12 @@ class TestBuildEquivalence:
         ["left_hand", "right_hand"],
         [
             (
-                pytest.lazy_fixture("row_prettytable"),
-                pytest.lazy_fixture("col_prettytable"),
+                lf("row_prettytable"),
+                lf("col_prettytable"),
             ),
             (
-                pytest.lazy_fixture("row_prettytable"),
-                pytest.lazy_fixture("mix_prettytable"),
+                lf("row_prettytable"),
+                lf("mix_prettytable"),
             ),
         ],
     )
@@ -260,12 +261,12 @@ class TestBuildEquivalence:
         ["left_hand", "right_hand"],
         [
             (
-                pytest.lazy_fixture("row_prettytable"),
-                pytest.lazy_fixture("col_prettytable"),
+                lf("row_prettytable"),
+                lf("col_prettytable"),
             ),
             (
-                pytest.lazy_fixture("row_prettytable"),
-                pytest.lazy_fixture("mix_prettytable"),
+                lf("row_prettytable"),
+                lf("mix_prettytable"),
             ),
         ],
     )
@@ -1650,7 +1651,7 @@ class TestMultiPattern:
         ["pt", "expected_output", "test_type"],
         [
             (
-                pytest.lazy_fixture("city_data_prettytable"),
+                lf("city_data_prettytable"),
                 """
 +-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
@@ -1667,7 +1668,7 @@ class TestMultiPattern:
                 "English Table",
             ),
             (
-                pytest.lazy_fixture("japanese_pretty_table"),
+                lf("japanese_pretty_table"),
                 """
 +--------+------------+----------+
 | Kanji  |  Hiragana  | English  |
@@ -1686,7 +1687,7 @@ class TestMultiPattern:
                 "Japanese table",
             ),
             (
-                pytest.lazy_fixture("emoji_pretty_table"),
+                lf("emoji_pretty_table"),
                 """
 +-----------------+-----------------+
 |   Thunderbolt   |    Lightning    |

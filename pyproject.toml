@@ -39,7 +39,7 @@ tests = [
   # https://github.com/TvoroG/pytest-lazy-fixture/issues/65
   "pytest<8",
   "pytest-cov",
-  "pytest-lazy-fixture",
+  "pytest-lazy-fixtures",
 ]
 [project.urls]
 Changelog = "https://github.com/jazzband/prettytable/releases"
