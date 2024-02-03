@@ -1806,11 +1806,12 @@ class PrettyTable:
         if options["border"] and options["hrules"] == FRAME:
             lines.append(self._stringify_hrule(options, where="bottom_"))
 
-        if "orgmode" in self.__dict__ and self.orgmode is True:
-            tmp = []
-            for line in lines:
-                tmp.extend(line.split("\n"))
-            lines = ["|" + line[1:-1] + "|" for line in tmp]
+        if "orgmode" in self.__dict__ and self.orgmode:
+            lines = [
+                "|" + new_line[1:-1] + "|"
+                for old_line in lines
+                for new_line in old_line.split("\n")
+            ]
 
         return "\n".join(lines)
 
