@@ -1483,11 +1483,13 @@ class PrettyTable:
         fieldname - The field name of the column you want to delete."""
 
         if fieldname not in self._field_names:
-            raise ValueError(
-                "Can't delete column %r which is not a field name of this table."
-                " Field names are: %s"
-                % (fieldname, ", ".join(map(repr, self._field_names)))
+            msg = (
+                "Can't delete column {!r} which is not a field name of this table."
+                " Field names are: {}".format(
+                    fieldname, ", ".join(map(repr, self._field_names))
+                )
             )
+            raise ValueError(msg)
 
         col_index = self._field_names.index(fieldname)
         del self._field_names[col_index]
@@ -1805,7 +1807,7 @@ class PrettyTable:
             lines.append(self._stringify_hrule(options, where="bottom_"))
 
         if "orgmode" in self.__dict__ and self.orgmode is True:
-            tmp = list()
+            tmp = []
             for line in lines:
                 tmp.extend(line.split("\n"))
             lines = ["|" + line[1:-1] + "|" for line in tmp]
@@ -2085,7 +2087,7 @@ class PrettyTable:
         import json
 
         options = self._get_options(kwargs)
-        json_options: Any = dict(indent=4, separators=(",", ": "), sort_keys=True)
+        json_options: Any = {"indent": 4, "separators": (",", ": "), "sort_keys": True}
         json_options.update(
             {key: value for key, value in kwargs.items() if key not in options}
         )
@@ -2419,7 +2421,7 @@ class PrettyTable:
 
 
 def _str_block_width(val):
-    import wcwidth  # type: ignore
+    import wcwidth  # type: ignore[import-not-found]
 
     return wcwidth.wcswidth(_re.sub("", val))
 
