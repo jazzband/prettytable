@@ -52,5 +52,28 @@ version.source = "vcs"
 [tool.hatch.version.raw-options]
 local_scheme = "no-local-version"
 
-[tool.isort]
-profile = "black"
+[tool.ruff.lint]
+select = [
+  "C4", # flake8-comprehensions
+  "E", # pycodestyle errors
+  "EM", # flake8-errmsg
+  "F", # pyflakes errors
+  "I", # isort
+  "ISC", # flake8-implicit-str-concat
+  "LOG", # flake8-logging
+  "PGH", # pygrep-hooks
+  "RUF100", # unused noqa (yesqa)
+  "UP", # pyupgrade
+  "W", # pycodestyle warnings
+  "YTT", # flake8-2020
+]
+extend-ignore = [
+  "E203", # Whitespace before ':'
+  "E221", # Multiple spaces before operator
+  "E226", # Missing whitespace around arithmetic operator
+  "E241", # Multiple spaces after ','
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["prettytable"]
+required-imports = ["from __future__ import annotations"]
