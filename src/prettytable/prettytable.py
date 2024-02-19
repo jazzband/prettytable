@@ -688,7 +688,6 @@ class PrettyTable:
             self._validate_option("max_width", val)
             self._max_width = val
 
-
     @property
     def min_width(self):
         """Controls minimum width of fields
@@ -1576,7 +1575,13 @@ class PrettyTable:
                 if self.none_format.get(fieldname) is not None:
                     if value == "None" or value is None:
                         value = self.none_format.get(fieldname)
-                widths[index] = max(widths[index], min(_get_size(value)[0], self.max_width if self.max_width else float("inf")))
+                widths[index] = max(
+                    widths[index],
+                    min(
+                        _get_size(value)[0],
+                        self.max_width if self.max_width else float("inf"),
+                    ),
+                )
                 widths[index] = max(widths[index], self.min_width)
         self._widths = widths
 
