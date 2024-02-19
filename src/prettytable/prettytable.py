@@ -130,8 +130,6 @@ class PrettyTable:
         self._dividers: list[bool] = []
         self.align = {}
         self.valign = {}
-        self.max_width = {}
-        self.min_width = {}
         self.int_format = {}
         self.float_format = {}
         self.custom_format = {}
@@ -226,8 +224,8 @@ class PrettyTable:
         # Column specific arguments, use property.setters
         self.align = kwargs["align"] or {}
         self.valign = kwargs["valign"] or {}
-        self.max_width = kwargs["max_width"] or {}
-        self.min_width = kwargs["min_width"] or {}
+        self.max_width = kwargs["max_width"] or 0
+        self.min_width = kwargs["min_width"] or 0
         self.int_format = kwargs["int_format"] or {}
         self.float_format = kwargs["float_format"] or {}
         self.custom_format = kwargs["custom_format"] or {}
@@ -685,11 +683,11 @@ class PrettyTable:
     @max_width.setter
     def max_width(self, val) -> None:
         if val is None or (isinstance(val, dict) and len(val) == 0):
-            self._max_width = {}
+            self._max_width = 0
         else:
             self._validate_option("max_width", val)
-            for field in self._field_names:
-                self._max_width[field] = val
+            self._max_width = val
+
 
     @property
     def min_width(self):
@@ -702,11 +700,10 @@ class PrettyTable:
     @min_width.setter
     def min_width(self, val) -> None:
         if val is None or (isinstance(val, dict) and len(val) == 0):
-            self._min_width = {}
+            self._min_width = 0
         else:
             self._validate_option("min_width", val)
-            for field in self._field_names:
-                self._min_width[field] = val
+            self._min_width = val
 
     @property
     def min_table_width(self):
@@ -1579,15 +1576,8 @@ class PrettyTable:
                 if self.none_format.get(fieldname) is not None:
                     if value == "None" or value is None:
                         value = self.none_format.get(fieldname)
-                if fieldname in self.max_width:
-                    widths[index] = max(
-                        widths[index],
-                        min(_get_size(value)[0], self.max_width[fieldname]),
-                    )
-                else:
-                    widths[index] = max(widths[index], _get_size(value)[0])
-                if fieldname in self.min_width:
-                    widths[index] = max(widths[index], self.min_width[fieldname])
+                widths[index] = max(widths[index], min(_get_size(value)[0], self.max_width if self.max_width else float("inf")))
+                widths[index] = max(widths[index], self.min_width)
         self._widths = widths
 
         # Are we exceeding max_table_width?
