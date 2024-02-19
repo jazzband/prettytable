@@ -51,6 +51,9 @@ version.source = "vcs"
 [tool.hatch.version.raw-options]
 local_scheme = "no-local-version"
 
+[tool.ruff]
+fix = true
+
 [tool.ruff.lint]
 select = [
   "C4", # flake8-comprehensions
