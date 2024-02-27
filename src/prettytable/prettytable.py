@@ -701,7 +701,7 @@ class PrettyTable:
 
     @min_width.setter
     def min_width(self, val) -> None:
-        if val is None or (isinstance(val, dict) and len(val) == 0):
+        if not val:
             self._min_width = {}
         else:
             self._validate_option("min_width", val)
