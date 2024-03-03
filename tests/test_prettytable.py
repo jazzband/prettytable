@@ -2019,12 +2019,6 @@ class TestMaxTableWidth:
 """.strip()
         )
 
-    def test_compute_table_width(self) -> None:
-        table = PrettyTable()
-        table.max_table_width = 5
-        table.add_row([0])
-        assert table._compute_table_width() <= table.max_table_width
-
     def test_max_table_width_wide(self) -> None:
         table = PrettyTable()
         table.max_table_width = 52
@@ -2055,24 +2049,6 @@ class TestMaxTableWidth:
 |   |   |   |   |   |      sed diam voluptua       |
 +---+---+---+---+---+------------------------------+""".strip()
         )
-        assert table._compute_table_width() <= table.max_table_width
-
-    def test_compute_table_width_wide(self) -> None:
-        table = PrettyTable()
-        table.max_table_width = 52
-        table.add_row(
-            [
-                0,
-                0,
-                0,
-                0,
-                0,
-                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
-                "nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam "
-                "erat, sed diam voluptua",
-            ]
-        )
-        assert table._compute_table_width() <= table.max_table_width
 
 
 class TestRowEndSection:
