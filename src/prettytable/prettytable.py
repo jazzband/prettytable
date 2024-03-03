@@ -1599,6 +1599,7 @@ class PrettyTable:
                     widths[index] = max(widths[index], self.min_width[fieldname])
         self._widths = widths
 
+        per_col_padding = sum(self._get_padding_widths(options))
         # Are we exceeding max_table_width?
         if self._max_table_width:
             table_width = self._compute_table_width(options)
@@ -1611,9 +1612,7 @@ class PrettyTable:
         # Are we under min_table_width or title width?
         if self._min_table_width or options["title"]:
             if options["title"]:
-                title_width = len(options["title"]) + sum(
-                    self._get_padding_widths(options)
-                )
+                title_width = len(options["title"]) + per_col_padding
                 if options["vrules"] in (FRAME, ALL):
                     title_width += 2
             else:
@@ -1628,9 +1627,7 @@ class PrettyTable:
                 borders = 0
 
             # Subtract padding for each column and borders
-            min_width -= (
-                sum([sum(self._get_padding_widths(options)) for _ in widths]) + borders
-            )
+            min_width -= sum([per_col_padding for _ in widths]) + borders
             # What is being scaled is content so we sum column widths
             content_width = sum(widths) or 1
 
