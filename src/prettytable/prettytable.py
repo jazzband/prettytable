@@ -1558,13 +1558,22 @@ class PrettyTable:
         return formatter(field, value)
 
     def _compute_table_width(self, options):
-        table_width = 2 if options["vrules"] in (FRAME, ALL) else 0
+        if options["vrules"] == FRAME:
+            table_width = 2
+        if options["vrules"] == ALL:
+            table_width = 1
+        else:
+            table_width = 0
         per_col_padding = sum(self._get_padding_widths(options))
         for index, fieldname in enumerate(self.field_names):
             if not options["fields"] or (
                 options["fields"] and fieldname in options["fields"]
             ):
-                table_width += self._widths[index] + per_col_padding
+                table_width += (
+                    self._widths[index] + per_col_padding + 1
+                    if options["vrules"] == ALL
+                    else 0
+                )
         return table_width
 
     def _compute_widths(self, rows, options) -> None:
