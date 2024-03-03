@@ -1570,9 +1570,9 @@ class PrettyTable:
                 options["fields"] and fieldname in options["fields"]
             ):
                 table_width += (
-                    self._widths[index] + per_col_padding + 1
-                    if options["vrules"] == ALL
-                    else 0
+                    self._widths[index]
+                    + per_col_padding
+                    + (1 if options["vrules"] == ALL else 0)
                 )
         return table_width
 
@@ -1609,6 +1609,8 @@ class PrettyTable:
                     vrulers = 2
                 elif options["vrules"] == ALL:
                     vrulers = len(widths) - 1
+                else:
+                    vrulers = 0
                 scale = (
                     self._max_table_width - per_col_padding * len(widths) - vrulers
                 ) / (table_width - per_col_padding * len(widths) - vrulers)
