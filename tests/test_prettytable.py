@@ -2079,6 +2079,70 @@ class TestMaxTableWidth:
 +---+-----------------+---+-----------------+---+-----------------+""".strip()
         )
 
+    def test_max_table_width_wide_vrules_frame(self) -> None:
+        table = PrettyTable()
+        table.max_table_width = 52
+        table.vrules = FRAME
+        table.add_row(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
+                "nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam "
+                "erat, sed diam voluptua",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
++--------------------------------------------------+
+| F   F   F   F   F             Field 6            |
++--------------------------------------------------+
+| 0   0   0   0   0   Lorem ipsum dolor sit amet,  |
+|                     consetetur sadipscing elitr, |
+|                        sed diam nonumy eirmod    |
+|                     tempor invidunt ut labore et |
+|                     dolore magna aliquyam erat,  |
+|                          sed diam voluptua       |
++--------------------------------------------------+""".strip()
+        )
+
+    def test_max_table_width_wide_vrules_none(self) -> None:
+        table = PrettyTable()
+        table.max_table_width = 52
+        table.vrules = NONE
+        table.add_row(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
+                "nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam "
+                "erat, sed diam voluptua",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
+----------------------------------------------------
+  F   F   F   F   F             Field 6             
+----------------------------------------------------
+  0   0   0   0   0   Lorem ipsum dolor sit amet,   
+                      consetetur sadipscing elitr,  
+                         sed diam nonumy eirmod     
+                      tempor invidunt ut labore et  
+                      dolore magna aliquyam erat,   
+                           sed diam voluptua        
+----------------------------------------------------""".strip()  # noqa: W291
+        )
+
 
 class TestRowEndSection:
     def test_row_end_section(self) -> None:

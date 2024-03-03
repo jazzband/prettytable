@@ -1569,11 +1569,7 @@ class PrettyTable:
             if not options["fields"] or (
                 options["fields"] and fieldname in options["fields"]
             ):
-                table_width += (
-                    self._widths[index]
-                    + per_col_padding
-                    + (1 if options["vrules"] == ALL else 0)
-                )
+                table_width += self._widths[index] + per_col_padding + 1
         return table_width
 
     def _compute_widths(self, rows, options) -> None:
@@ -1605,12 +1601,7 @@ class PrettyTable:
             table_width = self._compute_table_width(options)
             if table_width > self._max_table_width:
                 # Shrink widths in proportion
-                if options["vrules"] == FRAME:
-                    vrulers = 2
-                elif options["vrules"] == ALL:
-                    vrulers = len(widths) - 1
-                else:
-                    vrulers = 0
+                vrulers = len(widths) - 1
                 scale = (
                     self._max_table_width - per_col_padding * len(widths) - vrulers
                 ) / (table_width - per_col_padding * len(widths) - vrulers)
