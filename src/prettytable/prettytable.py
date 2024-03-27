@@ -1601,10 +1601,10 @@ class PrettyTable:
             table_width = self._compute_table_width(options)
             if table_width > self._max_table_width:
                 # Shrink widths in proportion
-                vrulers = len(widths) - 1
-                scale = (
-                    self._max_table_width - per_col_padding * len(widths) - vrulers
-                ) / (table_width - per_col_padding * len(widths) - vrulers)
+                markup_chars = per_col_padding * len(widths) - len(widths) - 1
+                scale = (self._max_table_width - markup_chars) / (
+                    table_width - markup_chars
+                )
                 self._widths = [max(1, int(w * scale)) for w in widths]
 
         # Are we under min_table_width or title width?
