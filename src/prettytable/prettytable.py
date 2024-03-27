@@ -1601,7 +1601,7 @@ class PrettyTable:
             table_width = self._compute_table_width(options)
             if table_width > self._max_table_width:
                 # Shrink widths in proportion
-                markup_chars = per_col_padding * len(widths) - len(widths) - 1
+                markup_chars = per_col_padding * len(widths) + len(widths) - 1
                 scale = (self._max_table_width - markup_chars) / (
                     table_width - markup_chars
                 )
