@@ -2008,15 +2008,139 @@ class TestMaxTableWidth:
         table.max_table_width = 5
         table.add_row([0])
 
+        # FIXME: Table is wider than table.max_table_width
         assert (
             table.get_string().strip()
             == """
-+-----+
-| Fie |
-+-----+
-|  0  |
-+-----+
++----+
+| Fi |
++----+
+| 0  |
++----+
 """.strip()
+        )
+
+    def test_max_table_width_wide(self) -> None:
+        table = PrettyTable()
+        table.max_table_width = 52
+        table.add_row(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
+                "nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam "
+                "erat, sed diam voluptua",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
++---+---+---+---+---+------------------------------+
+| F | F | F | F | F |           Field 6            |
++---+---+---+---+---+------------------------------+
+| 0 | 0 | 0 | 0 | 0 | Lorem ipsum dolor sit amet,  |
+|   |   |   |   |   | consetetur sadipscing elitr, |
+|   |   |   |   |   |    sed diam nonumy eirmod    |
+|   |   |   |   |   | tempor invidunt ut labore et |
+|   |   |   |   |   | dolore magna aliquyam erat,  |
+|   |   |   |   |   |      sed diam voluptua       |
++---+---+---+---+---+------------------------------+""".strip()
+        )
+
+    def test_max_table_width_wide2(self) -> None:
+        table = PrettyTable()
+        table.max_table_width = 70
+        table.add_row(
+            [
+                "Lorem",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+                "ipsum",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+                "dolor",
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
++---+-----------------+---+-----------------+---+-----------------+
+| F |     Field 2     | F |     Field 4     | F |     Field 6     |
++---+-----------------+---+-----------------+---+-----------------+
+| L |   Lorem ipsum   | i |   Lorem ipsum   | d |   Lorem ipsum   |
+| o | dolor sit amet, | p | dolor sit amet, | o | dolor sit amet, |
+| r |    consetetur   | s |    consetetur   | l |    consetetur   |
+| e |    sadipscing   | u |    sadipscing   | o |    sadipscing   |
+| m | elitr, sed diam | m | elitr, sed diam | r | elitr, sed diam |
++---+-----------------+---+-----------------+---+-----------------+""".strip()
+        )
+
+    def test_max_table_width_wide_vrules_frame(self) -> None:
+        table = PrettyTable()
+        table.max_table_width = 52
+        table.vrules = FRAME
+        table.add_row(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
+                "nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam "
+                "erat, sed diam voluptua",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
++--------------------------------------------------+
+| F   F   F   F   F             Field 6            |
++--------------------------------------------------+
+| 0   0   0   0   0   Lorem ipsum dolor sit amet,  |
+|                     consetetur sadipscing elitr, |
+|                        sed diam nonumy eirmod    |
+|                     tempor invidunt ut labore et |
+|                     dolore magna aliquyam erat,  |
+|                          sed diam voluptua       |
++--------------------------------------------------+""".strip()
+        )
+
+    def test_max_table_width_wide_vrules_none(self) -> None:
+        table = PrettyTable()
+        table.max_table_width = 52
+        table.vrules = NONE
+        table.add_row(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
+                "nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam "
+                "erat, sed diam voluptua",
+            ]
+        )
+
+        assert (
+            table.get_string().strip()
+            == """
+----------------------------------------------------
+  F   F   F   F   F             Field 6             
+----------------------------------------------------
+  0   0   0   0   0   Lorem ipsum dolor sit amet,   
+                      consetetur sadipscing elitr,  
+                         sed diam nonumy eirmod     
+                      tempor invidunt ut labore et  
+                      dolore magna aliquyam erat,   
+                           sed diam voluptua        
+----------------------------------------------------""".strip()  # noqa: W291
         )
 
 
