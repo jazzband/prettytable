@@ -1599,7 +1599,7 @@ class PrettyTable:
                 if self._style == MARKDOWN:
                     # Markdown needs at least one hyphen in the divider
                     if self._align[fieldname] in ("l", "r"):
-                        min_width = 2
+                        min_width = 1
                     else:  # "c"
                         min_width = 3
                     widths[index] = max(min_width, widths[index])

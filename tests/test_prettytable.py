@@ -1477,11 +1477,11 @@ class TestStyle:
             pytest.param(
                 MARKDOWN,
                 """
-|   | Align left | Align centre | Align right |
-| :-| :----------| :----------: |-----------: |
-| 1 | value 1    |    value2    |      value3 |
-| 4 | value 4    |    value5    |      value6 |
-| 7 | value 7    |    value8    |      value9 |
+| l |  c  | r | Align left | Align centre | Align right |
+| :-| :-: |-: | :----------| :----------: |-----------: |
+| 1 |  2  | 3 | value 1    |    value2    |      value3 |
+| 4 |  5  | 6 | value 4    |    value5    |      value6 |
+| 7 |  8  | 9 | value 7    |    value8    |      value9 |
 """,
                 id="MARKDOWN",
             ),
@@ -1489,15 +1489,19 @@ class TestStyle:
     )
     def test_style_align(self, style, expected) -> None:
         # Arrange
-        t = helper_table()
-        t.field_names = ["", "Align left", "Align centre", "Align right"]
+        t = PrettyTable(["l", "c", "r", "Align left", "Align centre", "Align right"])
+        v = 1
+        for row in range(3):
+            # Some have spaces, some not, to help test padding columns of
+            # different widths
+            t.add_row([v, v + 1, v + 2, f"value {v}", f"value{v + 1}", f"value{v + 2}"])
+            v += 3
 
         # Act
         t.set_style(style)
-        t.align = "l"
-        t.align["Align left"] = "l"
-        t.align["Align centre"] = "c"
-        t.align["Align right"] = "r"
+        t.align["l"] = t.align["Align left"] = "l"
+        t.align["c"] = t.align["Align centre"] = "c"
+        t.align["r"] = t.align["Align right"] = "r"
 
         # Assert
         result = t.get_string()
