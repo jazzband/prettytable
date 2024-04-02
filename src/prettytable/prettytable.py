@@ -1596,9 +1596,13 @@ class PrettyTable:
                 if fieldname in self.min_width:
                     widths[index] = max(widths[index], self.min_width[fieldname])
 
-                # Centred Markdown needs a " :-: " in the divider
-                if self._style == MARKDOWN and self._align[fieldname] == "c":
-                    widths[index] = max(3, widths[index])
+                if self._style == MARKDOWN:
+                    # Markdown needs at least one hyphen in the divider
+                    if self._align[fieldname] in ("l", "r"):
+                        min_width = 2
+                    else:  # "c"
+                        min_width = 3
+                    widths[index] = max(min_width, widths[index])
 
         self._widths = widths
 
