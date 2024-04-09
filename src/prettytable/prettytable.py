@@ -135,6 +135,7 @@ class PrettyTable:
         self.int_format = {}
         self.float_format = {}
         self.custom_format = {}
+        self._style = None
 
         if field_names:
             self.field_names = field_names
@@ -1270,6 +1271,7 @@ class PrettyTable:
     ##############################
 
     def set_style(self, style) -> None:
+        self._style = style
         if style == DEFAULT:
             self._set_default_style()
         elif style == MSWORD_FRIENDLY:
@@ -1593,6 +1595,15 @@ class PrettyTable:
                     widths[index] = max(widths[index], _get_size(value)[0])
                 if fieldname in self.min_width:
                     widths[index] = max(widths[index], self.min_width[fieldname])
+
+                if self._style == MARKDOWN:
+                    # Markdown needs at least one hyphen in the divider
+                    if self._align[fieldname] in ("l", "r"):
+                        min_width = 1
+                    else:  # "c"
+                        min_width = 3
+                    widths[index] = max(min_width, widths[index])
+
         self._widths = widths
 
         per_col_padding = sum(self._get_padding_widths(options))
