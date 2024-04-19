@@ -1887,7 +1887,10 @@ class PrettyTable:
         )
         bits.append(endpoint)
         title = " " * lpad + title + " " * rpad
-        bits.append(self._justify(title, len(self._hrule) - 2, "c"))
+        lpad, rpad = self._get_padding_widths(options)
+        total_widths = [n + lpad + rpad + 1 for n in self._widths]
+
+        bits.append(self._justify(title, sum(total_widths) - 1, "c"))
         bits.append(endpoint)
         lines.append("".join(bits))
         return "\n".join(lines)
