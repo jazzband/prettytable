@@ -97,20 +97,21 @@ class TestFormatCode:
 
 
 class TestColorTableRendering:
-    """ Tests for the rendering of the color table
+    """Tests for the rendering of the color table
 
     Methods
     -------
     test_color_table_rendering
         Tests the color table rendering using the default alignment (`'c'`)
     """
+
     def test_color_table_rendering(self) -> None:
-        """ Tests the color table rendering using the default alignment (`'c'`) """
+        """Tests the color table rendering using the default alignment (`'c'`)"""
         chars = {
             "+": "\x1b[36m+\x1b[0m\x1b[96m",
             "-": "\x1b[34m-\x1b[0m\x1b[96m",
             "|": "\x1b[34m|\x1b[0m\x1b[96m",
-            " ": " "
+            " ": " ",
         }
 
         plus = chars.get("+")
@@ -127,15 +128,15 @@ class TestColorTableRendering:
         # +---+---+---+---+---+---+
 
         header = (
-            plus +  minus * 23 + plus,
+            plus + minus * 23 + plus,
             pipe + space * 8 + "Efforts" + space * 8 + pipe,
-            (plus + minus * 3) * 6 + plus
+            (plus + minus * 3) * 6 + plus,
         )
 
         body = (
-            "".join((pipe + space + char + space for char in "ABCDEF")) + pipe,
+            "".join(pipe + space + char + space for char in "ABCDEF") + pipe,
             (plus + minus * 3) * 6 + plus,
-            "".join((pipe + space + char + space for char in "123456")) + pipe,
+            "".join(pipe + space + char + space for char in "123456") + pipe,
             (plus + minus * 3) * 6 + plus,
         )
 
@@ -150,7 +151,7 @@ class TestColorTableRendering:
         table.title = "Efforts"
         table.add_row([1, 2, 3, 4, 5, 6])
 
-        expected = header_str + "\n" + body_str + '\x1b[0m'
+        expected = header_str + "\n" + body_str + "\x1b[0m"
         result = str(table)
 
         assert expected == result
