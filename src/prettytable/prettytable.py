@@ -1887,7 +1887,10 @@ class PrettyTable:
         )
         bits.append(endpoint)
         title = " " * lpad + title + " " * rpad
-        bits.append(self._justify(title, len(self._hrule) - 2, "c"))
+        lpad, rpad = self._get_padding_widths(options)
+        sum_widths = sum([n + lpad + rpad + 1 for n in self._widths])
+
+        bits.append(self._justify(title, sum_widths - 1, "c"))
         bits.append(endpoint)
         lines.append("".join(bits))
         return "\n".join(lines)
@@ -1899,9 +1902,11 @@ class PrettyTable:
             if options["hrules"] in (ALL, FRAME):
                 bits.append(self._stringify_hrule(options, "top_"))
                 if options["title"] and options["vrules"] in (ALL, FRAME):
+                    left_j_len = len(self.left_junction_char)
+                    right_j_len = len(self.right_junction_char)
                     bits[-1] = (
                         self.left_junction_char
-                        + bits[-1][1:-1]
+                        + bits[-1][left_j_len:-right_j_len]
                         + self.right_junction_char
                     )
                 bits.append("\n")
