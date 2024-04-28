@@ -1888,7 +1888,7 @@ class PrettyTable:
         bits.append(endpoint)
         title = " " * lpad + title + " " * rpad
         lpad, rpad = self._get_padding_widths(options)
-        sum_widths = sum(n + lpad + rpad + 1 for n in self._widths)
+        sum_widths = sum([n + lpad + rpad + 1 for n in self._widths])
 
         bits.append(self._justify(title, sum_widths - 1, "c"))
         bits.append(endpoint)
