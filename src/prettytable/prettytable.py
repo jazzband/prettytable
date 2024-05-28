@@ -1830,6 +1830,52 @@ class PrettyTable:
 
         return "\n".join(lines)
 
+    # Apply color formatting to the table string
+    def _colorize(self, table_str):
+        lines = table_str.split("\n")
+        colored_lines = [lines[0]]
+
+        for line in lines[1:]:
+            if line.strip() == "":
+                colored_lines.append(line)
+                continue
+            colored_line = self._colorize_line(line)
+            colored_lines.append(colored_line)
+
+        return "\n".join(colored_lines)
+
+    # Apply color formatting to a single line of the table
+    def _colorize_line(self, line):
+        parts = line.split("|")
+        colored_parts = [parts[0]]
+
+        for part in parts[1:]:
+            stripped_part = part.strip()
+            if self._is_float(stripped_part):
+                number = float(stripped_part)
+                if number > 0:
+                    colored_parts.append(f"\033[92m{part}\033[0m")
+                else:
+                    colored_parts.append(f"\033[91m{part}\033[0m")
+            elif stripped_part.isdigit():
+                number = int(stripped_part)
+                if number > 0:
+                    colored_parts.append(f"\033[92m{part}\033[0m")
+                else:
+                    colored_parts.append(f"\033[91m{part}\033[0m")
+            else:
+                colored_parts.append(f"\033[94m{part}\033[0m")
+
+        return "|".join(colored_parts)
+
+    # Check if a string can be converted to a float
+    def _is_float(self, value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+
     def _stringify_hrule(self, options, where: str = ""):
         if not options["border"] and not options["preserve_internal_border"]:
             return ""
