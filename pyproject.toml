@@ -79,3 +79,6 @@ extend-ignore = [
 [tool.ruff.lint.isort]
 known-first-party = ["prettytable"]
 required-imports = ["from __future__ import annotations"]
+
+[tool.pyproject-fmt]
+max_supported_python = "3.13"
