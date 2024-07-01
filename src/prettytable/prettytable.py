@@ -1552,9 +1552,9 @@ class PrettyTable:
 
     def _format_value(self, field, value):
         if isinstance(value, int) and field in self._int_format:
-            return ("%%%sd" % self._int_format[field]) % value
+            return (f"%{self._int_format[field]}d") % value
         elif isinstance(value, float) and field in self._float_format:
-            return ("%%%sf" % self._float_format[field]) % value
+            return (f"%{self._float_format[field]}f") % value
 
         formatter = self._custom_format.get(field, (lambda f, v: str(v)))
         return formatter(field, value)
@@ -2198,7 +2198,9 @@ class PrettyTable:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
-                    "            <th>%s</th>" % escape(field).replace("\n", linebreak)
+                    "            <th>{}</th>".format(
+                        escape(field).replace("\n", linebreak)
+                    )
                 )
             lines.append("        </tr>")
             lines.append("    </thead>")
@@ -2213,7 +2215,9 @@ class PrettyTable:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 lines.append(
-                    "            <td>%s</td>" % escape(datum).replace("\n", linebreak)
+                    "            <td>{}</td>".format(
+                        escape(datum).replace("\n", linebreak)
+                    )
                 )
             lines.append("        </tr>")
         lines.append("    </tbody>")
@@ -2361,7 +2365,7 @@ class PrettyTable:
 
         alignments = "".join([self._align[field] for field in wanted_fields])
 
-        begin_cmd = "\\begin{tabular}{%s}" % alignments
+        begin_cmd = f"\\begin{{tabular}}{{{alignments}}}"
         lines.append(begin_cmd)
 
         # Headers
@@ -2403,7 +2407,7 @@ class PrettyTable:
         if options["border"] and options["vrules"] in [ALL, FRAME]:
             alignment_str = "|" + alignment_str + "|"
 
-        begin_cmd = "\\begin{tabular}{%s}" % alignment_str
+        begin_cmd = f"\\begin{{tabular}}{{{alignment_str}}}"
         lines.append(begin_cmd)
         if options["border"] and options["hrules"] in [ALL, FRAME]:
             lines.append("\\hline")

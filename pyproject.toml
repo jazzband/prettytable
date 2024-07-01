@@ -9,9 +9,13 @@ requires = [
 name = "prettytable"
 description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format"
 readme = "README.md"
-license = {text = "BSD (3 clause)"}
-maintainers = [{name ="Jazzband"}]
-authors = [{name = "Luke Maurits", email = "luke@maurits.id.au"}]
+license = { text = "BSD (3 clause)" }
+maintainers = [
+  { name = "Jazzband" },
+]
+authors = [
+  { name = "Luke Maurits", email = "luke@maurits.id.au" },
+]
 requires-python = ">=3.8"
 classifiers = [
   "License :: OSI Approved :: BSD License",
@@ -34,16 +38,14 @@ dynamic = [
 dependencies = [
   "wcwidth",
 ]
-[project.optional-dependencies]
-tests = [
+optional-dependencies.tests = [
   "pytest",
   "pytest-cov",
   "pytest-lazy-fixtures",
 ]
-[project.urls]
-Changelog = "https://github.com/jazzband/prettytable/releases"
-Homepage = "https://github.com/jazzband/prettytable"
-Source = "https://github.com/jazzband/prettytable"
+urls.Changelog = "https://github.com/jazzband/prettytable/releases"
+urls.Homepage = "https://github.com/jazzband/prettytable"
+urls.Source = "https://github.com/jazzband/prettytable"
 
 [tool.hatch]
 version.source = "vcs"
@@ -54,31 +56,32 @@ local_scheme = "no-local-version"
 [tool.ruff]
 fix = true
 
-[tool.ruff.lint]
-select = [
-  "C4", # flake8-comprehensions
-  "E", # pycodestyle errors
-  "EM", # flake8-errmsg
-  "F", # pyflakes errors
-  "I", # isort
-  "ISC", # flake8-implicit-str-concat
-  "LOG", # flake8-logging
-  "PGH", # pygrep-hooks
+lint.select = [
+  "C4",     # flake8-comprehensions
+  "E",      # pycodestyle errors
+  "EM",     # flake8-errmsg
+  "F",      # pyflakes errors
+  "I",      # isort
+  "ISC",    # flake8-implicit-str-concat
+  "LOG",    # flake8-logging
+  "PGH",    # pygrep-hooks
   "RUF100", # unused noqa (yesqa)
-  "UP", # pyupgrade
-  "W", # pycodestyle warnings
-  "YTT", # flake8-2020
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warnings
+  "YTT",    # flake8-2020
 ]
-extend-ignore = [
+lint.extend-ignore = [
   "E203", # Whitespace before ':'
   "E221", # Multiple spaces before operator
   "E226", # Missing whitespace around arithmetic operator
   "E241", # Multiple spaces after ','
 ]
-
-[tool.ruff.lint.isort]
-known-first-party = ["prettytable"]
-required-imports = ["from __future__ import annotations"]
+lint.isort.known-first-party = [
+  "prettytable",
+]
+lint.isort.required-imports = [
+  "from __future__ import annotations",
+]
 
 [tool.pyproject-fmt]
 max_supported_python = "3.13"
