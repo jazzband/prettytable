@@ -1198,6 +1198,99 @@ class TestHtmlOutput:
 """.strip()  # noqa: E501
         )
 
+    def test_html_output_without_escaped_header(self) -> None:
+        t = helper_table()
+        t.field_names = ["", "Field 1", "<em>Field 2</em>", "<a href='#'>Field 3</a>"]
+        result = t.get_html_string(escape_header=False)
+        assert (
+            result.strip()
+            == """
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Field 1</th>
+            <th><em>Field 2</em></th>
+            <th><a href='#'>Field 3</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>value 1</td>
+            <td>value2</td>
+            <td>value3</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>value 4</td>
+            <td>value5</td>
+            <td>value6</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>value 7</td>
+            <td>value8</td>
+            <td>value9</td>
+        </tr>
+    </tbody>
+</table>
+""".strip()
+        )
+
+    def test_html_output_without_escaped_data(self) -> None:
+        t = helper_table()
+        t.add_row(
+            [
+                1,
+                "<b>value 1</b>",
+                "<span style='text-decoration: underline;'>value2</span>",
+                "<a href='#'>value3</a>",
+            ]
+        )
+        result = t.get_html_string(escape_data=False)
+        assert (
+            result.strip()
+            == """
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Field 1</th>
+            <th>Field 2</th>
+            <th>Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>value 1</td>
+            <td>value2</td>
+            <td>value3</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>value 4</td>
+            <td>value5</td>
+            <td>value6</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>value 7</td>
+            <td>value8</td>
+            <td>value9</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td><b>value 1</b></td>
+            <td><span style='text-decoration: underline;'>value2</span></td>
+            <td><a href='#'>value3</a></td>
+        </tr>
+    </tbody>
+</table>
+""".strip()
+        )
+
 
 class TestPositionalJunctions:
     """Verify different cases for positional-junction characters"""
