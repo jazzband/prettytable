@@ -678,11 +678,11 @@ will print:
 #### Setting HTML Escaping
 
 By default, PrettyTable will escape the data contained in the header and data fields
-when sending output to html. This can be disabled by setting the 'escape_header' and
-'escape_data' to false. For example:
+when sending output to HTML. This can be disabled by setting the `escape_header` and
+`escape_data` to false. For example:
 
 ```python
-print(x.get_html_string(escape_header=False, escape_data=False))
+print(table.get_html_string(escape_header=False, escape_data=False))
 ```
 
 ### Miscellaneous things
