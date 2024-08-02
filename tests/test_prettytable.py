@@ -1385,7 +1385,6 @@ class TestHtmlOutput:
         )
 
 
-
 class TestPositionalJunctions:
     """Verify different cases for positional-junction characters"""
 
