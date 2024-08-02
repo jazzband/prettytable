@@ -1381,7 +1381,7 @@ class TestHtmlOutput:
         </tr>
     </tbody>
 </table>
-""".strip()
+""".strip()  # noqa: E501
         )
 
 
