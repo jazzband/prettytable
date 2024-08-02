@@ -1199,7 +1199,7 @@ class TestHtmlOutput:
         )
 
     def test_html_output_without_escaped_header(self) -> None:
-        t = helper_table()
+        t = helper_table(rows=0)
         t.field_names = ["", "Field 1", "<em>Field 2</em>", "<a href='#'>Field 3</a>"]
         result = t.get_html_string(escape_header=False)
         assert (
@@ -1215,31 +1215,13 @@ class TestHtmlOutput:
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>value 1</td>
-            <td>value2</td>
-            <td>value3</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>value 4</td>
-            <td>value5</td>
-            <td>value6</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>value 7</td>
-            <td>value8</td>
-            <td>value9</td>
-        </tr>
     </tbody>
 </table>
 """.strip()
         )
 
     def test_html_output_without_escaped_data(self) -> None:
-        t = helper_table()
+        t = helper_table(rows=0)
         t.add_row(
             [
                 1,
@@ -1264,24 +1246,6 @@ class TestHtmlOutput:
     <tbody>
         <tr>
             <td>1</td>
-            <td>value 1</td>
-            <td>value2</td>
-            <td>value3</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>value 4</td>
-            <td>value5</td>
-            <td>value6</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>value 7</td>
-            <td>value8</td>
-            <td>value9</td>
-        </tr>
-        <tr>
-            <td>1</td>
             <td><b>value 1</b></td>
             <td><span style='text-decoration: underline;'>value2</span></td>
             <td><a href='#'>value3</a></td>
@@ -1292,7 +1256,7 @@ class TestHtmlOutput:
         )
 
     def test_html_output_with_escaped_header(self) -> None:
-        t = helper_table()
+        t = helper_table(rows=0)
         t.field_names = ["", "Field 1", "<em>Field 2</em>", "<a href='#'>Field 3</a>"]
         result = t.get_html_string(escape_header=True)
         assert (
@@ -1308,31 +1272,13 @@ class TestHtmlOutput:
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>value 1</td>
-            <td>value2</td>
-            <td>value3</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>value 4</td>
-            <td>value5</td>
-            <td>value6</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>value 7</td>
-            <td>value8</td>
-            <td>value9</td>
-        </tr>
     </tbody>
 </table>
 """.strip()
         )
 
     def test_html_output_with_escaped_data(self) -> None:
-        t = helper_table()
+        t = helper_table(rows=0)
         t.add_row(
             [
                 1,
@@ -1357,27 +1303,123 @@ class TestHtmlOutput:
     <tbody>
         <tr>
             <td>1</td>
-            <td>value 1</td>
-            <td>value2</td>
-            <td>value3</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>value 4</td>
-            <td>value5</td>
-            <td>value6</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>value 7</td>
-            <td>value8</td>
-            <td>value9</td>
-        </tr>
-        <tr>
-            <td>1</td>
             <td>&lt;b&gt;value 1&lt;/b&gt;</td>
             <td>&lt;span style=&#x27;text-decoration: underline;&#x27;&gt;value2&lt;/span&gt;</td>
             <td>&lt;a href=&#x27;#&#x27;&gt;value3&lt;/a&gt;</td>
+        </tr>
+    </tbody>
+</table>
+""".strip()  # noqa: E501
+        )
+
+    def test_html_output_formatted_without_escaped_header(self) -> None:
+        t = helper_table(rows=0)
+        t.field_names = ["", "Field 1", "<em>Field 2</em>", "<a href='#'>Field 3</a>"]
+        result = t.get_html_string(escape_header=False, format=True)
+        assert (
+            result.strip()
+            == """
+<table frame="box" rules="cols">
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center"></th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center"><em>Field 2</em></th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center"><a href='#'>Field 3</a></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+""".strip()  # noqa: E501
+        )
+
+    def test_html_output_formatted_without_escaped_data(self) -> None:
+        t = helper_table(rows=0)
+        t.add_row(
+            [
+                1,
+                "<b>value 1</b>",
+                "<span style='text-decoration: underline;'>value2</span>",
+                "<a href='#'>value3</a>",
+            ]
+        )
+        result = t.get_html_string(escape_data=False, format=True)
+        assert (
+            result.strip()
+            == """
+<table frame="box" rules="cols">
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center"></th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">1</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top"><b>value 1</b></td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top"><span style='text-decoration: underline;'>value2</span></td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top"><a href='#'>value3</a></td>
+        </tr>
+    </tbody>
+</table>
+""".strip()  # noqa: E501
+        )
+
+    def test_html_output_formatted_with_escaped_header(self) -> None:
+        t = helper_table(rows=0)
+        t.field_names = ["", "Field 1", "<em>Field 2</em>", "<a href='#'>Field 3</a>"]
+        result = t.get_html_string(escape_header=True, format=True)
+        assert (
+            result.strip()
+            == """
+<table frame="box" rules="cols">
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center"></th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">&lt;em&gt;Field 2&lt;/em&gt;</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">&lt;a href=&#x27;#&#x27;&gt;Field 3&lt;/a&gt;</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+""".strip()  # noqa: E501
+        )
+
+    def test_html_output_formatted_with_escaped_data(self) -> None:
+        t = helper_table(rows=0)
+        t.add_row(
+            [
+                1,
+                "<b>value 1</b>",
+                "<span style='text-decoration: underline;'>value2</span>",
+                "<a href='#'>value3</a>",
+            ]
+        )
+        result = t.get_html_string(escape_data=True, format=True)
+        assert (
+            result.strip()
+            == """
+<table frame="box" rules="cols">
+    <thead>
+        <tr>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center"></th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 1</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 2</th>
+            <th style="padding-left: 1em; padding-right: 1em; text-align: center">Field 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">1</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;b&gt;value 1&lt;/b&gt;</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;span style=&#x27;text-decoration: underline;&#x27;&gt;value2&lt;/span&gt;</td>
+            <td style="padding-left: 1em; padding-right: 1em; text-align: center; vertical-align: top">&lt;a href=&#x27;#&#x27;&gt;value3&lt;/a&gt;</td>
         </tr>
     </tbody>
 </table>
