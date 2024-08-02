@@ -2232,15 +2232,12 @@ class PrettyTable:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if options["escape_header"]:
-                    lines.append(
-                        "            <th>{}</th>".format(
-                            escape(field).replace("\n", linebreak)
-                        )
-                    )
-                else:
-                    lines.append(
-                        "            <th>{}</th>".format(field.replace("\n", linebreak))
-                    )
+                    field = escape(field)
+
+                lines.append(
+                    "            <th>{}</th>".format(field.replace("\n", linebreak))
+                )
+
             lines.append("        </tr>")
             lines.append("    </thead>")
 
@@ -2254,15 +2251,11 @@ class PrettyTable:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if options["escape_data"]:
-                    lines.append(
-                        "            <td>{}</td>".format(
-                            escape(datum).replace("\n", linebreak)
-                        )
-                    )
-                else:
-                    lines.append(
-                        "            <td>{}</td>".format(datum.replace("\n", linebreak))
-                    )
+                    datum = escape(datum)
+
+                lines.append(
+                    "            <td>{}</td>".format(datum.replace("\n", linebreak))
+                )
             lines.append("        </tr>")
         lines.append("    </tbody>")
         lines.append("</table>")
@@ -2318,15 +2311,12 @@ class PrettyTable:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if options["escape_header"]:
-                    lines.append(
-                        '            <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
-                        % (lpad, rpad, escape(field).replace("\n", linebreak))
-                    )
-                else:
-                    lines.append(
-                        '            <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
-                        % (lpad, rpad, field.replace("\n", linebreak))
-                    )
+                    field = escape(field)
+
+                lines.append(
+                    '            <th style="padding-left: %dem; padding-right: %dem; text-align: center">%s</th>'  # noqa: E501
+                    % (lpad, rpad, field.replace("\n", linebreak))
+                )
             lines.append("        </tr>")
             lines.append("    </thead>")
 
@@ -2351,27 +2341,18 @@ class PrettyTable:
                 if options["fields"] and field not in options["fields"]:
                     continue
                 if options["escape_data"]:
-                    lines.append(
-                        '            <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
-                        % (
-                            lpad,
-                            rpad,
-                            align,
-                            valign,
-                            escape(datum).replace("\n", linebreak),
-                        )
+                    datum = escape(datum)
+
+                lines.append(
+                    '            <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
+                    % (
+                        lpad,
+                        rpad,
+                        align,
+                        valign,
+                        datum.replace("\n", linebreak),
                     )
-                else:
-                    lines.append(
-                        '            <td style="padding-left: %dem; padding-right: %dem; text-align: %s; vertical-align: %s">%s</td>'  # noqa: E501
-                        % (
-                            lpad,
-                            rpad,
-                            align,
-                            valign,
-                            datum.replace("\n", linebreak),
-                        )
-                    )
+                )
             lines.append("        </tr>")
         lines.append("    </tbody>")
         lines.append("</table>")
