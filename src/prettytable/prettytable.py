@@ -2119,8 +2119,20 @@ class PrettyTable:
         csv_writer = csv.writer(csv_buffer, **csv_options)
 
         if options.get("header"):
-            csv_writer.writerow(self._field_names)
-        for row in self._get_rows(options):
+            if options["fields"]:
+                csv_writer.writerow(
+                    [f for f in self._field_names if f in options["fields"]]
+                )
+            else:
+                csv_writer.writerow(self._field_names)
+
+        rows = self._get_rows(options)
+        if options["fields"]:
+            rows = [
+                [d for f, d in zip(self._field_names, row) if f in options["fields"]]
+                for row in rows
+            ]
+        for row in rows:
             csv_writer.writerow(row)
 
         return csv_buffer.getvalue()
@@ -2144,12 +2156,26 @@ class PrettyTable:
         json_options.update(
             {key: value for key, value in kwargs.items() if key not in options}
         )
-        objects = []
+        objects: list[list[str] | dict[str, Any]] = []
 
         if options.get("header"):
-            objects.append(self.field_names)
-        for row in self._get_rows(options):
-            objects.append(dict(zip(self._field_names, row)))
+            if options["fields"]:
+                objects.append([f for f in self._field_names if f in options["fields"]])
+            else:
+                objects.append(self.field_names)
+        rows = self._get_rows(options)
+        if options["fields"]:
+            for row in rows:
+                objects.append(
+                    {
+                        f: d
+                        for f, d in zip(self._field_names, row)
+                        if f in options["fields"]
+                    }
+                )
+        else:
+            for row in rows:
+                objects.append(dict(zip(self._field_names, row)))
 
         return json.dumps(objects, **json_options)
 
