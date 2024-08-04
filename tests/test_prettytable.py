@@ -40,7 +40,7 @@ def test_version() -> None:
     assert prettytable.__version__[-1].isdigit()
 
 
-def helper_table(rows: int = 3) -> PrettyTable:
+def helper_table(*, rows: int = 3) -> PrettyTable:
     table = PrettyTable(["", "Field 1", "Field 2", "Field 3"])
     v = 1
     for row in range(rows):
@@ -2449,7 +2449,7 @@ class TestClearing:
 
 class TestPreservingInternalBorders:
     def test_internal_border_preserved(self) -> None:
-        pt = helper_table(3)
+        pt = helper_table()
         pt.border = False
         pt.preserve_internal_border = True
 
@@ -2465,7 +2465,7 @@ class TestPreservingInternalBorders:
         )
 
     def test_internal_border_preserved_latex(self) -> None:
-        pt = helper_table(3)
+        pt = helper_table()
         pt.border = False
         pt.format = True
         pt.preserve_internal_border = True
@@ -2480,7 +2480,7 @@ class TestPreservingInternalBorders:
         )
 
     def test_internal_border_preserved_html(self) -> None:
-        pt = helper_table(3)
+        pt = helper_table()
         pt.format = True
         pt.border = False
         pt.preserve_internal_border = True
