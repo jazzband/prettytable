@@ -1023,6 +1023,30 @@ class TestJSONOutput:
     }
 ]""".strip()
         )
+        options = {"fields": ["Field 1", "Field 3"]}
+        result = t.get_json_string(**options)
+        assert (
+            result.strip()
+            == """
+[
+    [
+        "Field 1",
+        "Field 3"
+    ],
+    {
+        "Field 1": "value 1",
+        "Field 3": "value3"
+    },
+    {
+        "Field 1": "value 4",
+        "Field 3": "value6"
+    },
+    {
+        "Field 1": "value 7",
+        "Field 3": "value9"
+    }
+]""".strip()
+        )
 
     def test_json_output_options(self) -> None:
         t = helper_table()
@@ -1749,6 +1773,13 @@ class TestCsvOutput:
             "1,value 1,value2,value3\r\n"
             "4,value 4,value5,value6\r\n"
             "7,value 7,value8,value9\r\n"
+        )
+        options = {"fields": ["Field 1", "Field 3"]}
+        assert t.get_csv_string(**options) == (
+            "Field 1,Field 3\r\n"
+            "value 1,value3\r\n"
+            "value 4,value6\r\n"
+            "value 7,value9\r\n"
         )
 
 
