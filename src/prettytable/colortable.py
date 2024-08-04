@@ -17,11 +17,11 @@ class Theme:
     def __init__(
         self,
         default_color: str = "",
-        vertical_char: str = "|",
+        vertical_char: str = "│",
         vertical_color: str = "",
-        horizontal_char: str = "-",
+        horizontal_char: str = "─",
         horizontal_color: str = "",
-        junction_char: str = "+",
+        junction_char: str = "┼",
         junction_color: str = "",
     ) -> None:
         self.default_color = Theme.format_code(default_color)
