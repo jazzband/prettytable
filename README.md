@@ -675,7 +675,7 @@ will print:
 </table>
 ```
 
-#### Setting HTML Escaping
+#### Setting HTML escaping
 
 By default, PrettyTable will escape the data contained in the header and data fields
 when sending output to HTML. This can be disabled by setting the `escape_header` and
