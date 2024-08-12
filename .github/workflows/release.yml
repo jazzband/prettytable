@@ -17,6 +17,10 @@ jobs:
     if: github.repository_owner == 'jazzband'
     runs-on: ubuntu-latest
 
+    permissions:
+      attestations: write
+      id-token: write
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,6 +42,11 @@ jobs:
         run: |
           python -m build
           twine check --strict dist/*
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: "dist/*"
 
       - name: Upload packages to Jazzband
         if: github.event.action == 'published'
