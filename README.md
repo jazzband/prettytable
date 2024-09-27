@@ -299,10 +299,10 @@ You can also change the alignment of individual columns based on the correspondi
 name by treating the `align` attribute as if it were a dictionary.
 
 ```python
-table.align["City name"] = "l"
-table.align["Area"] = "c"
-table.align["Population"] = "r"
-table.align["Annual Rainfall"] = "c"
+(table.align)["City name"] = "l"
+(table.align)["Area"] = "c"
+(table.align)["Population"] = "r"
+(table.align)["Annual Rainfall"] = "c"
 print(table)
 ```
 
