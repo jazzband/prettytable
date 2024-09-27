@@ -155,7 +155,7 @@ class TestColorTableRendering:
         result = str(table)
 
         assert expected == result
-    
+
     def test_all_themes(self) -> None:
         """Tests rendering with all available themes"""
         table = ColorTable(
@@ -171,4 +171,3 @@ class TestColorTableRendering:
                 print(f"\n{theme_name} Theme:")
                 print(result)
                 assert result  # Simple check to ensure rendering doesn't fail
-
