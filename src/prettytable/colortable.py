@@ -45,11 +45,53 @@ class Theme:
 
 class Themes:
     DEFAULT = Theme()
+    DYSLEXIA_FRIENDLY = Theme(
+        default_color="38;5;223",  # Light cream
+        vertical_color="38;5;22",  # Dark green
+        horizontal_color="38;5;22",  # Dark green
+        junction_color="38;5;58",  # Dark yellow
+    )
+    EARTH = Theme(
+        default_color="33",  # Yellow
+        vertical_color="38;5;94",  # Brown
+        horizontal_color="38;5;22",  # Dark Green
+        junction_color="38;5;130",  # Dark Orange
+    )
+    GLARE_REDUCTION = Theme(
+        default_color="38;5;252",  # Light grey
+        vertical_color="38;5;240",  # Dark grey
+        horizontal_color="38;5;240",  # Dark grey
+        junction_color="38;5;246",  # Medium grey
+    )
+    HIGH_CONTRAST = Theme(
+        default_color="97",  # Bright White
+        vertical_color="91",  # Bright Red
+        horizontal_color="94",  # Bright Blue
+        junction_color="93",  # Bright Yellow
+    )
+    LAVENDER = Theme(
+        default_color="38;5;183",  # Light Purple
+        vertical_color="35",  # Magenta
+        horizontal_color="38;5;147",  # Medium Purple
+        junction_color="38;5;219",  # Pink
+    )
     OCEAN = Theme(
         default_color="96",
         vertical_color="34",
         horizontal_color="34",
         junction_color="36",
+    )
+    OCEAN_DEEP = Theme(
+        default_color="96",  # Cyan
+        vertical_color="34",  # Blue
+        horizontal_color="36",  # Light Cyan
+        junction_color="94",  # Light Blue
+    )
+    PASTEL = Theme(
+        default_color="38;5;223",  # Light Peach
+        vertical_color="38;5;152",  # Light Blue
+        horizontal_color="38;5;187",  # Light Pink
+        junction_color="38;5;157",  # Light Green
     )
 
 
