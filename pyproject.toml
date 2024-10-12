@@ -9,7 +9,7 @@ requires = [
 name = "prettytable"
 description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format"
 readme = "README.md"
-license = { text = "BSD (3 clause)" }
+license = "BSD-3-Clause"
 maintainers = [ { name = "Jazzband" } ]
 authors = [ { name = "Luke Maurits", email = "luke@maurits.id.au" } ]
 requires-python = ">=3.9"
