@@ -91,6 +91,7 @@ class PrettyTable:
     _top_left_junction_char: str | None
     _bottom_right_junction_char: str | None
     _bottom_left_junction_char: str | None
+    _format: bool
     _print_empty: bool
     _oldsortslice: bool
     _attributes: dict[str, str]
@@ -400,7 +401,6 @@ class PrettyTable:
             "padding_width",
             "left_padding_width",
             "right_padding_width",
-            "format",
         ):
             self._validate_nonnegative_int(option, val)
         elif option == "sortby":
@@ -419,6 +419,7 @@ class PrettyTable:
             "preserve_internal_border",
             "reversesort",
             "xhtml",
+            "format",
             "print_empty",
             "oldsortslice",
             "escape_header",
@@ -1242,7 +1243,7 @@ class PrettyTable:
         self._bottom_left_junction_char = val
 
     @property
-    def format(self):
+    def format(self) -> bool:
         """Controls whether or not HTML tables are formatted to match styling options
 
         Arguments:
@@ -1251,7 +1252,7 @@ class PrettyTable:
         return self._format
 
     @format.setter
-    def format(self, val) -> None:
+    def format(self, val: bool) -> None:
         self._validate_option("format", val)
         self._format = val
 
