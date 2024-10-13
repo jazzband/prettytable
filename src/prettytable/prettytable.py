@@ -93,6 +93,7 @@ class PrettyTable:
     _bottom_left_junction_char: str | None
     _print_empty: bool
     _oldsortslice: bool
+    _attributes: dict[str, str]
     _escape_header: bool
     _escape_data: bool
 
@@ -1270,7 +1271,7 @@ class PrettyTable:
         self._print_empty = val
 
     @property
-    def attributes(self):
+    def attributes(self) -> dict[str, str]:
         """A dictionary of HTML attribute name/value pairs to be included in the
         <table> tag when printing HTML
 
@@ -1280,7 +1281,7 @@ class PrettyTable:
         return self._attributes
 
     @attributes.setter
-    def attributes(self, val) -> None:
+    def attributes(self, val: dict[str, str]) -> None:
         self._validate_option("attributes", val)
         self._attributes = val
 
@@ -2268,10 +2269,8 @@ class PrettyTable:
 
         open_tag = ["<table"]
         if options["attributes"]:
-            for attr_name in options["attributes"]:
-                open_tag.append(
-                    f' {escape(attr_name)}="{escape(options["attributes"][attr_name])}"'
-                )
+            for attr_name, attr_value in options["attributes"].items():
+                open_tag.append(f' {escape(attr_name)}="{escape(attr_value)}"')
         open_tag.append(">")
         lines.append("".join(open_tag))
 
@@ -2347,10 +2346,8 @@ class PrettyTable:
         if not options["border"] and options["preserve_internal_border"]:
             open_tag.append(' rules="cols"')
         if options["attributes"]:
-            for attr_name in options["attributes"]:
-                open_tag.append(
-                    f' {escape(attr_name)}="{escape(options["attributes"][attr_name])}"'
-                )
+            for attr_name, attr_value in options["attributes"].items():
+                open_tag.append(f' {escape(attr_name)}="{escape(attr_value)}"')
         open_tag.append(">")
         lines.append("".join(open_tag))
 
