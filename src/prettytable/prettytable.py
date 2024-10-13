@@ -66,6 +66,36 @@ def _get_size(text):
 
 
 class PrettyTable:
+    _xhtml: bool
+    _min_table_width: int | None
+    _max_table_width: int | None
+    _title: str | None
+    _start: int
+    _end: int | None
+    _reversesort: bool
+    _header: bool
+    _border: bool
+    _preserve_internal_border: bool
+    _padding_width: int
+    _left_padding_width: int | None
+    _right_padding_width: int | None
+    _vertical_char: str
+    _horizontal_char: str
+    _horizontal_align_char: str | None
+    _junction_char: str
+    _top_junction_char: str | None
+    _bottom_junction_char: str | None
+    _right_junction_char: str | None
+    _left_junction_char: str | None
+    _top_right_junction_char: str | None
+    _top_left_junction_char: str | None
+    _bottom_right_junction_char: str | None
+    _bottom_left_junction_char: str | None
+    _print_empty: bool
+    _oldsortslice: bool
+    _escape_header: bool
+    _escape_data: bool
+
     def __init__(self, field_names=None, **kwargs) -> None:
         """Return a new PrettyTable instance
 
@@ -586,7 +616,7 @@ class PrettyTable:
         return self._xhtml
 
     @xhtml.setter
-    def xhtml(self, val) -> None:
+    def xhtml(self, val: bool) -> None:
         self._validate_option("xhtml", val)
         self._xhtml = val
 
@@ -722,20 +752,20 @@ class PrettyTable:
                 self._min_width[field] = val
 
     @property
-    def min_table_width(self):
+    def min_table_width(self) -> int | None:
         return self._min_table_width
 
     @min_table_width.setter
-    def min_table_width(self, val) -> None:
+    def min_table_width(self, val: int) -> None:
         self._validate_option("min_table_width", val)
         self._min_table_width = val
 
     @property
-    def max_table_width(self):
+    def max_table_width(self) -> int | None:
         return self._max_table_width
 
     @max_table_width.setter
-    def max_table_width(self, val) -> None:
+    def max_table_width(self, val: int) -> None:
         self._validate_option("max_table_width", val)
         self._max_table_width = val
 
@@ -750,7 +780,7 @@ class PrettyTable:
         self._fields = val
 
     @property
-    def title(self):
+    def title(self) -> str | None:
         """Optional table title
 
         Arguments:
@@ -759,11 +789,11 @@ class PrettyTable:
         return self._title
 
     @title.setter
-    def title(self, val) -> None:
+    def title(self, val: str) -> None:
         self._title = str(val)
 
     @property
-    def start(self):
+    def start(self) -> int:
         """Start index of the range of rows to print
 
         Arguments:
@@ -772,12 +802,12 @@ class PrettyTable:
         return self._start
 
     @start.setter
-    def start(self, val) -> None:
+    def start(self, val: int) -> None:
         self._validate_option("start", val)
         self._start = val
 
     @property
-    def end(self):
+    def end(self) -> int | None:
         """End index of the range of rows to print
 
         Arguments:
@@ -786,7 +816,7 @@ class PrettyTable:
         return self._end
 
     @end.setter
-    def end(self, val) -> None:
+    def end(self, val: int) -> None:
         self._validate_option("end", val)
         self._end = val
 
@@ -805,7 +835,7 @@ class PrettyTable:
         self._sortby = val
 
     @property
-    def reversesort(self):
+    def reversesort(self) -> bool:
         """Controls direction of sorting (ascending vs descending)
 
         Arguments:
@@ -815,7 +845,7 @@ class PrettyTable:
         return self._reversesort
 
     @reversesort.setter
-    def reversesort(self, val) -> None:
+    def reversesort(self, val: bool) -> None:
         self._validate_option("reversesort", val)
         self._reversesort = val
 
@@ -835,7 +865,7 @@ class PrettyTable:
         self._sort_key = val
 
     @property
-    def header(self):
+    def header(self) -> bool:
         """Controls printing of table header with field names
 
         Arguments:
@@ -844,7 +874,7 @@ class PrettyTable:
         return self._header
 
     @header.setter
-    def header(self, val) -> None:
+    def header(self, val: bool) -> None:
         self._validate_option("header", val)
         self._header = val
 
@@ -864,7 +894,7 @@ class PrettyTable:
         self._header_style = val
 
     @property
-    def border(self):
+    def border(self) -> bool:
         """Controls printing of border around table
 
         Arguments:
@@ -873,12 +903,12 @@ class PrettyTable:
         return self._border
 
     @border.setter
-    def border(self, val) -> None:
+    def border(self, val: bool) -> None:
         self._validate_option("border", val)
         self._border = val
 
     @property
-    def preserve_internal_border(self):
+    def preserve_internal_border(self) -> bool:
         """Controls printing of border inside table
 
         Arguments:
@@ -888,7 +918,7 @@ class PrettyTable:
         return self._preserve_internal_border
 
     @preserve_internal_border.setter
-    def preserve_internal_border(self, val) -> None:
+    def preserve_internal_border(self, val: bool) -> None:
         self._validate_option("preserve_internal_border", val)
         self._preserve_internal_border = val
 
@@ -979,7 +1009,7 @@ class PrettyTable:
             raise TypeError(msg)
 
     @property
-    def padding_width(self):
+    def padding_width(self) -> int:
         """The number of empty spaces between a column's edge and its content
 
         Arguments:
@@ -988,12 +1018,12 @@ class PrettyTable:
         return self._padding_width
 
     @padding_width.setter
-    def padding_width(self, val) -> None:
+    def padding_width(self, val: int) -> None:
         self._validate_option("padding_width", val)
         self._padding_width = val
 
     @property
-    def left_padding_width(self):
+    def left_padding_width(self) -> int | None:
         """The number of empty spaces between a column's left edge and its content
 
         Arguments:
@@ -1002,12 +1032,12 @@ class PrettyTable:
         return self._left_padding_width
 
     @left_padding_width.setter
-    def left_padding_width(self, val) -> None:
+    def left_padding_width(self, val: int) -> None:
         self._validate_option("left_padding_width", val)
         self._left_padding_width = val
 
     @property
-    def right_padding_width(self):
+    def right_padding_width(self) -> int | None:
         """The number of empty spaces between a column's right edge and its content
 
         Arguments:
@@ -1016,12 +1046,12 @@ class PrettyTable:
         return self._right_padding_width
 
     @right_padding_width.setter
-    def right_padding_width(self, val) -> None:
+    def right_padding_width(self, val: int) -> None:
         self._validate_option("right_padding_width", val)
         self._right_padding_width = val
 
     @property
-    def vertical_char(self):
+    def vertical_char(self) -> str:
         """The character used when printing table borders to draw vertical lines
 
         Arguments:
@@ -1030,13 +1060,13 @@ class PrettyTable:
         return self._vertical_char
 
     @vertical_char.setter
-    def vertical_char(self, val) -> None:
+    def vertical_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("vertical_char", val)
         self._vertical_char = val
 
     @property
-    def horizontal_char(self):
+    def horizontal_char(self) -> str:
         """The character used when printing table borders to draw horizontal lines
 
         Arguments:
@@ -1045,13 +1075,13 @@ class PrettyTable:
         return self._horizontal_char
 
     @horizontal_char.setter
-    def horizontal_char(self, val) -> None:
+    def horizontal_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("horizontal_char", val)
         self._horizontal_char = val
 
     @property
-    def horizontal_align_char(self):
+    def horizontal_align_char(self) -> str:
         """The character used to indicate column alignment in horizontal lines
 
         Arguments:
@@ -1060,13 +1090,13 @@ class PrettyTable:
         return self._bottom_left_junction_char or self.junction_char
 
     @horizontal_align_char.setter
-    def horizontal_align_char(self, val) -> None:
+    def horizontal_align_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("horizontal_align_char", val)
         self._horizontal_align_char = val
 
     @property
-    def junction_char(self):
+    def junction_char(self) -> str:
         """The character used when printing table borders to draw line junctions
 
         Arguments:
@@ -1075,13 +1105,13 @@ class PrettyTable:
         return self._junction_char
 
     @junction_char.setter
-    def junction_char(self, val) -> None:
+    def junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("junction_char", val)
         self._junction_char = val
 
     @property
-    def top_junction_char(self):
+    def top_junction_char(self) -> str:
         """The character used when printing table borders to draw top line junctions
 
         Arguments:
@@ -1090,13 +1120,13 @@ class PrettyTable:
         return self._top_junction_char or self.junction_char
 
     @top_junction_char.setter
-    def top_junction_char(self, val) -> None:
+    def top_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("top_junction_char", val)
         self._top_junction_char = val
 
     @property
-    def bottom_junction_char(self):
+    def bottom_junction_char(self) -> str:
         """The character used when printing table borders to draw bottom line junctions
 
         Arguments:
@@ -1106,13 +1136,13 @@ class PrettyTable:
         return self._bottom_junction_char or self.junction_char
 
     @bottom_junction_char.setter
-    def bottom_junction_char(self, val) -> None:
+    def bottom_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("bottom_junction_char", val)
         self._bottom_junction_char = val
 
     @property
-    def right_junction_char(self):
+    def right_junction_char(self) -> str:
         """The character used when printing table borders to draw right line junctions
 
         Arguments:
@@ -1122,13 +1152,13 @@ class PrettyTable:
         return self._right_junction_char or self.junction_char
 
     @right_junction_char.setter
-    def right_junction_char(self, val) -> None:
+    def right_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("right_junction_char", val)
         self._right_junction_char = val
 
     @property
-    def left_junction_char(self):
+    def left_junction_char(self) -> str:
         """The character used when printing table borders to draw left line junctions
 
         Arguments:
@@ -1137,13 +1167,13 @@ class PrettyTable:
         return self._left_junction_char or self.junction_char
 
     @left_junction_char.setter
-    def left_junction_char(self, val) -> None:
+    def left_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("left_junction_char", val)
         self._left_junction_char = val
 
     @property
-    def top_right_junction_char(self):
+    def top_right_junction_char(self) -> str:
         """
         The character used when printing table borders to draw top-right line junctions
 
@@ -1154,13 +1184,13 @@ class PrettyTable:
         return self._top_right_junction_char or self.junction_char
 
     @top_right_junction_char.setter
-    def top_right_junction_char(self, val) -> None:
+    def top_right_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("top_right_junction_char", val)
         self._top_right_junction_char = val
 
     @property
-    def top_left_junction_char(self):
+    def top_left_junction_char(self) -> str:
         """
         The character used when printing table borders to draw top-left line junctions
 
@@ -1171,13 +1201,13 @@ class PrettyTable:
         return self._top_left_junction_char or self.junction_char
 
     @top_left_junction_char.setter
-    def top_left_junction_char(self, val) -> None:
+    def top_left_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("top_left_junction_char", val)
         self._top_left_junction_char = val
 
     @property
-    def bottom_right_junction_char(self):
+    def bottom_right_junction_char(self) -> str:
         """The character used when printing table borders
            to draw bottom-right line junctions
 
@@ -1188,13 +1218,13 @@ class PrettyTable:
         return self._bottom_right_junction_char or self.junction_char
 
     @bottom_right_junction_char.setter
-    def bottom_right_junction_char(self, val) -> None:
+    def bottom_right_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("bottom_right_junction_char", val)
         self._bottom_right_junction_char = val
 
     @property
-    def bottom_left_junction_char(self):
+    def bottom_left_junction_char(self) -> str:
         """The character used when printing table borders
            to draw bottom-left line junctions
 
@@ -1205,7 +1235,7 @@ class PrettyTable:
         return self._bottom_left_junction_char or self.junction_char
 
     @bottom_left_junction_char.setter
-    def bottom_left_junction_char(self, val) -> None:
+    def bottom_left_junction_char(self, val: str) -> None:
         val = str(val)
         self._validate_option("bottom_left_junction_char", val)
         self._bottom_left_junction_char = val
@@ -1225,7 +1255,7 @@ class PrettyTable:
         self._format = val
 
     @property
-    def print_empty(self):
+    def print_empty(self) -> bool:
         """Controls whether or not empty tables produce a header and frame or just an
         empty string
 
@@ -1235,7 +1265,7 @@ class PrettyTable:
         return self._print_empty
 
     @print_empty.setter
-    def print_empty(self, val) -> None:
+    def print_empty(self, val: bool) -> None:
         self._validate_option("print_empty", val)
         self._print_empty = val
 
@@ -1255,32 +1285,32 @@ class PrettyTable:
         self._attributes = val
 
     @property
-    def oldsortslice(self):
+    def oldsortslice(self) -> bool:
         """oldsortslice - Slice rows before sorting in the "old style" """
         return self._oldsortslice
 
     @oldsortslice.setter
-    def oldsortslice(self, val) -> None:
+    def oldsortslice(self, val: bool) -> None:
         self._validate_option("oldsortslice", val)
         self._oldsortslice = val
 
     @property
-    def escape_header(self):
+    def escape_header(self) -> bool:
         """Escapes the text within a header (True or False)"""
         return self._escape_header
 
     @escape_header.setter
-    def escape_header(self, val):
+    def escape_header(self, val: bool) -> None:
         self._validate_option("escape_header", val)
         self._escape_header = val
 
     @property
-    def escape_data(self):
+    def escape_data(self) -> bool:
         """Escapes the text within a data field (True or False)"""
         return self._escape_data
 
     @escape_data.setter
-    def escape_data(self, val):
+    def escape_data(self, val: bool) -> None:
         self._validate_option("escape_data", val)
         self._escape_data = val
 

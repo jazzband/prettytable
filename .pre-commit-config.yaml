@@ -38,7 +38,7 @@ repos:
     rev: v1.11.2
     hooks:
       - id: mypy
-        additional_dependencies: [types-colorama, types-setuptools]
+        additional_dependencies: [types-colorama]
         args: [--pretty, --show-error-codes]
         exclude: ^tests/
 
