@@ -1489,8 +1489,8 @@ class PrettyTable:
 
         self.header = random.choice((True, False))
         self.border = random.choice((True, False))
-        self._hrules = random.choice((ALL, FRAME, HEADER, NONE))
-        self._vrules = random.choice((ALL, FRAME, NONE))
+        self._hrules = random.choice(list(HRuleStyle._value2member_map_))
+        self._vrules = random.choice(list(VRuleStyle._value2member_map_))
         self.left_padding_width = random.randint(0, 5)
         self.right_padding_width = random.randint(0, 5)
         self.vertical_char = random.choice(r"~!@#$%^&*()_+|-=\{}[];':\",./;<>?")
