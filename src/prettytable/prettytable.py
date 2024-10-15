@@ -2545,7 +2545,7 @@ class PrettyTable:
 
 
 def _str_block_width(val: str) -> int:
-    import wcwidth  # type: ignore[import-not-found]
+    import wcwidth  # type: ignore[import-untyped]
 
     return wcwidth.wcswidth(_re.sub("", val))
 

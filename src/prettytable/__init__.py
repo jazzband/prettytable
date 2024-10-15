@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
-
+from ._version import __version__
 from .prettytable import (
     ALL,
     DEFAULT,
@@ -44,14 +43,5 @@ __all__ = [
     "from_html",
     "from_html_one",
     "from_json",
+    "__version__",
 ]
-
-
-def __getattr__(name: str) -> Any:
-    if name == "__version__":
-        import importlib.metadata
-
-        return importlib.metadata.version(__name__)
-
-    msg = f"module '{__name__}' has no attribute '{name}'"
-    raise AttributeError(msg)
