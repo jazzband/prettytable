@@ -43,6 +43,9 @@ urls.Source = "https://github.com/jazzband/prettytable"
 [tool.hatch]
 version.source = "vcs"
 
+[tool.hatch.build.hooks.vcs]
+version-file = "src/prettytable/_version.py"
+
 [tool.hatch.version.raw-options]
 local_scheme = "no-local-version"
 
