@@ -2698,7 +2698,7 @@ def from_html(html_code: str, **kwargs) -> list[PrettyTable]:
 
 def from_html_one(html_code: str, **kwargs) -> PrettyTable:
     """
-    Generates a PrettyTables from a string of HTML code which contains only a
+    Generates a PrettyTable from a string of HTML code which contains only a
     single <table>
     """
 
