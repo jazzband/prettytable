@@ -35,13 +35,14 @@ from __future__ import annotations
 
 import io
 import re
+from collections.abc import Iterable, Sequence
 from html.parser import HTMLParser
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor
 
-    from typing_extensions import Self
+    from typing_extensions import Self, TypeAlias
 
 # hrule styles
 FRAME = 0
@@ -59,6 +60,8 @@ DOUBLE_BORDER = 15
 SINGLE_BORDER = 16
 RANDOM = 20
 BASE_ALIGN_VALUE = "base_align_value"
+
+RowType: TypeAlias = list[Any]
 
 _re = re.compile(r"\033\[[0-9;]*m|\033\(B")
 
@@ -164,7 +167,7 @@ class PrettyTable:
 
         # Data
         self._field_names: list[str] = []
-        self._rows: list[list] = []
+        self._rows: list[RowType] = []
         self._dividers: list[bool] = []
         self.align = {}
         self.valign = {}
@@ -611,7 +614,7 @@ class PrettyTable:
     # ATTRIBUTE MANAGEMENT       #
     ##############################
     @property
-    def rows(self) -> list[Any]:
+    def rows(self) -> list[RowType]:
         return self._rows[:]
 
     @property
@@ -1459,7 +1462,7 @@ class PrettyTable:
     # DATA INPUT METHODS         #
     ##############################
 
-    def add_rows(self, rows) -> None:
+    def add_rows(self, rows: Iterable[RowType]) -> None:
         """Add rows to the table
 
         Arguments:
@@ -1469,7 +1472,7 @@ class PrettyTable:
         for row in rows:
             self.add_row(row)
 
-    def add_row(self, row, *, divider: bool = False) -> None:
+    def add_row(self, row: RowType, *, divider: bool = False) -> None:
         """Add a row to the table
 
         Arguments:
@@ -1488,7 +1491,7 @@ class PrettyTable:
         self._rows.append(list(row))
         self._dividers.append(divider)
 
-    def del_row(self, row_index) -> None:
+    def del_row(self, row_index: int) -> None:
         """Delete a row from the table
 
         Arguments:
@@ -1505,7 +1508,11 @@ class PrettyTable:
         del self._dividers[row_index]
 
     def add_column(
-        self, fieldname, column, align: str = "c", valign: str = "t"
+        self,
+        fieldname: str,
+        column: Sequence[Any],
+        align: str = "c",
+        valign: str = "t",
     ) -> None:
         """Add a column to the table.
 
@@ -1547,7 +1554,7 @@ class PrettyTable:
         for i, row in enumerate(self._rows):
             row.insert(0, i + 1)
 
-    def del_column(self, fieldname) -> None:
+    def del_column(self, fieldname: str) -> None:
         """Delete a column from the table
 
         Arguments:
@@ -1729,7 +1736,7 @@ class PrettyTable:
             rpad = options["padding_width"]
         return lpad, rpad
 
-    def _get_rows(self, options):
+    def _get_rows(self, options) -> list[RowType]:
         """Return only those data rows that should be printed, based on slicing and
         sorting.
 
@@ -1777,13 +1784,13 @@ class PrettyTable:
 
         return dividers
 
-    def _format_row(self, row):
+    def _format_row(self, row: RowType) -> list[str]:
         return [
             self._format_value(field, value)
             for (field, value) in zip(self._field_names, row)
         ]
 
-    def _format_rows(self, rows):
+    def _format_rows(self, rows: list[RowType]) -> list[list[str]]:
         return [self._format_row(row) for row in rows]
 
     ##############################
@@ -2033,7 +2040,7 @@ class PrettyTable:
             bits.append(self._hrule)
         return "".join(bits)
 
-    def _stringify_row(self, row, options, hrule: str) -> str:
+    def _stringify_row(self, row: list[str], options, hrule: str) -> str:
         import textwrap
 
         for index, field, value, width in zip(
