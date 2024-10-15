@@ -40,7 +40,7 @@ repos:
       - id: pyproject-fmt
 
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.20.2
+    rev: v0.21
     hooks:
       - id: validate-pyproject
 
