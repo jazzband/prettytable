@@ -46,11 +46,18 @@ if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
     from typing_extensions import Self, TypeAlias
 
-# hrule styles
-FRAME = 0
-ALL = 1
-NONE = 2
-HEADER = 3
+
+class HRuleStyle(IntEnum):
+    FRAME = 0
+    ALL = 1
+    NONE = 2
+    HEADER = 3
+
+
+class VRuleStyle(IntEnum):
+    FRAME = 0
+    ALL = 1
+    NONE = 2
 
 
 class TableStyle(IntEnum):
@@ -65,6 +72,10 @@ class TableStyle(IntEnum):
 
 
 # keep for backwards compatibility
+FRAME: Final = 0
+ALL: Final = 1
+NONE: Final = 2
+HEADER: Final = 3
 DEFAULT: Final = TableStyle.DEFAULT
 MSWORD_FRIENDLY: Final = TableStyle.MSWORD_FRIENDLY
 PLAIN_COLUMNS: Final = TableStyle.PLAIN_COLUMNS
@@ -109,6 +120,8 @@ class PrettyTable:
     _header_style: HeaderStyleType
     _border: bool
     _preserve_internal_border: bool
+    _hrules: HRuleStyle
+    _vrules: VRuleStyle
     _padding_width: int
     _left_padding_width: int | None
     _right_padding_width: int | None
@@ -596,16 +609,16 @@ class PrettyTable:
 
     def _validate_hrules(self, name, val):
         try:
-            assert val in (ALL, FRAME, HEADER, NONE)
+            assert val in HRuleStyle
         except AssertionError:
-            msg = f"Invalid value for {name}. Must be ALL, FRAME, HEADER or NONE."
+            msg = f"Invalid value for {name}. Must be HRuleStyle."
             raise ValueError(msg)
 
     def _validate_vrules(self, name, val):
         try:
-            assert val in (ALL, FRAME, NONE)
+            assert val in VRuleStyle
         except AssertionError:
-            msg = f"Invalid value for {name}. Must be ALL, FRAME, or NONE."
+            msg = f"Invalid value for {name}. Must be VRuleStyle."
             raise ValueError(msg)
 
     def _validate_field_name(self, name, val):
@@ -961,7 +974,7 @@ class PrettyTable:
         self._preserve_internal_border = val
 
     @property
-    def hrules(self):
+    def hrules(self) -> HRuleStyle:
         """Controls printing of horizontal rules after rows
 
         Arguments:
@@ -970,12 +983,12 @@ class PrettyTable:
         return self._hrules
 
     @hrules.setter
-    def hrules(self, val) -> None:
+    def hrules(self, val: HRuleStyle) -> None:
         self._validate_option("hrules", val)
         self._hrules = val
 
     @property
-    def vrules(self):
+    def vrules(self) -> VRuleStyle:
         """Controls printing of vertical rules between columns
 
         Arguments:
@@ -984,7 +997,7 @@ class PrettyTable:
         return self._vrules
 
     @vrules.setter
-    def vrules(self, val) -> None:
+    def vrules(self, val: VRuleStyle) -> None:
         self._validate_option("vrules", val)
         self._vrules = val
 
