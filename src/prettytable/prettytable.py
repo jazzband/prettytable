@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import io
 import re
+import sys
 from collections.abc import Callable, Iterable, Sequence
 from enum import IntEnum
 from html.parser import HTMLParser
@@ -609,14 +610,20 @@ class PrettyTable:
 
     def _validate_hrules(self, name, val):
         try:
-            assert val in HRuleStyle
+            if sys.version_info >= (3, 12):
+                assert val in HRuleStyle
+            else:
+                assert val in HRuleStyle._value2member_map_
         except AssertionError:
             msg = f"Invalid value for {name}. Must be HRuleStyle."
             raise ValueError(msg)
 
     def _validate_vrules(self, name, val):
         try:
-            assert val in VRuleStyle
+            if sys.version_info >= (3, 12):
+                assert val in VRuleStyle
+            else:
+                assert val in VRuleStyle._value2member_map_
         except AssertionError:
             msg = f"Invalid value for {name}. Must be VRuleStyle."
             raise ValueError(msg)
