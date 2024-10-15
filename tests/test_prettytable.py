@@ -2606,3 +2606,51 @@ class TestGeneralOutput:
         t = helper_table()
         with pytest.raises(ValueError):
             t.get_formatted_string("pdf")
+
+
+class TestDeprecations:
+    @pytest.mark.parametrize(
+        ["module_name"],
+        [
+            ("prettytable",),
+            ("prettytable.prettytable",),
+        ],
+    )
+    @pytest.mark.parametrize(
+        ["name"],
+        [
+            ("FRAME",),
+            ("ALL",),
+            ("NONE",),
+            ("HEADER",),
+        ],
+    )
+    def test_hrule_constant_deprecations(self, module_name: str, name: str) -> None:
+        with pytest.deprecated_call(match=f"the '{name}' constant is deprecated"):
+            exec(f"from {module_name} import {name}")
+
+    @pytest.mark.parametrize(
+        ["module_name"],
+        [
+            ("prettytable",),
+            ("prettytable.prettytable",),
+        ],
+    )
+    @pytest.mark.parametrize(
+        ["name"],
+        [
+            ("DEFAULT",),
+            ("MSWORD_FRIENDLY",),
+            ("PLAIN_COLUMNS",),
+            ("MARKDOWN",),
+            ("ORGMODE",),
+            ("DOUBLE_BORDER",),
+            ("SINGLE_BORDER",),
+            ("RANDOM",),
+        ],
+    )
+    def test_tablestyle_constant_deprecations(
+        self, module_name: str, name: str
+    ) -> None:
+        with pytest.deprecated_call(match=f"the '{name}' constant is deprecated"):
+            exec(f"from {module_name} import {name}")
