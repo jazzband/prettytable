@@ -35,13 +35,14 @@ from __future__ import annotations
 
 import io
 import re
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from html.parser import HTMLParser
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor
 
+    from _typeshed import SupportsRichComparison
     from typing_extensions import Self, TypeAlias
 
 # hrule styles
@@ -77,10 +78,13 @@ class PrettyTable:
     _xhtml: bool
     _min_table_width: int | None
     _max_table_width: int | None
+    _fields: Sequence[str | None] | None
     _title: str | None
     _start: int
     _end: int | None
+    _sortby: str | None
     _reversesort: bool
+    _sort_key: Callable[[RowType], SupportsRichComparison]
     _header: bool
     _border: bool
     _preserve_internal_border: bool
@@ -107,7 +111,7 @@ class PrettyTable:
     _escape_data: bool
     _hrule: str
 
-    def __init__(self, field_names=None, **kwargs) -> None:
+    def __init__(self, field_names: Sequence[str] | None = None, **kwargs) -> None:
         """Return a new PrettyTable instance
 
         Arguments:
@@ -781,12 +785,12 @@ class PrettyTable:
         self._max_table_width = val
 
     @property
-    def fields(self):
+    def fields(self) -> Sequence[str | None] | None:
         """List or tuple of field names to include in displays"""
         return self._fields
 
     @fields.setter
-    def fields(self, val) -> None:
+    def fields(self, val: Sequence[str | None]) -> None:
         self._validate_option("fields", val)
         self._fields = val
 
@@ -832,7 +836,7 @@ class PrettyTable:
         self._end = val
 
     @property
-    def sortby(self):
+    def sortby(self) -> str | None:
         """Name of field by which to sort rows
 
         Arguments:
@@ -841,7 +845,7 @@ class PrettyTable:
         return self._sortby
 
     @sortby.setter
-    def sortby(self, val) -> None:
+    def sortby(self, val: str | None) -> None:
         self._validate_option("sortby", val)
         self._sortby = val
 
@@ -861,7 +865,7 @@ class PrettyTable:
         self._reversesort = val
 
     @property
-    def sort_key(self):
+    def sort_key(self) -> Callable[[RowType], SupportsRichComparison]:
         """Sorting key function, applied to data points before sorting
 
         Arguments:
@@ -871,7 +875,7 @@ class PrettyTable:
         return self._sort_key
 
     @sort_key.setter
-    def sort_key(self, val) -> None:
+    def sort_key(self, val: Callable[[RowType], SupportsRichComparison]) -> None:
         self._validate_option("sort_key", val)
         self._sort_key = val
 
@@ -1627,7 +1631,7 @@ class PrettyTable:
     # MISC PRIVATE METHODS       #
     ##############################
 
-    def _format_value(self, field, value):
+    def _format_value(self, field: str, value: Any) -> str:
         if isinstance(value, int) and field in self._int_format:
             return (f"%{self._int_format[field]}d") % value
         elif isinstance(value, float) and field in self._float_format:
@@ -1651,7 +1655,7 @@ class PrettyTable:
                 table_width += self._widths[index] + per_col_padding + 1
         return table_width
 
-    def _compute_widths(self, rows, options) -> None:
+    def _compute_widths(self, rows: list[list[str]], options) -> None:
         if options["header"]:
             widths = [_get_size(field)[0] for field in self._field_names]
         else:
@@ -2494,7 +2498,7 @@ class PrettyTable:
     def _get_formatted_latex_string(self, options) -> str:
         lines: list[str] = []
 
-        wanted_fields = []
+        wanted_fields: list[str] = []
         if options["fields"]:
             wanted_fields = [
                 field for field in self._field_names if field in options["fields"]
@@ -2562,7 +2566,7 @@ def _str_block_width(val: str) -> int:
 ##############################
 
 
-def from_csv(fp, field_names: Any | None = None, **kwargs) -> PrettyTable:
+def from_csv(fp, field_names: Sequence[str] | None = None, **kwargs) -> PrettyTable:
     import csv
 
     fmtparams = {}
