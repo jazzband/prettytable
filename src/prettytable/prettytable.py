@@ -165,9 +165,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: FRAME, HEADER, ALL, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         custom_format - controls formatting of any column using callable
@@ -979,7 +979,7 @@ class PrettyTable:
 
         Arguments:
 
-        hrules - horizontal rules style.  Allowed values: FRAME, ALL, HEADER, NONE"""
+        hrules - horizontal rules style.  Allowed values: HRuleStyle"""
         return self._hrules
 
     @hrules.setter
@@ -993,7 +993,7 @@ class PrettyTable:
 
         Arguments:
 
-        vrules - vertical rules style.  Allowed values: FRAME, ALL, NONE"""
+        vrules - vertical rules style.  Allowed values: VRuleStyle"""
         return self._vrules
 
     @vrules.setter
@@ -1851,9 +1851,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: ALL, FRAME, HEADER, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         custom_format - controls formatting of any column using callable
@@ -2287,9 +2287,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: ALL, FRAME, HEADER, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         custom_format - controls formatting of any column using callable
@@ -2496,9 +2496,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: ALL, FRAME, HEADER, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         sortby - name of field to sort rows by
