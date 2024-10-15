@@ -168,6 +168,4 @@ class TestColorTableRendering:
             if isinstance(theme, Theme):
                 table.theme = theme
                 result = str(table)
-                print(f"\n{theme_name} Theme:")
-                print(result)
                 assert result  # Simple check to ensure rendering doesn't fail
