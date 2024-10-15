@@ -2618,27 +2618,27 @@ class TableHandler(HTMLParser):
         self.kwargs = kwargs
         self.tables: list[PrettyTable] = []
         self.last_row: list[str] = []
-        self.rows: list[Any] = []
+        self.rows: list[tuple[list[str], bool]] = []
         self.max_row_width = 0
-        self.active = None
+        self.active: str | None = None
         self.last_content = ""
         self.is_last_row_header = False
         self.colspan = 0
 
-    def handle_starttag(self, tag, attrs) -> None:
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.active = tag
         if tag == "th":
             self.is_last_row_header = True
         for key, value in attrs:
             if key == "colspan":
-                self.colspan = int(value)
+                self.colspan = int(value)  # type: ignore[arg-type]
 
-    def handle_endtag(self, tag) -> None:
+    def handle_endtag(self, tag: str) -> None:
         if tag in ["th", "td"]:
             stripped_content = self.last_content.strip()
             self.last_row.append(stripped_content)
             if self.colspan:
-                for i in range(1, self.colspan):
+                for _ in range(1, self.colspan):
                     self.last_row.append("")
                 self.colspan = 0
 
@@ -2654,10 +2654,10 @@ class TableHandler(HTMLParser):
         self.last_content = " "
         self.active = None
 
-    def handle_data(self, data) -> None:
+    def handle_data(self, data: str) -> None:
         self.last_content += data
 
-    def generate_table(self, rows) -> PrettyTable:
+    def generate_table(self, rows: list[tuple[list[str], bool]]) -> PrettyTable:
         """
         Generates from a list of rows a PrettyTable object.
         """
@@ -2675,7 +2675,7 @@ class TableHandler(HTMLParser):
                 table.add_row(row[0])
         return table
 
-    def make_fields_unique(self, fields) -> None:
+    def make_fields_unique(self, fields: list[str]) -> None:
         """
         iterates over the row and make each field unique
         """
