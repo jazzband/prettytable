@@ -36,6 +36,7 @@ from __future__ import annotations
 import io
 import re
 from collections.abc import Callable, Iterable, Sequence
+from enum import IntEnum
 from html.parser import HTMLParser
 from typing import TYPE_CHECKING, Any, Final, Literal
 
@@ -51,15 +52,29 @@ ALL = 1
 NONE = 2
 HEADER = 3
 
-# Table styles
-DEFAULT = 10
-MSWORD_FRIENDLY = 11
-PLAIN_COLUMNS = 12
-MARKDOWN = 13
-ORGMODE = 14
-DOUBLE_BORDER = 15
-SINGLE_BORDER = 16
-RANDOM = 20
+
+class TableStyle(IntEnum):
+    DEFAULT = 10
+    MSWORD_FRIENDLY = 11
+    PLAIN_COLUMNS = 12
+    MARKDOWN = 13
+    ORGMODE = 14
+    DOUBLE_BORDER = 15
+    SINGLE_BORDER = 16
+    RANDOM = 20
+
+
+# keep for backwards compatibility
+DEFAULT: Final = TableStyle.DEFAULT
+MSWORD_FRIENDLY: Final = TableStyle.MSWORD_FRIENDLY
+PLAIN_COLUMNS: Final = TableStyle.PLAIN_COLUMNS
+MARKDOWN: Final = TableStyle.MARKDOWN
+ORGMODE: Final = TableStyle.ORGMODE
+DOUBLE_BORDER: Final = TableStyle.DOUBLE_BORDER
+SINGLE_BORDER: Final = TableStyle.SINGLE_BORDER
+RANDOM: Final = TableStyle.RANDOM
+# --------------------------------
+
 BASE_ALIGN_VALUE: Final = "base_align_value"
 
 RowType: TypeAlias = list[Any]
@@ -115,6 +130,8 @@ class PrettyTable:
     _attributes: dict[str, str]
     _escape_header: bool
     _escape_data: bool
+    _style: TableStyle | None
+    orgmode: bool
     _hrule: str
 
     def __init__(self, field_names: Sequence[str] | None = None, **kwargs) -> None:
@@ -1353,23 +1370,23 @@ class PrettyTable:
     # PRESET STYLE LOGIC         #
     ##############################
 
-    def set_style(self, style) -> None:
+    def set_style(self, style: TableStyle) -> None:
         self._style = style
-        if style == DEFAULT:
+        if style == TableStyle.DEFAULT:
             self._set_default_style()
-        elif style == MSWORD_FRIENDLY:
+        elif style == TableStyle.MSWORD_FRIENDLY:
             self._set_msword_style()
-        elif style == PLAIN_COLUMNS:
+        elif style == TableStyle.PLAIN_COLUMNS:
             self._set_columns_style()
-        elif style == MARKDOWN:
+        elif style == TableStyle.MARKDOWN:
             self._set_markdown_style()
-        elif style == ORGMODE:
+        elif style == TableStyle.ORGMODE:
             self._set_orgmode_style()
-        elif style == DOUBLE_BORDER:
+        elif style == TableStyle.DOUBLE_BORDER:
             self._set_double_border_style()
-        elif style == SINGLE_BORDER:
+        elif style == TableStyle.SINGLE_BORDER:
             self._set_single_border_style()
-        elif style == RANDOM:
+        elif style == TableStyle.RANDOM:
             self._set_random_style()
         else:
             msg = "Invalid pre-set style"
@@ -1683,7 +1700,7 @@ class PrettyTable:
                 if fieldname in self.min_width:
                     widths[index] = max(widths[index], self.min_width[fieldname])
 
-                if self._style == MARKDOWN:
+                if self._style == TableStyle.MARKDOWN:
                     # Markdown needs at least one hyphen in the divider
                     if self._align[fieldname] in ("l", "r"):
                         min_width = 1
