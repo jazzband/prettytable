@@ -37,7 +37,7 @@ import io
 import re
 from collections.abc import Iterable, Sequence
 from html.parser import HTMLParser
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final, Literal
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor
@@ -59,9 +59,12 @@ ORGMODE = 14
 DOUBLE_BORDER = 15
 SINGLE_BORDER = 16
 RANDOM = 20
-BASE_ALIGN_VALUE = "base_align_value"
+BASE_ALIGN_VALUE: Final = "base_align_value"
 
 RowType: TypeAlias = list[Any]
+AlignType: TypeAlias = Literal["l", "c", "r"]
+VAlignType: TypeAlias = Literal["t", "m", "b"]
+HeaderStyleType: TypeAlias = Literal["cap", "title", "upper", "lower", None]
 
 _re = re.compile(r"\033\[[0-9;]*m|\033\(B")
 
@@ -75,6 +78,8 @@ def _get_size(text: str) -> tuple[int, int]:
 
 class PrettyTable:
     _xhtml: bool
+    _align: dict[str, AlignType]
+    _valign: dict[str, VAlignType]
     _min_table_width: int | None
     _max_table_width: int | None
     _title: str | None
@@ -82,6 +87,7 @@ class PrettyTable:
     _end: int | None
     _reversesort: bool
     _header: bool
+    _header_style: HeaderStyleType
     _border: bool
     _preserve_internal_border: bool
     _padding_width: int
@@ -319,7 +325,7 @@ class PrettyTable:
         self._xhtml = kwargs["xhtml"] or False
         self._attributes = kwargs["attributes"] or {}
 
-    def _justify(self, text: str, width: int, align) -> str:
+    def _justify(self, text: str, width: int, align: AlignType) -> str:
         excess = width - _str_block_width(text)
         if align == "l":
             return text + excess * " "
@@ -513,9 +519,9 @@ class PrettyTable:
 
     def _validate_valign(self, val):
         try:
-            assert val in ["t", "m", "b", None]
+            assert val in ["t", "m", "b"]
         except AssertionError:
-            msg = f"Alignment {val} is invalid, use t, m, b or None"
+            msg = f"Alignment {val} is invalid, use t, m, b"
             raise ValueError(msg)
 
     def _validate_nonnegative_int(self, name, val):
@@ -890,7 +896,7 @@ class PrettyTable:
         self._header = val
 
     @property
-    def header_style(self):
+    def header_style(self) -> HeaderStyleType:
         """Controls stylisation applied to field names in header
 
         Arguments:
@@ -900,7 +906,7 @@ class PrettyTable:
         return self._header_style
 
     @header_style.setter
-    def header_style(self, val) -> None:
+    def header_style(self, val: HeaderStyleType) -> None:
         self._validate_header_style(val)
         self._header_style = val
 
@@ -1511,8 +1517,8 @@ class PrettyTable:
         self,
         fieldname: str,
         column: Sequence[Any],
-        align: str = "c",
-        valign: str = "t",
+        align: AlignType = "c",
+        valign: VAlignType = "t",
     ) -> None:
         """Add a column to the table.
 
