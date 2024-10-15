@@ -96,6 +96,8 @@ class PrettyTable:
     _xhtml: bool
     _align: dict[str, AlignType]
     _valign: dict[str, VAlignType]
+    _max_width: dict[str, int]
+    _min_width: dict[str, int]
     _min_table_width: int | None
     _max_table_width: int | None
     _fields: Sequence[str | None] | None
@@ -132,6 +134,7 @@ class PrettyTable:
     _escape_data: bool
     _style: TableStyle | None
     orgmode: bool
+    _widths: list[int]
     _hrule: str
 
     def __init__(self, field_names: Sequence[str] | None = None, **kwargs) -> None:
@@ -239,7 +242,6 @@ class PrettyTable:
             "horizontal_align_char",
             "junction_char",
             "header_style",
-            "valign",
             "xhtml",
             "print_empty",
             "oldsortslice",
@@ -269,7 +271,7 @@ class PrettyTable:
         self._start = kwargs["start"] or 0
         self._end = kwargs["end"] or None
         self._fields = kwargs["fields"] or None
-        self._none_format: dict[None, None] = {}
+        self._none_format: dict[str, str | None] = {}
 
         if kwargs["header"] in (True, False):
             self._header = kwargs["header"]
@@ -1687,9 +1689,11 @@ class PrettyTable:
         for row in rows:
             for index, value in enumerate(row):
                 fieldname = self.field_names[index]
-                if self.none_format.get(fieldname) is not None:
-                    if value == "None" or value is None:
-                        value = self.none_format.get(fieldname)
+                if (
+                    value == "None"
+                    and (none_val := self.none_format.get(fieldname)) is not None
+                ):
+                    value = none_val
                 if fieldname in self.max_width:
                     widths[index] = max(
                         widths[index],
@@ -1934,7 +1938,9 @@ class PrettyTable:
 
         return "\n".join(lines)
 
-    def _stringify_hrule(self, options, where: str = "") -> str:
+    def _stringify_hrule(
+        self, options, where: Literal["top_", "bottom_", ""] = ""
+    ) -> str:
         if not options["border"] and not options["preserve_internal_border"]:
             return ""
         lpad, rpad = self._get_padding_widths(options)
@@ -1974,7 +1980,7 @@ class PrettyTable:
         return "".join(bits)
 
     def _stringify_title(self, title: str, options) -> str:
-        lines = []
+        lines: list[str] = []
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
             if options["vrules"] == ALL:
@@ -2075,10 +2081,13 @@ class PrettyTable:
         ):
             # Enforce max widths
             lines = value.split("\n")
-            new_lines = []
+            new_lines: list[str] = []
             for line in lines:
-                if line == "None" and self.none_format.get(field) is not None:
-                    line = self.none_format[field]
+                if (
+                    line == "None"
+                    and (none_val := self.none_format.get(field)) is not None
+                ):
+                    line = none_val
                 if _str_block_width(line) > width:
                     line = textwrap.fill(line, width)
                 new_lines.append(line)
@@ -2220,7 +2229,11 @@ class PrettyTable:
         import json
 
         options = self._get_options(kwargs)
-        json_options: Any = {"indent": 4, "separators": (",", ": "), "sort_keys": True}
+        json_options: dict[str, Any] = {
+            "indent": 4,
+            "separators": (",", ": "),
+            "sort_keys": True,
+        }
         json_options.update(
             {key: value for key, value in kwargs.items() if key not in options}
         )
