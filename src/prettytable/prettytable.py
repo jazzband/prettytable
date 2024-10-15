@@ -1412,7 +1412,7 @@ class PrettyTable:
     def _set_markdown_style(self) -> None:
         self.header = True
         self.border = True
-        self._hrules = None
+        self._hrules = HRuleStyle.HEADER
         self.padding_width = 1
         self.left_padding_width = 1
         self.right_padding_width = 1
