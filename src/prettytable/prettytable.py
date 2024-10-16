@@ -46,11 +46,18 @@ if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
     from typing_extensions import Self, TypeAlias
 
-# hrule styles
-FRAME = 0
-ALL = 1
-NONE = 2
-HEADER = 3
+
+class HRuleStyle(IntEnum):
+    FRAME = 0
+    ALL = 1
+    NONE = 2
+    HEADER = 3
+
+
+class VRuleStyle(IntEnum):
+    FRAME = 0
+    ALL = 1
+    NONE = 2
 
 
 class TableStyle(IntEnum):
@@ -65,6 +72,10 @@ class TableStyle(IntEnum):
 
 
 # keep for backwards compatibility
+FRAME: Final = 0
+ALL: Final = 1
+NONE: Final = 2
+HEADER: Final = 3
 DEFAULT: Final = TableStyle.DEFAULT
 MSWORD_FRIENDLY: Final = TableStyle.MSWORD_FRIENDLY
 PLAIN_COLUMNS: Final = TableStyle.PLAIN_COLUMNS
@@ -111,6 +122,8 @@ class PrettyTable:
     _header_style: HeaderStyleType
     _border: bool
     _preserve_internal_border: bool
+    _hrules: HRuleStyle
+    _vrules: VRuleStyle
     _padding_width: int
     _left_padding_width: int | None
     _right_padding_width: int | None
@@ -155,9 +168,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: FRAME, HEADER, ALL, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         custom_format - controls formatting of any column using callable
@@ -286,8 +299,8 @@ class PrettyTable:
             self._preserve_internal_border = kwargs["preserve_internal_border"]
         else:
             self._preserve_internal_border = False
-        self._hrules = kwargs["hrules"] or FRAME
-        self._vrules = kwargs["vrules"] or ALL
+        self._hrules = kwargs["hrules"] or HRuleStyle.FRAME
+        self._vrules = kwargs["vrules"] or VRuleStyle.ALL
 
         self._sortby = kwargs["sortby"] or None
         if kwargs["reversesort"] in (True, False):
@@ -598,16 +611,16 @@ class PrettyTable:
 
     def _validate_hrules(self, name, val):
         try:
-            assert val in (ALL, FRAME, HEADER, NONE)
+            assert val in list(HRuleStyle)
         except AssertionError:
-            msg = f"Invalid value for {name}. Must be ALL, FRAME, HEADER or NONE."
+            msg = f"Invalid value for {name}. Must be HRuleStyle."
             raise ValueError(msg)
 
     def _validate_vrules(self, name, val):
         try:
-            assert val in (ALL, FRAME, NONE)
+            assert val in list(VRuleStyle)
         except AssertionError:
-            msg = f"Invalid value for {name}. Must be ALL, FRAME, or NONE."
+            msg = f"Invalid value for {name}. Must be VRuleStyle."
             raise ValueError(msg)
 
     def _validate_field_name(self, name, val):
@@ -963,30 +976,30 @@ class PrettyTable:
         self._preserve_internal_border = val
 
     @property
-    def hrules(self):
+    def hrules(self) -> HRuleStyle:
         """Controls printing of horizontal rules after rows
 
         Arguments:
 
-        hrules - horizontal rules style.  Allowed values: FRAME, ALL, HEADER, NONE"""
+        hrules - horizontal rules style.  Allowed values: HRuleStyle"""
         return self._hrules
 
     @hrules.setter
-    def hrules(self, val) -> None:
+    def hrules(self, val: HRuleStyle) -> None:
         self._validate_option("hrules", val)
         self._hrules = val
 
     @property
-    def vrules(self):
+    def vrules(self) -> VRuleStyle:
         """Controls printing of vertical rules between columns
 
         Arguments:
 
-        vrules - vertical rules style.  Allowed values: FRAME, ALL, NONE"""
+        vrules - vertical rules style.  Allowed values: VRuleStyle"""
         return self._vrules
 
     @vrules.setter
-    def vrules(self, val) -> None:
+    def vrules(self, val: VRuleStyle) -> None:
         self._validate_option("vrules", val)
         self._vrules = val
 
@@ -1401,7 +1414,7 @@ class PrettyTable:
     def _set_markdown_style(self) -> None:
         self.header = True
         self.border = True
-        self._hrules = None
+        self._hrules = HRuleStyle.HEADER
         self.padding_width = 1
         self.left_padding_width = 1
         self.right_padding_width = 1
@@ -1412,8 +1425,8 @@ class PrettyTable:
     def _set_default_style(self) -> None:
         self.header = True
         self.border = True
-        self._hrules = FRAME
-        self._vrules = ALL
+        self._hrules = HRuleStyle.FRAME
+        self._vrules = VRuleStyle.ALL
         self.padding_width = 1
         self.left_padding_width = 1
         self.right_padding_width = 1
@@ -1433,7 +1446,7 @@ class PrettyTable:
     def _set_msword_style(self) -> None:
         self.header = True
         self.border = True
-        self._hrules = NONE
+        self._hrules = HRuleStyle.NONE
         self.padding_width = 1
         self.left_padding_width = 1
         self.right_padding_width = 1
@@ -1478,8 +1491,8 @@ class PrettyTable:
 
         self.header = random.choice((True, False))
         self.border = random.choice((True, False))
-        self._hrules = random.choice((ALL, FRAME, HEADER, NONE))
-        self._vrules = random.choice((ALL, FRAME, NONE))
+        self._hrules = random.choice(list(HRuleStyle))
+        self._vrules = random.choice(list(VRuleStyle))
         self.left_padding_width = random.randint(0, 5)
         self.right_padding_width = random.randint(0, 5)
         self.vertical_char = random.choice(r"~!@#$%^&*()_+|-=\{}[];':\",./;<>?")
@@ -1666,9 +1679,9 @@ class PrettyTable:
         return formatter(field, value)
 
     def _compute_table_width(self, options) -> int:
-        if options["vrules"] == FRAME:
+        if options["vrules"] == VRuleStyle.FRAME:
             table_width = 2
-        if options["vrules"] == ALL:
+        if options["vrules"] == VRuleStyle.ALL:
             table_width = 1
         else:
             table_width = 0
@@ -1730,7 +1743,7 @@ class PrettyTable:
         if self._min_table_width or options["title"]:
             if options["title"]:
                 title_width = len(options["title"]) + per_col_padding
-                if options["vrules"] in (FRAME, ALL):
+                if options["vrules"] in (VRuleStyle.FRAME, VRuleStyle.ALL):
                     title_width += 2
             else:
                 title_width = 0
@@ -1842,9 +1855,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: ALL, FRAME, HEADER, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         custom_format - controls formatting of any column using callable
@@ -1904,9 +1917,12 @@ class PrettyTable:
         # Add header or top of border
         if options["header"]:
             lines.append(self._stringify_header(options))
-        elif options["border"] and options["hrules"] in (ALL, FRAME):
+        elif options["border"] and options["hrules"] in (
+            HRuleStyle.ALL,
+            HRuleStyle.FRAME,
+        ):
             lines.append(self._stringify_hrule(options, where="top_"))
-            if title and options["vrules"] in (ALL, FRAME):
+            if title and options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
                 lines[-1] = (
                     self.left_junction_char + lines[-1][1:-1] + self.right_junction_char
                 )
@@ -1926,7 +1942,7 @@ class PrettyTable:
             )
 
         # Add bottom of border
-        if options["border"] and options["hrules"] == FRAME:
+        if options["border"] and options["hrules"] == HRuleStyle.FRAME:
             lines.append(self._stringify_hrule(options, where="bottom_"))
 
         if "orgmode" in self.__dict__ and self.orgmode:
@@ -1944,7 +1960,7 @@ class PrettyTable:
         if not options["border"] and not options["preserve_internal_border"]:
             return ""
         lpad, rpad = self._get_padding_widths(options)
-        if options["vrules"] in (ALL, FRAME):
+        if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
             bits = [options[where + "left_junction_char"]]
         else:
             bits = [options["horizontal_char"]]
@@ -1966,11 +1982,11 @@ class PrettyTable:
                     line = line[:-2] + self._horizontal_align_char + " "
 
             bits.append(line)
-            if options["vrules"] == ALL:
+            if options["vrules"] == VRuleStyle.ALL:
                 bits.append(options[where + "junction_char"])
             else:
                 bits.append(options["horizontal_char"])
-        if options["vrules"] in (ALL, FRAME):
+        if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
             bits.pop()
             bits.append(options[where + "right_junction_char"])
 
@@ -1983,16 +1999,17 @@ class PrettyTable:
         lines: list[str] = []
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
-            if options["vrules"] == ALL:
-                options["vrules"] = FRAME
+            if options["vrules"] == VRuleStyle.ALL:
+                options["vrules"] = VRuleStyle.FRAME
                 lines.append(self._stringify_hrule(options, "top_"))
-                options["vrules"] = ALL
-            elif options["vrules"] == FRAME:
+                options["vrules"] = VRuleStyle.ALL
+            elif options["vrules"] == VRuleStyle.FRAME:
                 lines.append(self._stringify_hrule(options, "top_"))
         bits: list[str] = []
         endpoint = (
             options["vertical_char"]
-            if options["vrules"] in (ALL, FRAME) and options["border"]
+            if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME)
+            and options["border"]
             else " "
         )
         bits.append(endpoint)
@@ -2009,9 +2026,12 @@ class PrettyTable:
         bits: list[str] = []
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
-            if options["hrules"] in (ALL, FRAME):
+            if options["hrules"] in (HRuleStyle.ALL, HRuleStyle.FRAME):
                 bits.append(self._stringify_hrule(options, "top_"))
-                if options["title"] and options["vrules"] in (ALL, FRAME):
+                if options["title"] and options["vrules"] in (
+                    VRuleStyle.ALL,
+                    VRuleStyle.FRAME,
+                ):
                     left_j_len = len(self.left_junction_char)
                     right_j_len = len(self.right_junction_char)
                     bits[-1] = (
@@ -2020,13 +2040,13 @@ class PrettyTable:
                         + self.right_junction_char
                     )
                 bits.append("\n")
-            if options["vrules"] in (ALL, FRAME):
+            if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
         # For tables with no data or field names
         if not self._field_names:
-            if options["vrules"] in (ALL, FRAME):
+            if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
                 bits.append(options["vertical_char"])
             else:
                 bits.append(" ")
@@ -2051,7 +2071,7 @@ class PrettyTable:
                 + " " * rpad
             )
             if options["border"] or options["preserve_internal_border"]:
-                if options["vrules"] == ALL:
+                if options["vrules"] == VRuleStyle.ALL:
                     bits.append(options["vertical_char"])
                 else:
                     bits.append(" ")
@@ -2063,12 +2083,12 @@ class PrettyTable:
             bits.append(" ")
         # If vrules is FRAME, then we just appended a space at the end
         # of the last field, when we really want a vertical character
-        if options["border"] and options["vrules"] == FRAME:
+        if options["border"] and options["vrules"] == VRuleStyle.FRAME:
             bits.pop()
             bits.append(options["vertical_char"])
         if (options["border"] or options["preserve_internal_border"]) and options[
             "hrules"
-        ] != NONE:
+        ] != HRuleStyle.NONE:
             bits.append("\n")
             bits.append(self._hrule)
         return "".join(bits)
@@ -2106,7 +2126,7 @@ class PrettyTable:
         for y in range(0, row_height):
             bits.append([])
             if options["border"]:
-                if options["vrules"] in (ALL, FRAME):
+                if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
                     bits[y].append(self.vertical_char)
                 else:
                     bits[y].append(" ")
@@ -2137,7 +2157,7 @@ class PrettyTable:
                     + " " * rpad
                 )
                 if options["border"] or options["preserve_internal_border"]:
-                    if options["vrules"] == ALL:
+                    if options["vrules"] == VRuleStyle.ALL:
                         bits[y].append(self.vertical_char)
                     else:
                         bits[y].append(" ")
@@ -2151,11 +2171,11 @@ class PrettyTable:
         # If vrules is FRAME, then we just appended a space at the end
         # of the last field, when we really want a vertical character
         for y in range(0, row_height):
-            if options["border"] and options["vrules"] == FRAME:
+            if options["border"] and options["vrules"] == VRuleStyle.FRAME:
                 bits[y].pop()
                 bits[y].append(options["vertical_char"])
 
-        if options["border"] and options["hrules"] == ALL:
+        if options["border"] and options["hrules"] == HRuleStyle.ALL:
             bits[row_height - 1].append("\n")
             bits[row_height - 1].append(hrule)
 
@@ -2280,9 +2300,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: ALL, FRAME, HEADER, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         custom_format - controls formatting of any column using callable
@@ -2379,19 +2399,28 @@ class PrettyTable:
 
         open_tag = ["<table"]
         if options["border"]:
-            if options["hrules"] == ALL and options["vrules"] == ALL:
+            if (
+                options["hrules"] == HRuleStyle.ALL
+                and options["vrules"] == VRuleStyle.ALL
+            ):
                 open_tag.append(' frame="box" rules="all"')
-            elif options["hrules"] == FRAME and options["vrules"] == FRAME:
+            elif (
+                options["hrules"] == HRuleStyle.FRAME
+                and options["vrules"] == VRuleStyle.FRAME
+            ):
                 open_tag.append(' frame="box"')
-            elif options["hrules"] == FRAME and options["vrules"] == ALL:
+            elif (
+                options["hrules"] == HRuleStyle.FRAME
+                and options["vrules"] == VRuleStyle.ALL
+            ):
                 open_tag.append(' frame="box" rules="cols"')
-            elif options["hrules"] == FRAME:
+            elif options["hrules"] == HRuleStyle.FRAME:
                 open_tag.append(' frame="hsides"')
-            elif options["hrules"] == ALL:
+            elif options["hrules"] == HRuleStyle.ALL:
                 open_tag.append(' frame="hsides" rules="rows"')
-            elif options["vrules"] == FRAME:
+            elif options["vrules"] == VRuleStyle.FRAME:
                 open_tag.append(' frame="vsides"')
-            elif options["vrules"] == ALL:
+            elif options["vrules"] == VRuleStyle.ALL:
                 open_tag.append(' frame="vsides" rules="cols"')
         if not options["border"] and options["preserve_internal_border"]:
             open_tag.append(' rules="cols"')
@@ -2480,9 +2509,9 @@ class PrettyTable:
         preserve_internal_border - print a border inside the table even if
             border is disabled (True or False)
         hrules - controls printing of horizontal rules after rows.
-            Allowed values: ALL, FRAME, HEADER, NONE
+            Allowed values: HRuleStyle
         vrules - controls printing of vertical rules between columns.
-            Allowed values: FRAME, ALL, NONE
+            Allowed values: VRuleStyle
         int_format - controls formatting of integer data
         float_format - controls formatting of floating point data
         sortby - name of field to sort rows by
@@ -2543,19 +2572,25 @@ class PrettyTable:
             wanted_fields = self._field_names
 
         wanted_alignments = [self._align[field] for field in wanted_fields]
-        if options["border"] and options["vrules"] == ALL:
+        if options["border"] and options["vrules"] == VRuleStyle.ALL:
             alignment_str = "|".join(wanted_alignments)
         elif not options["border"] and options["preserve_internal_border"]:
             alignment_str = "|".join(wanted_alignments)
         else:
             alignment_str = "".join(wanted_alignments)
 
-        if options["border"] and options["vrules"] in [ALL, FRAME]:
+        if options["border"] and options["vrules"] in [
+            VRuleStyle.ALL,
+            VRuleStyle.FRAME,
+        ]:
             alignment_str = "|" + alignment_str + "|"
 
         begin_cmd = f"\\begin{{tabular}}{{{alignment_str}}}"
         lines.append(begin_cmd)
-        if options["border"] and options["hrules"] in [ALL, FRAME]:
+        if options["border"] and options["hrules"] in [
+            HRuleStyle.ALL,
+            HRuleStyle.FRAME,
+        ]:
             lines.append("\\hline")
 
         # Headers
@@ -2563,7 +2598,7 @@ class PrettyTable:
             lines.append(" & ".join(wanted_fields) + " \\\\")
         if (options["border"] or options["preserve_internal_border"]) and options[
             "hrules"
-        ] in [ALL, HEADER]:
+        ] in [HRuleStyle.ALL, HRuleStyle.HEADER]:
             lines.append("\\hline")
 
         # Data
@@ -2575,10 +2610,10 @@ class PrettyTable:
                 d for f, d in zip(self._field_names, row) if f in wanted_fields
             ]
             lines.append(" & ".join(wanted_data) + " \\\\")
-            if options["border"] and options["hrules"] == ALL:
+            if options["border"] and options["hrules"] == HRuleStyle.ALL:
                 lines.append("\\hline")
 
-        if options["border"] and options["hrules"] == FRAME:
+        if options["border"] and options["hrules"] == HRuleStyle.FRAME:
             lines.append("\\hline")
 
         lines.append("\\end{tabular}")
