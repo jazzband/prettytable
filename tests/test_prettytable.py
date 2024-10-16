@@ -314,22 +314,22 @@ def field_name_less_table() -> PrettyTable:
 class TestFieldNameLessTable:
     """Make sure that building and stringing a table with no fieldnames works fine"""
 
-    def test_can_string_ascii(self, field_name_less_table: prettytable) -> None:
+    def test_can_string_ascii(self, field_name_less_table: PrettyTable) -> None:
         output = field_name_less_table.get_string()
         assert "|  Field 1  | Field 2 | Field 3 | Field 4 |" in output
         assert "|  Adelaide |   1295  | 1158259 |  600.5  |" in output
 
-    def test_can_string_html(self, field_name_less_table: prettytable) -> None:
+    def test_can_string_html(self, field_name_less_table: PrettyTable) -> None:
         output = field_name_less_table.get_html_string()
         assert "<th>Field 1</th>" in output
         assert "<td>Adelaide</td>" in output
 
-    def test_can_string_latex(self, field_name_less_table: prettytable) -> None:
+    def test_can_string_latex(self, field_name_less_table: PrettyTable) -> None:
         output = field_name_less_table.get_latex_string()
         assert "Field 1 & Field 2 & Field 3 & Field 4 \\\\" in output
         assert "Adelaide & 1295 & 1158259 & 600.5 \\\\" in output
 
-    def test_add_field_names_later(self, field_name_less_table: prettytable) -> None:
+    def test_add_field_names_later(self, field_name_less_table: PrettyTable) -> None:
         field_name_less_table.field_names = [
             "City name",
             "Area",
@@ -376,21 +376,21 @@ class TestAlignment:
     """Make sure alignment works regardless of when it was set"""
 
     def test_aligned_ascii(
-        self, aligned_before_table: prettytable, aligned_after_table: prettytable
+        self, aligned_before_table: PrettyTable, aligned_after_table: PrettyTable
     ) -> None:
         before = aligned_before_table.get_string()
         after = aligned_after_table.get_string()
         assert before == after
 
     def test_aligned_html(
-        self, aligned_before_table: prettytable, aligned_after_table: prettytable
+        self, aligned_before_table: PrettyTable, aligned_after_table: PrettyTable
     ) -> None:
         before = aligned_before_table.get_html_string()
         after = aligned_after_table.get_html_string()
         assert before == after
 
     def test_aligned_latex(
-        self, aligned_before_table: prettytable, aligned_after_table: prettytable
+        self, aligned_before_table: PrettyTable, aligned_after_table: PrettyTable
     ) -> None:
         before = aligned_before_table.get_latex_string()
         after = aligned_after_table.get_latex_string()
@@ -428,7 +428,7 @@ def city_data_from_csv() -> PrettyTable:
 class TestOptionOverride:
     """Make sure all options are properly overwritten by get_string."""
 
-    def test_border(self, city_data_prettytable: prettytable) -> None:
+    def test_border(self, city_data_prettytable: PrettyTable) -> None:
         default = city_data_prettytable.get_string()
         override = city_data_prettytable.get_string(border=False)
         assert default != override
@@ -535,12 +535,12 @@ class TestBasic:
         assert len(rows) == 7
         assert rows[0] == ["Adelaide", 1295, 1158259, 600.5]
 
-    def _test_no_blank_lines(self, table: prettytable) -> None:
+    def _test_no_blank_lines(self, table: PrettyTable) -> None:
         string = table.get_string()
         lines = string.split("\n")
         assert "" not in lines
 
-    def _test_all_length_equal(self, table: prettytable) -> None:
+    def _test_all_length_equal(self, table: PrettyTable) -> None:
         string = table.get_string()
         lines = string.split("\n")
         lengths = [len(line) for line in lines]
