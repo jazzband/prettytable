@@ -30,6 +30,18 @@ from .prettytable import (  # noqa: F401
 )
 
 __all__ = [
+    "ALL",
+    "DEFAULT",
+    "DOUBLE_BORDER",
+    "SINGLE_BORDER",
+    "FRAME",
+    "HEADER",
+    "MARKDOWN",
+    "MSWORD_FRIENDLY",
+    "NONE",
+    "ORGMODE",
+    "PLAIN_COLUMNS",
+    "RANDOM",
     "HRuleStyle",
     "PrettyTable",
     "TableHandler",
