@@ -96,8 +96,8 @@ class PrettyTable:
     _xhtml: bool
     _align: dict[str, AlignType]
     _valign: dict[str, VAlignType]
-    _max_width: dict[str, int]
     _min_width: dict[str, int]
+    _max_width: dict[str, int]
     _min_table_width: int | None
     _max_table_width: int | None
     _fields: Sequence[str | None] | None
