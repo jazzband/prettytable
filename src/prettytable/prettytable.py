@@ -124,6 +124,9 @@ class PrettyTable:
     _preserve_internal_border: bool
     _hrules: HRuleStyle
     _vrules: VRuleStyle
+    _int_format: dict[str, str]
+    _float_format: dict[str, str]
+    _custom_format: dict[str, Callable[[str, Any], str]]
     _padding_width: int
     _left_padding_width: int | None
     _right_padding_width: int | None
