@@ -1926,8 +1926,12 @@ class PrettyTable:
         ):
             lines.append(self._stringify_hrule(options, where="top_"))
             if title and options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
+                left_j_len = len(self.left_junction_char)
+                right_j_len = len(self.right_junction_char)
                 lines[-1] = (
-                    self.left_junction_char + lines[-1][1:-1] + self.right_junction_char
+                    self.left_junction_char
+                    + lines[-1][left_j_len:-right_j_len]
+                    + self.right_junction_char
                 )
 
         # Add rows
@@ -1949,8 +1953,10 @@ class PrettyTable:
             lines.append(self._stringify_hrule(options, where="bottom_"))
 
         if "orgmode" in self.__dict__ and self.orgmode:
+            left_j_len = len(self.left_junction_char)
+            right_j_len = len(self.right_junction_char)
             lines = [
-                "|" + new_line[1:-1] + "|"
+                "|" + new_line[left_j_len:-right_j_len] + "|"
                 for old_line in lines
                 for new_line in old_line.split("\n")
             ]
