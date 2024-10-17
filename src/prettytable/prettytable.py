@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import io
 import re
+import warnings
 from collections.abc import Callable, Iterable, Sequence
 from enum import IntEnum
 from html.parser import HTMLParser
@@ -72,18 +73,18 @@ class TableStyle(IntEnum):
 
 
 # keep for backwards compatibility
-FRAME: Final = 0
-ALL: Final = 1
-NONE: Final = 2
-HEADER: Final = 3
-DEFAULT: Final = TableStyle.DEFAULT
-MSWORD_FRIENDLY: Final = TableStyle.MSWORD_FRIENDLY
-PLAIN_COLUMNS: Final = TableStyle.PLAIN_COLUMNS
-MARKDOWN: Final = TableStyle.MARKDOWN
-ORGMODE: Final = TableStyle.ORGMODE
-DOUBLE_BORDER: Final = TableStyle.DOUBLE_BORDER
-SINGLE_BORDER: Final = TableStyle.SINGLE_BORDER
-RANDOM: Final = TableStyle.RANDOM
+_DEPRECATED_FRAME: Final = 0
+_DEPRECATED_ALL: Final = 1
+_DEPRECATED_NONE: Final = 2
+_DEPRECATED_HEADER: Final = 3
+_DEPRECATED_DEFAULT: Final = TableStyle.DEFAULT
+_DEPRECATED_MSWORD_FRIENDLY: Final = TableStyle.MSWORD_FRIENDLY
+_DEPRECATED_PLAIN_COLUMNS: Final = TableStyle.PLAIN_COLUMNS
+_DEPRECATED_MARKDOWN: Final = TableStyle.MARKDOWN
+_DEPRECATED_ORGMODE: Final = TableStyle.ORGMODE
+_DEPRECATED_DOUBLE_BORDER: Final = TableStyle.DOUBLE_BORDER
+_DEPRECATED_SINGLE_BORDER: Final = TableStyle.SINGLE_BORDER
+_DEPRECATED_RANDOM: Final = TableStyle.RANDOM
 # --------------------------------
 
 BASE_ALIGN_VALUE: Final = "base_align_value"
@@ -2794,3 +2795,22 @@ def from_html_one(html_code: str, **kwargs) -> PrettyTable:
         msg = "More than one <table> in provided HTML code. Use from_html instead."
         raise ValueError(msg)
     return tables[0]
+
+
+def _warn_deprecation(name: str, module_globals: dict[str, Any]) -> Any:
+    if (val := module_globals.get(f"_DEPRECATED_{name}")) is None:
+        msg = f"module '{__name__}' has no attribute '{name}"
+        raise AttributeError(msg)
+    if name in {"FRAME", "ALL", "NONE", "HEADER"}:
+        msg = (
+            f"the '{name}' constant is deprecated, "
+            "use the 'HRuleStyle' and 'VRuleStyle' enums instead"
+        )
+    else:
+        msg = f"the '{name}' constant is deprecated, use the 'TableStyle' enum instead"
+    warnings.warn(msg, DeprecationWarning, stacklevel=2)
+    return val
+
+
+def __getattr__(name: str) -> Any:
+    return _warn_deprecation(name, module_globals=globals())
