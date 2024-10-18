@@ -35,10 +35,10 @@ from __future__ import annotations
 
 import io
 import re
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from enum import IntEnum
 from html.parser import HTMLParser
-from typing import TYPE_CHECKING, Any, Final, Literal
+from typing import TYPE_CHECKING, Any, Final, Literal, TypedDict, cast
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor
@@ -92,6 +92,57 @@ RowType: TypeAlias = list[Any]
 AlignType: TypeAlias = Literal["l", "c", "r"]
 VAlignType: TypeAlias = Literal["t", "m", "b"]
 HeaderStyleType: TypeAlias = Literal["cap", "title", "upper", "lower", None]
+
+
+class OptionsType(TypedDict):
+    title: str | None
+    start: int
+    end: int | None
+    fields: Sequence[str | None] | None
+    header: bool
+    border: bool
+    preserve_internal_border: bool
+    sortby: str | None
+    reversesort: bool
+    sort_key: Callable[[RowType], SupportsRichComparison]
+    attributes: dict[str, str]
+    format: bool
+    hrules: HRuleStyle
+    vrules: VRuleStyle
+    int_format: str | dict[str, str] | None
+    float_format: str | dict[str, str] | None
+    custom_format: (
+        Callable[[str, Any], str] | dict[str, Callable[[str, Any], str]] | None
+    )
+    min_table_width: int | None
+    max_table_width: int | None
+    padding_width: int
+    left_padding_width: int | None
+    right_padding_width: int | None
+    vertical_char: str
+    horizontal_char: str
+    horizontal_align_char: str
+    junction_char: str
+    header_style: HeaderStyleType
+    xhtml: bool
+    print_empty: bool
+    oldsortslice: bool
+    top_junction_char: str
+    bottom_junction_char: str
+    right_junction_char: str
+    left_junction_char: str
+    top_right_junction_char: str
+    top_left_junction_char: str
+    bottom_right_junction_char: str
+    bottom_left_junction_char: str
+    align: dict[str, AlignType]
+    valign: dict[str, VAlignType]
+    min_width: int | dict[str, int] | None
+    max_width: int | dict[str, int] | None
+    none_format: str | dict[str, str | None] | None
+    escape_header: bool
+    escape_data: bool
+
 
 _re = re.compile(r"\033\[[0-9;]*m|\033\(B")
 
@@ -1374,15 +1425,15 @@ class PrettyTable:
     # OPTION MIXER               #
     ##############################
 
-    def _get_options(self, kwargs):
-        options = {}
+    def _get_options(self, kwargs: Mapping[str, Any]) -> OptionsType:
+        options: dict[str, Any] = {}
         for option in self._options:
             if option in kwargs:
                 self._validate_option(option, kwargs[option])
                 options[option] = kwargs[option]
             else:
                 options[option] = getattr(self, option)
-        return options
+        return cast(OptionsType, options)
 
     ##############################
     # PRESET STYLE LOGIC         #
@@ -1696,7 +1747,7 @@ class PrettyTable:
                 table_width += self._widths[index] + per_col_padding + 1
         return table_width
 
-    def _compute_widths(self, rows: list[list[str]], options) -> None:
+    def _compute_widths(self, rows: list[list[str]], options: OptionsType) -> None:
         if options["header"]:
             widths = [_get_size(field)[0] for field in self._field_names]
         else:
@@ -1772,7 +1823,7 @@ class PrettyTable:
                     widths[-1] += min_width - sum(widths)
                 self._widths = widths
 
-    def _get_padding_widths(self, options) -> tuple[int, int]:
+    def _get_padding_widths(self, options: OptionsType) -> tuple[int, int]:
         if options["left_padding_width"] is not None:
             lpad = options["left_padding_width"]
         else:
@@ -1783,7 +1834,7 @@ class PrettyTable:
             rpad = options["padding_width"]
         return lpad, rpad
 
-    def _get_rows(self, options) -> list[RowType]:
+    def _get_rows(self, options: OptionsType) -> list[RowType]:
         """Return only those data rows that should be printed, based on slicing and
         sorting.
 
@@ -1813,7 +1864,7 @@ class PrettyTable:
 
         return rows
 
-    def _get_dividers(self, options) -> list[bool]:
+    def _get_dividers(self, options: OptionsType) -> list[bool]:
         """Return only those dividers that should be printed, based on slicing.
 
         Arguments:
@@ -1958,18 +2009,18 @@ class PrettyTable:
         return "\n".join(lines)
 
     def _stringify_hrule(
-        self, options, where: Literal["top_", "bottom_", ""] = ""
+        self, options: OptionsType, where: Literal["top_", "bottom_", ""] = ""
     ) -> str:
         if not options["border"] and not options["preserve_internal_border"]:
             return ""
         lpad, rpad = self._get_padding_widths(options)
         if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
-            bits = [options[where + "left_junction_char"]]
+            bits = [options[where + "left_junction_char"]]  # type: ignore[literal-required]
         else:
             bits = [options["horizontal_char"]]
         # For tables with no data or fieldnames
         if not self._field_names:
-            bits.append(options[where + "right_junction_char"])
+            bits.append(options[where + "right_junction_char"])  # type: ignore[literal-required]
             return "".join(bits)
         for field, width in zip(self._field_names, self._widths):
             if options["fields"] and field not in options["fields"]:
@@ -1986,19 +2037,19 @@ class PrettyTable:
 
             bits.append(line)
             if options["vrules"] == VRuleStyle.ALL:
-                bits.append(options[where + "junction_char"])
+                bits.append(options[where + "junction_char"])  # type: ignore[literal-required]
             else:
                 bits.append(options["horizontal_char"])
         if options["vrules"] in (VRuleStyle.ALL, VRuleStyle.FRAME):
             bits.pop()
-            bits.append(options[where + "right_junction_char"])
+            bits.append(options[where + "right_junction_char"])  # type: ignore[literal-required]
 
         if options["preserve_internal_border"] and not options["border"]:
             bits = bits[1:-1]
 
         return "".join(bits)
 
-    def _stringify_title(self, title: str, options) -> str:
+    def _stringify_title(self, title: str, options: OptionsType) -> str:
         lines: list[str] = []
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
@@ -2025,7 +2076,7 @@ class PrettyTable:
         lines.append("".join(bits))
         return "\n".join(lines)
 
-    def _stringify_header(self, options) -> str:
+    def _stringify_header(self, options: OptionsType) -> str:
         bits: list[str] = []
         lpad, rpad = self._get_padding_widths(options)
         if options["border"]:
@@ -2096,7 +2147,7 @@ class PrettyTable:
             bits.append(self._hrule)
         return "".join(bits)
 
-    def _stringify_row(self, row: list[str], options, hrule: str) -> str:
+    def _stringify_row(self, row: list[str], options: OptionsType, hrule: str) -> str:
         import textwrap
 
         for index, field, value, width in zip(
@@ -2331,7 +2382,7 @@ class PrettyTable:
 
         return string
 
-    def _get_simple_html_string(self, options) -> str:
+    def _get_simple_html_string(self, options: OptionsType) -> str:
         from html import escape
 
         lines: list[str] = []
@@ -2390,7 +2441,7 @@ class PrettyTable:
 
         return "\n".join(lines)
 
-    def _get_formatted_html_string(self, options) -> str:
+    def _get_formatted_html_string(self, options: OptionsType) -> str:
         from html import escape
 
         lines: list[str] = []
@@ -2530,7 +2581,7 @@ class PrettyTable:
             string = self._get_simple_latex_string(options)
         return string
 
-    def _get_simple_latex_string(self, options) -> str:
+    def _get_simple_latex_string(self, options: OptionsType) -> str:
         lines: list[str] = []
 
         wanted_fields = []
@@ -2563,7 +2614,7 @@ class PrettyTable:
 
         return "\r\n".join(lines)
 
-    def _get_formatted_latex_string(self, options) -> str:
+    def _get_formatted_latex_string(self, options: OptionsType) -> str:
         lines: list[str] = []
 
         wanted_fields: list[str] = []
